@@ -41,12 +41,15 @@ document.head.appendChild(style);
             let id = (octaValidators[myv].getAttribute("id"))?octaValidators[myv].getAttribute("id") : null;
             //get type
             let type= (octaValidators[myv].getAttribute("type")) ? octaValidators[myv].getAttribute("type") : null;
-
+            //exit if attribute existts but id is null
             if(attr && !id ){
                 return false;
             }
-
-            if(Object.keys(validate).length !== octaValidators.length) {validate[id] = [type, attr]};
+            //build only when theres octaValidate attribute present
+            if(attr !== null){
+                if(Object.keys(validate).length !== octaValidators.length) {validate[id] = [type, attr]};
+            }
+            
         }
     })();
 function octaValidate(){

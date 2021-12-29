@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+    <title>Simple Form Validator by octaValidate</title>
     <style>
     .error{
         color:red;
@@ -83,7 +84,7 @@
 
         <div>
             <label>User ID</label>
-            <input id="inp_uid" type="text" octaValidate="R,DIGITS" placeholder="Enter a Number">
+            <input type="text" placeholder="Enter a Number">
         </div>
 
         <div>
@@ -112,8 +113,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function(){
     var rules = {
-        "CC" : ["1234", "Please enter 1234"],
-        "PR" : ["6789", "Please enter 6789"],
         "EML": [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Valid email is required"],
         "URI": [/^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1(?::\d+)?))([\/a-zA-Z0-9\.]*)$/i, "Please provide a valid URL"]
     };
