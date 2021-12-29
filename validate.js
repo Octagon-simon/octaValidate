@@ -36,11 +36,16 @@ document.head.appendChild(style);
         //loop through
         for(var myv = 0; myv < octaValidators.length; ++myv){
             //get attr
-            let attr = octaValidators[myv].getAttribute("octaValidate");
+            let attr = (octaValidators[myv].getAttribute("octaValidate")) ? octaValidators[myv].getAttribute("octaValidate") : null;
             //get id
-            let id = octaValidators[myv].getAttribute("id");
+            let id = (octaValidators[myv].getAttribute("id"))?octaValidators[myv].getAttribute("id") : null;
             //get type
-            let type= octaValidators[myv].getAttribute("type");
+            let type= (octaValidators[myv].getAttribute("type")) ? octaValidators[myv].getAttribute("type") : null;
+
+            if(attr && !id ){
+                return false;
+            }
+
             if(Object.keys(validate).length !== octaValidators.length) {validate[id] = [type, attr]};
         }
     })();
@@ -81,16 +86,6 @@ function octaValidate(){
         }
     }
 
-    var octaValidators = document.querySelectorAll('input');
-    //loop through
-   /* for(var myv = 0; myv < octaValidators.length; ++myv){
-        let attr = octaValidators[myv].getAttribute("octaValidate");
-        let id = octaValidators[myv].getAttribute("id");
-        let type= octaValidators[myv].getAttribute("type");
-        //init object
-        if(Object.keys(validate).length !== octaValidators.length) {validate[id] = [type, attr]};
-        }*/
-
     if(validate){
         //loop through validations
         for(var i = 0; i < Object.keys(validate).length; ++i){
@@ -118,7 +113,7 @@ function octaValidate(){
                             );
             }
                  //required
-                if (validations.includes('R')) {
+                if (validations.includes('R') || type == 'required') {
                     validationInfo = "elem.value";
                     validationText = "This field is required!";
                     if(!elem.value) {
@@ -157,7 +152,7 @@ function octaValidate(){
                 }//custom
             }
             }
-                if(continueValidation && validations.includes('EMAIL')){
+                if(continueValidation && (validations.includes('EMAIL') || type == 'email')){
                     if(!octaValidations.ValidateEmail(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateEmail(elem.value)";
@@ -205,7 +200,7 @@ function octaValidate(){
                     }else{continueValidation++;}
                 }//ALPHABETS + NUMBERS
 
-                if(continueValidation && validations.includes('DIGITS')){
+                if(continueValidation && (validations.includes('DIGITS') || type == 'number')){
                     if(isNaN(elem.value)) {
                         errors++;
                         validationInfo = "!isNaN(elem.value)";
@@ -221,7 +216,7 @@ function octaValidate(){
                     }else{continueValidation++;}
                 }//Numbers
                 
-                if(continueValidation && validations.includes('URL')){
+                if(continueValidation && (validations.includes('URL') || type == 'url')){
                     if(!octaValidations.ValidateUrl(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateUrl(elem.value)";

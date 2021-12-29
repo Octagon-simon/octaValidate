@@ -47,7 +47,7 @@ The return type of our function is **Boolean**.
 var formEl = document.querySelector('#form_register');
 
 formEl.addEventListener('submit', function(){
-    //run function and check our return value
+    //run function and check return value
 
     if( octaValidate() )
     { 
@@ -87,7 +87,7 @@ In some cases where you need your custom validation rule implemented on a form i
 
 /* syntax
 
-addOVCustomRules(Rule_title, RegExp,    Validation_text);
+addOVCustomRules(Rule_title, RegExp, Validation_text);
 
 */
 
@@ -114,9 +114,9 @@ Then on your Input Element,
 
 ### MORE CUSTOM RULES
 
-What if you wish to add more than ( 1 ) custom rule?
+What if you wish to have more than custom rules?
 
-You may create an object with your rules declaration inside it, following the syntax below, then call the function **addMoreOVCustomRules** and pass the object as a parameter.
+You may create an object with your rules declaration inside it, ( following the syntax below ), then call the function **addMoreOVCustomRules** and pass the object as a parameter.
 
 ```
 /* syntax
@@ -134,13 +134,13 @@ var rules = {
     "URI": [/^((?:http:\/\/)|(?:https:\/\/))(www.)?((?:[a-zA-Z0-9]+\.[a-z]{3})|(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1(?::\d+)?))([\/a-zA-Z0-9\.]*)$/i, "Please provide a valid URL"]
 };
 
-    //build rules
-    addMoreOVCustomRules(rules);
+//build rules
+addMoreOVCustomRules(rules);
 ```
 > Note that : You do not need to pass in your regular expression as a string! This is because *JavaScript* natively recognizes *regular expressions*.
 
 ## TEST
-- Download this script and extract.
+- Download **octaValidate** and extract to a folder.
 - Open **test.html** on a browser, then try to submit the form.
   
 ## Author
