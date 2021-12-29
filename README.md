@@ -112,9 +112,9 @@ Then on your Input Element,
 ```
 >All rule titles, are **case-sensitive!**. So if you provide a custom validation rule, you must use that exact rule title in your form input.
 
-### MORE CUSTOM RULES
+### MORE CUSTOM RULES? NO PROBLEM
 
-What if you wish to have more than custom rules?
+What if you wish to have more custom rules?
 
 You may create an object with your rules declaration inside it, ( following the syntax below ), then call the function **addMoreOVCustomRules** and pass the object as a parameter.
 
