@@ -26,9 +26,9 @@ Assuming you have imported or installed the script on your page, create a form t
 ```
 <form id="form_register">
 
-    <input id="inp_email" name="email" type="email" octaValidate="R,EMAIL">
+    <input id="inp_email" name="email" type="email" octavalidate="R,EMAIL">
 
-    <input id="inp_age" name="age" type="number" octaValidate="R,DIGITS">
+    <input id="inp_age" name="age" type="number" octavalidate="R,DIGITS">
 
     <button type="submit">submit</button>
 
@@ -106,15 +106,15 @@ Then on your Input Element,
 ```
 <form>
 
-    <input type="email" id="inp_email" octaValidate="EML">
+    <input type="email" id="inp_email" octavalidate="EML">
 
 </form>
 ```
 >All rule titles, are **case-sensitive!**. So if you provide a custom validation rule, you must use that exact rule title in your form input.
 
-### MORE CUSTOM RULES? NO PROBLEM
+### MORE CUSTOM RULES
 
-What if you wish to have more custom rules?
+What if you wish to have more than custom rules?
 
 You may create an object with your rules declaration inside it, ( following the syntax below ), then call the function **addMoreOVCustomRules** and pass the object as a parameter.
 

@@ -32,7 +32,7 @@ document.head.appendChild(style);
     //build validation
     var validate = {};
     (function(){
-        var octaValidators = document.querySelectorAll('input');
+        var octaValidators = document.querySelectorAll('[octavalidate]');
         //loop through
         for(var myv = 0; myv < octaValidators.length; ++myv){
             //get attr
@@ -66,7 +66,7 @@ function octaValidate(){
 
         //set class of input error
         var f = document.querySelector('#'+inputID);
-        f.setAttribute("class", "octaValidate-inp-error");
+        f.classList.toggle("octaValidate-inp-error");
 
         //append to form
         f.parentNode.appendChild(g);
