@@ -73,7 +73,7 @@ Here's a list of inbuilt or default validation rules.
 - LOWER_ALPHA - Value must be lowercase alphabets only.
 - UPPER_ALPHA - Value must be uppercase alphabets only.
 - ALPHA_SPACES - Value must contain alphabets and Spaces only!
-- ALPHA_NUMERIC - Value may contain alphabets or numbers ( aplhanumeric ).
+- ALPHA_NUMERIC - Value may contain alphabets or numbers ( alphanumeric ).
 - DATE_MDY - Value must be a valid date with the format mm/dd/yyyy.
 - DIGITS - Value must be valid digits. 
 - PWD - Value must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters. 
