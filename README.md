@@ -119,7 +119,7 @@ Then on your Input Element,
 
 ### MORE CUSTOM RULES
 
-What if you wish to have more than custom rules?
+What if you wish to have more custom rules?
 
 You may create an object with your rules declaration inside it, ( following the syntax below ), then call the function **addMoreOVCustomRules** and pass the object as a parameter.
 
