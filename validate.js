@@ -2,13 +2,13 @@
  * 
  * OctaValidate main JS V1.0
  * author: Simon Ugorji
- * Last Edit : 28th December 2021
+ * Last Edit : 12th January 2022
  */
 import octaValidations from './validate_lib.js';
 //global Styling
 let style = document.createElement("style");
 style.id="octaValidate-global-style";
-style.innerHTML = '.octaValidate-inp-error{border: 2px solid #e64a61;}.octaValidate-txt-error{color : #e64a61;color: #e64a61;font-size: 17px;font-weight: 400;margin-top: 5px;}';
+style.innerHTML = '.octaValidate-inp-error{border: 2px solid #e64a61 !important;}.octaValidate-txt-error{color : #e64a61;color: #e64a61;font-size: 17px;font-weight: 400;margin-top: 5px;}';
 document.head.appendChild(style);
 
     //custom rules
@@ -17,6 +17,7 @@ document.head.appendChild(style);
         OVCustomRules[rule] = [exp, text];
     }
 
+    //more custom rules
     function addMoreOVCustomRules(rules){
         for(var r = 0; r < Object.keys(rules).length; ++r){
             var index = Object.keys(rules)[r]; //get index
@@ -160,7 +161,7 @@ function octaValidate(){
                         errors++;
                         validationInfo = "octaValidations.ValidateEmail(elem.value)";
                         validationText = "Please provide a Valid Email Address!";
-                        octaValidateNewError(index, "Please provide a Valid Email Address!");
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -171,12 +172,12 @@ function octaValidate(){
                     }else{continueValidation++;}
                 }//email
 
-                if(continueValidation && validations.includes('ALPHA_SPACES')){
-                    if(!octaValidations.ValidateAS(elem.value)) {
+                if(continueValidation && validations.includes('ALPHA_ONLY')){
+                    if(!octaValidations.ValidateAlpha_Only(elem.value)) {
                         errors++;
-                        validationInfo = "octaValidations.ValidateAS(elem.value)";
-                        validationText = "Only Alphabets and spaces are needed!";
-                        octaValidateNewError(index, "Only Alphabets and spaces are needed!");
+                        validationInfo = "octaValidations.ValidateAlpha_Only(elem.value)";
+                        validationText = "Please enter only Alphabets!";
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -187,12 +188,28 @@ function octaValidate(){
                     }else{continueValidation++;}
                 }//ALPHABETS + SPACES
 
-                if(continueValidation && validations.includes('ALPHA_NUMBERS')){
-                    if(!octaValidations.ValidateAN(elem.value)) {
+                if(continueValidation && validations.includes('ALPHA_SPACES')){
+                    if(!octaValidations.ValidateAlpha_Spaces(elem.value)) {
                         errors++;
-                        validationInfo = "octaValidations.ValidateAN(elem.value)";
-                        validationText = "Only Alphabets or Numbers are needed!";
-                        octaValidateNewError(index, "Only Alphabets or Numbers are needed!");
+                        validationInfo = "octaValidations.ValidateAlpha_Spaces(elem.value)";
+                        validationText = "Please enter only Alphabets or spaces!";
+                        octaValidateNewError(index, validationText);
+                        if(elem.addEventListener) {
+                            elem.addEventListener("focusout", eventAction);
+                        }else if(elem.attachEvent){
+                            elem.attachEvent("focusout", eventAction);
+                        }
+                        
+                        continueValidation = 0;
+                    }else{continueValidation++;}
+                }//ALPHABETS + SPACES
+
+                if(continueValidation && validations.includes('ALPHA_NUMERIC')){
+                    if(!octaValidations.ValidateAlpha_Numeric(elem.value)) {
+                        errors++;
+                        validationInfo = "octaValidations.ValidateAlpha_Numeric(elem.value)";
+                        validationText = "Please enter only Alphabets or Numbers!";
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -203,12 +220,60 @@ function octaValidate(){
                     }else{continueValidation++;}
                 }//ALPHABETS + NUMBERS
 
+                if(continueValidation && validations.includes('LOWER_ALPHA')){
+                    if(!octaValidations.ValidateLower_Alpha(elem.value)) {
+                        errors++;
+                        validationInfo = "octaValidations.ValidateLower_Alpha(elem.value)";
+                        validationText = "Only letters in lowercase are supported!";
+                        octaValidateNewError(index, validationText);
+                        if(elem.addEventListener) {
+                            elem.addEventListener("focusout", eventAction);
+                        }else if(elem.attachEvent){
+                            elem.attachEvent("focusout", eventAction);
+                        }
+                        
+                        continueValidation = 0;
+                    }else{continueValidation++;}
+                }//Lowercase letters
+
+                if(continueValidation && validations.includes('UPPER_ALPHA')){
+                    if(!octaValidations.ValidateUpper_Alpha(elem.value)) {
+                        errors++;
+                        validationInfo = "octaValidations.ValidateUpper_Alpha(elem.value)";
+                        validationText = "Only letters in uppercase are supported!";
+                        octaValidateNewError(index, validationText);
+                        if(elem.addEventListener) {
+                            elem.addEventListener("focusout", eventAction);
+                        }else if(elem.attachEvent){
+                            elem.attachEvent("focusout", eventAction);
+                        }
+                        
+                        continueValidation = 0;
+                    }else{continueValidation++;}
+                }//Uppercase letters
+
+                if(continueValidation && validations.includes('PWD')){
+                    if(!octaValidations.ValidatePWD(elem.value)) {
+                        errors++;
+                        validationInfo = "octaValidations.ValidatePWD(elem.value)";
+                        validationText = "Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters";
+                        octaValidateNewError(index, validationText);
+                        if(elem.addEventListener) {
+                            elem.addEventListener("focusout", eventAction);
+                        }else if(elem.attachEvent){
+                            elem.attachEvent("focusout", eventAction);
+                        }
+                        
+                        continueValidation = 0;
+                    }else{continueValidation++;}
+                }//Uppercase letters
+
                 if(continueValidation && (validations.includes('DIGITS') || type == 'number')){
                     if(isNaN(elem.value)) {
                         errors++;
                         validationInfo = "!isNaN(elem.value)";
                         validationText = "Please provide a valid Number!";
-                        octaValidateNewError(index, "Please provide a valid Number!");
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -224,7 +289,7 @@ function octaValidate(){
                         errors++;
                         validationInfo = "octaValidations.ValidateUrl(elem.value)";
                         validationText = "Please provide a valid URL that begins with http or https!";
-                        octaValidateNewError(index, "Please provide a valid URL that begins with http or https!");
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -240,7 +305,7 @@ function octaValidate(){
                         errors++;
                         validationInfo = "octaValidations.ValidateUrl_QP(elem.value)";
                         validationText = "Please provide a valid URL with a query parameter.";
-                        octaValidateNewError(index, "Please provide a valid URL with a query parameter.");
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -256,7 +321,7 @@ function octaValidate(){
                         errors++;
                         validationInfo = "octaValidations.ValidateDate_MDY(elem.value)";
                         validationText = "Please provide a date with the format mm/dd/yyyy.";
-                        octaValidateNewError(index, "Please provide a date with the format mm/dd/yyyy.");
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){
@@ -272,7 +337,7 @@ function octaValidate(){
                         errors++;
                         validationInfo = "octaValidations.ValidateUserName(elem.value)";
                         validationText = "Your username should contain alphanumeric characters only.";
-                        octaValidateNewError(index, "Your username should contain alphanumeric characters only.");
+                        octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             elem.addEventListener("focusout", eventAction);
                         }else if(elem.attachEvent){

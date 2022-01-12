@@ -57,7 +57,7 @@ formEl.addEventListener('submit', function(){
 
     } else {
         //validation failed
-        alert("A form error has occured");
+        //tell user this form contains errors.
     }
 
 })
@@ -69,19 +69,24 @@ formEl.addEventListener('submit', function(){
 Here's a list of inbuilt or default validation rules.
 
 - R - Form field is ( required ).
-  
+- ALPHA_ONLY - Value must be alphabets only.
+- LOWER_ALPHA - Value must be lowercase alphabets only.
+- UPPER_ALPHA - Value must be uppercase alphabets only.
 - ALPHA_SPACES - Value must contain alphabets and Spaces only!
-- ALPHA_NUMBERS - Value may contain alphabets or numbers ( aplhanumeric ).
+- ALPHA_NUMERIC - Value may contain alphabets or numbers ( aplhanumeric ).
 - DATE_MDY - Value must be a valid date with the format mm/dd/yyyy.
 - DIGITS - Value must be valid digits. 
+- PWD - Value must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters. 
 - EMAIL - Value must be a valid Email Address.
 - URL - Value must be a valid URL without a Query parameter
 - URL_QP - Value must be a valid URL and may contain Query parameters.
-- USERNAME - Value may contain alphabets and or Numbers.
+- USERNAME - Value may contain alphabets, numbers, a hyphen or an underscore.
+
 > You may specify multiple rules on an input element with the attribute **octaValidate** and with an **ID** attached to it, by seperating each of the rules with a *comma*.
-> 
+
 ## Advanced
 In some cases where you need your custom validation rule implemented on a form input, you may use our global function to add yours.
+
 ```
 <script>
 
@@ -110,7 +115,7 @@ Then on your Input Element,
 
 </form>
 ```
->All rule titles, are **case-sensitive!**. So if you provide a custom validation rule, you must use that exact rule title in your form input.
+> All rule titles, are **case-sensitive!**. So if you provide a custom validation rule, you must use that exact rule title in your form input.
 
 ### MORE CUSTOM RULES
 

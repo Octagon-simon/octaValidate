@@ -2,7 +2,7 @@
  * 
  * OctaValidate RegExp Library V1.0
  * author: Simon Ugorji
- * Last Edit : 28th December 2021
+ * Last Edit : 12th January 2022
  */
 function octaValidations(){
     //check email
@@ -13,16 +13,40 @@ function octaValidations(){
     return false;
     }
 
+    //check Alphabets only
+    function octaValidateALPHA_ONLY(text){
+        if(/^[a-zA-Z]+$/.test(text)){
+            return true;
+        }
+    return false;
+    }
+
+    //check lowercase alphabets only
+    function octaValidateLOWER_ALPHA(text){
+        if(/^[a-z]+$/.test(text)){
+            return true;
+        }
+    return false;
+    }
+
+    //check uppercase alphabets only
+    function octaValidateUPPER_ALPHA(text){
+        if(/^[A-Z]+$/.test(text)){
+            return true;
+        }
+    return false;
+    }
+
     //check Alphabets and spaces
-    function octaValidateAS(text){
-        if(/^[a-zA-Z ]{2,30}$/.test(text)){
+    function octaValidateALPHA_SPACES(text){
+        if(/^[a-zA-Z\s]+$/.test(text)){
             return true;
         }
     return false;
     }
 
     //check Alpha Numberic strings
-    function octaValidateAN(text){
+    function octaValidateALPHA_NUMERIC(text){
         if(/^[a-zA-Z0-9]+$/.test(text)){
             return true;
         }else{
@@ -66,14 +90,27 @@ function octaValidations(){
         }
     }
 
+    //password - 8 characters or more
+    function octaValidatePWD(password){
+        if(/^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})+$/.test(password)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     return{
         ValidateEmail : octaValidateEmail,
-        ValidateAS : octaValidateAS,
-        ValidateAN : octaValidateAN,
+        ValidateAlpha_Only : octaValidateALPHA_ONLY,
+        ValidateLower_Alpha : octaValidateLOWER_ALPHA,
+        ValidateUpper_Alpha : octaValidateUPPER_ALPHA, 
+        ValidateAlpha_Spaces : octaValidateALPHA_SPACES,
+        ValidateAlpha_Numeric : octaValidateALPHA_NUMERIC, 
         ValidateUrl : octaValidateUrl,
         ValidateUrl_QP: octaValidateUrl_QP,
         ValidateUserName : octaValidateUserName,
-        ValidateDate_MDY : octaValidateDate_MDY
+        ValidateDate_MDY : octaValidateDate_MDY,
+        ValidatePWD : octaValidatePWD
     }
 
 }
