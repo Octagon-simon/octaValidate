@@ -144,6 +144,14 @@ addMoreOVCustomRules(rules);
 ```
 > Note that : You do not need to pass in your regular expression as a string! This is because *JavaScript* natively recognizes *regular expressions*.
 
+## RELEASES
+We have released version **1.0.2** of this script
+
+- it validates input lengths
+- it supports more validation rules
+- We resolved the issues faced with v1.0.0
+
+View all [releases here](https://github.com/Octagon-simon/octaValidate/releases)
 ## TEST
 - Download **octaValidate** and extract to a folder.
 - Open **test.html** on a browser, then try to submit the form.
