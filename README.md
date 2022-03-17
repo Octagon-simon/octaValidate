@@ -171,7 +171,6 @@ addMoreOVCustomRules(rules);
 ```
 > Note that : You do not need to pass in your regular expression as a string! This is because *JavaScript* natively recognizes *regular expressions*.
 
-
 ## What's New in V1.0.2?
 
 - We have added validation support for input lengths. 
@@ -196,12 +195,10 @@ This means that you can use octaValidate to validate: **maxlength, minlength and
 
 - Error Class is now toggled properly and will not clear the input classList. 
 
-```
-
 ## DEMO
 
 - Download **octaValidate** and extract to a folder.
-- Open **demo.html** on a browser, then try to submit the form.
+- Open **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** on a browser, then try to submit the form.
   
 ## Author
 
