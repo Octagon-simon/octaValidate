@@ -1,13 +1,26 @@
 /**
  * 
- * OctaValidate RegExp Library V1.0
+ * OctaValidate RegExp Library V1.0.2 
  * author: Simon Ugorji
- * Last Edit : 12th January 2022
+ * Last Edit : 17th March 2022
  */
 function octaValidations(){
     //check email
     function octaValidateEmail(email){
-        if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+        /*
+            @details : Replacing the old regexp with the current one to fix a bug
+
+            @bug :  Old regexp cannot validate characters that are 37 in length.
+                    It will freeze the page and chrome will display a code_hung error
+                    In microsoft edge, you will see an option to terminate the script that
+                    isn't responding
+
+            @reproduction: use these characters to test the regexp below (ooooooooooooooooooooooooooooooooooooo)
+
+            @regexp : /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
+        */
+        if(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(email)){
             return true;
         }   
     return false;
@@ -99,6 +112,15 @@ function octaValidations(){
         }
     }
 
+    //Validates general text
+    function octaValidateTEXT(text){
+        if(/^[a-zA-Z0-9\s\,\.\'\"\-\_\)\(\[\]\?\!\&\:\;\/]+$/.test(text)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     return{
         ValidateEmail : octaValidateEmail,
         ValidateAlpha_Only : octaValidateALPHA_ONLY,
@@ -110,7 +132,8 @@ function octaValidations(){
         ValidateUrl_QP: octaValidateUrl_QP,
         ValidateUserName : octaValidateUserName,
         ValidateDate_MDY : octaValidateDate_MDY,
-        ValidatePWD : octaValidatePWD
+        ValidatePWD : octaValidatePWD,
+        ValidateTEXT : octaValidateTEXT
     }
 
 }
