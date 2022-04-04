@@ -1,8 +1,8 @@
 /**
  * 
- * OctaValidate RegExp Library V1.0.2 
+ * OctaValidate RegExp Library V1.0.3 
  * author: Simon Ugorji
- * Last Edit : 17th March 2022
+ * Last Edit : 4th April 2022
  */
 function octaValidations(){
     //check email
