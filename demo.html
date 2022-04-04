@@ -2,9 +2,12 @@
 <html>
     <title>OctaValidate Demo Page</title>
     <head>
+        <meta name="author" content="Simon Ugorji">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="This Script helps to properly validate your HTML forms using sophisticated Regular Expressions and default Form Attributes">
-        <meta name="og:title" content="Octavalidate Demo Page">
+        <meta name="title" content="Octavalidate Demo Page">
+        <meta property="og:description" content="This Script helps to properly validate your HTML forms using sophisticated Regular Expressions and default Form Attributes">
+        <meta property="og:title" content="Octavalidate Demo Page">
     </head>
 <style> 
 
@@ -98,60 +101,46 @@ hr{
     border:1px solid #ddd; 
     border-radius:10px;
 }
+input[type="checkbox"]{
+    width:initial;
+    display:initial;
+    margin-right:5px;
+    height:initial;
+}
+input[type="checkbox"]::after{
+    border: 2px solid #e0455e;
+}
 </style>
 
 <script type="module" src="src/validate.js"></script>
 
 <body>
     <h1 align="center">Demo</h1>
-
     <div align="center">
         <div class="text-left form-cont" style="max-width: 350px;">
-            <div class="alert-section alert-registration"></div>
-        <form id="form_register" method="post">
-            <h3 class="text-center">Sample Registration Form</h3>
-            <div class="form-group">
-                <label>First name</label>
-                <input type="text" id="inp_fname" octavalidate="R" maxlength="10" placeholder="Enter at most 10 characters">
-            </div>
-            <div class="form-group">
-                <label>Year</label>
-                <input id="inp_year" type="text" octavalidate="R,DIGITS" length="4" placeholder="Enter 4 characters">
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                <input type="text" id="inp_phone" octavalidate="R,DIGITS" minlength="10" placeholder="Enter at least 10 characters">
-            </div>
-            <div class="form-group">
-                <label>House Address</label>
-                <textarea placeholder="Enter at least 10 characters" octavalidate="R,TEXT" id="inp_addr"></textarea>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="block reg-btn">Register</button>
-            </div>
-        </form> 
-        </div>
-    </div> <!--Align center end -->
-    <hr>
-    <!-- Use this to test the ability for octavalidatev1.2 to work on many forms -->
-    <div align="center">
-        <div class="text-left form-cont" style="max-width: 350px;">
-            <div class="alert-section alert-login"></div>
-            <form method="post" id="form_login">
-                <h3 class="">Sample Login Form</h3>
+            <div class="alert-section alert-register"></div>
+            <form method="post" id="form_register">
+                <h3 class="">Sample Registration Form</h3>
                 <div class="notification is-info">
-                    <p>It is possible validate multiple forms, without having them conflict with each other.</p>
+                    <p>We don't process any <b>Info entered </b>here and we don't store it either.</p>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" id="inp_login_email" octavalidate="R,EMAIL" placeholder="Enter Email">
+                    <input type="text" id="inp_login_email" octavalidate="EMAIL" placeholder="EMAIL">
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="text" id="inp_login_pwd" octavalidate="R,PWD" placeholder="Enter password">
+                    <label>Password <span style="color:#ff0000">*</span></label>
+                    <input type="password" id="inp_login_pwd" octavalidate="R,PWD" ov-required:msg="A Password is required" placeholder="REQUIRED, PASSWORD">
                 </div>
                 <div class="form-group">
-                    <button class="reg-btn block"type="submit">Login</button>
+                    <label>Confirm Password</label>
+                    <input type="password" id="inp_login_pwd2" equalto="inp_login_pwd" ov-equalto:msg="Both passwords do not match" placeholder="EQUAL TO PASSWORD">
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="inp_terms" octavalidate="CHECK" ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
+                </div>
+                <div class="form-group">
+                    <button class="reg-btn block"type="submit">Register</button>
                 </div>
             </form>
         </div>
@@ -160,38 +149,20 @@ hr{
 
 </html>
 <script>
-    var formEl = document.querySelector('#form_register');
+var formEl1 = document.querySelector('#form_register');
 
-formEl.addEventListener('submit', function(e){
+formEl1.addEventListener('submit', function(e){
     //run function and check return value
     e.preventDefault();
     if( octaValidate(this) )
     { 
         //return type == true - > validation successful
-         showAlert('success', 'No Validation errors were found', 'reg');
+        showAlert('success', 'No Validation errors were found', 'reg');
         //process form data here
 
     } else {
         //return type == false - > validation failed
-        showAlert('error', 'This form contains validation errors', 'reg');
-    }
-
-})
-
- var formEl2 = document.querySelector('#form_login');
-
-formEl2.addEventListener('submit', function(e){
-    //run function and check return value
-    e.preventDefault();
-    if( octaValidate('form_login') )
-    { 
-        //return type == true - > validation successful
-         showAlert('success', 'No Validation errors were found', 'login');
-        //process form data here
-
-    } else {
-        //return type == false - > validation failed
-        showAlert('error', 'This Form contains validation errors', 'login');
+        showAlert('error', 'This Form contains validation errors', 'reg');
     }
 
 })
@@ -204,7 +175,7 @@ alertbox.style.display = "none";
 const alertText = document.createElement("p");
 alertbox.appendChild(alertText);
 const loginAlert = document.querySelector('.alert-section.alert-login');
-const regAlert = document.querySelector('.alert-section.alert-registration'); 
+const regAlert = document.querySelector('.alert-section.alert-register'); 
 
 //SHOW ALERT
 function showAlert(type, sometext, alert) {
@@ -232,14 +203,4 @@ function hideAlert(){
     alertbox.style.display = "none";
     alertText.innerText = "";
 }
-
-
-document.addEventListener('DOMContentLoaded', function(){
-    let rule = "ALPHA_DIGITS_SPACES";
-    let exp = /^[a-zA-Z0-9\s]+$/;
-    let txt = "Please enter alphabets, numbers or spaces";
-
-    //build rule
-    addOVCustomRules(rule, exp, txt);
-})
 </script>
