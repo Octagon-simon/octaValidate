@@ -47,7 +47,6 @@ The return type of the function is **Boolean**.
 Call the function **octaValiate** and pass the **form id** as a parameter. This will enable us to validate that particular form.
 
 ```javascript
-<script>
 const formEl = document.querySelector('#form_register');
 
 formEl.addEventListener('submit', function(){
@@ -63,12 +62,10 @@ formEl.addEventListener('submit', function(){
     }
 
 })
-</script>
 ```
 You can also use **this** keyword to refer to the form. But make sure that the form has an **ID** attached to it.
 
 ```javascript
-<script>
 const formEl = document.querySelector('#form_register');
 
 formEl.addEventListener('submit', function(){
@@ -85,7 +82,6 @@ formEl.addEventListener('submit', function(){
     }
 
 })
-</script>
 ```
 
 ## RULES
@@ -112,7 +108,6 @@ Here's a list of inbuilt validation rules.
 In some cases where you need to use custom validation rules, use the function below to build your rules.
 
 ```javascript
-<script>
 
 /*
 addOVCustomRules(RULE_TITLE, REG_EXP, VALIDATION_MESSAGE);
@@ -126,8 +121,6 @@ const reg_exp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const msg = "Please povide a valid Email Address";
 
 addOVCustomRules(title, reg_exp, msg);
-
-</script>
 ```
 Then in your Input Element, provide the rule title.
 ```html
