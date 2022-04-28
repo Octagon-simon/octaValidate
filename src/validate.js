@@ -1,8 +1,7 @@
 /**
- * 
- * OctaValidate main JS V1.0.3
+ * OctaValidate main JS V1.0.4
  * author: Simon Ugorji
- * Last Edit : 4th April 2022
+ * Last Edit : 28th April 2022
  */
 import lib from './validate_lib.js';
 //force it to be accessible by binding it to a variable
@@ -30,44 +29,58 @@ document.head.appendChild(style);
     }
 
     function addMoreOVCustomRules(rules){
-        for(var r = 0; r < Object.keys(rules).length; ++r){
+        let r = 0;
+
+        while(r < Object.keys(rules).length){
             var index = Object.keys(rules)[r]; //get index
             var exp = rules[index][0]; //get Regexpression
-            var text = rules[index][1]; //get text
+            var text = rules[index][1].toString(); //get validation message
             
             (index && exp && text) ?
-            addOVCustomRules(index,exp, text) : '';
+            addOVCustomRules(index,exp, text) : null;
 
+            ++r;
         }
     }
 
-    //build validation
+    //store primary validations
     var validate = {};
+    //store length validations
     var validateLength = {};
-    //This should help in validating other Attributes
+    //store Attribute validations
     var validateAttr = {};
+    //build validations
     (function(){
+        //get all octavalidate attribute
         var octaValidators = document.querySelectorAll('[octavalidate]');
+        //get all minlengths
         var octaMinLengths = document.querySelectorAll('[minlength]');
+        //get all maxlengths
         var octaMaxLengths = document.querySelectorAll('[maxlength]');
+        //get all lengths
         var octaLengths = document.querySelectorAll('[length]');
-        //check for equal to
+        //get all equal to
         var octaEqualTo = document.querySelectorAll('[equalto]');
 
-        //loop through the main octavalidate object
-        for(var myv = 0; myv < octaValidators.length; ++myv){
-            //get id
-            let id = (octaValidators[myv].getAttribute("id"))?octaValidators[myv].getAttribute("id") : null;
-            //get attr
-            let attr = (octaValidators[myv].getAttribute("octavalidate")) ? octaValidators[myv].getAttribute("octavalidate") : null;
-            //get type
-            let type= (octaValidators[myv].getAttribute("type")) ? octaValidators[myv].getAttribute("type") : null;
-            //exit if attribute existts but id is null
-            if(!id){
-                return false;
+        //collect and loop through octavalidate attribute
+        if(octaValidators){
+            let myv = 0; //octavalidate attribute :)
+
+            while(myv < octaValidators.length){
+                //get id
+                let id = (octaValidators[myv].getAttribute("id"))?octaValidators[myv].getAttribute("id") : null;
+                //get attr
+                let attr = (octaValidators[myv].getAttribute("octavalidate")) ? octaValidators[myv].getAttribute("octavalidate") : null;
+                //get type
+                let type= (octaValidators[myv].getAttribute("type")) ? octaValidators[myv].getAttribute("type") : null;
+                //exit if attribute existts but id is null
+                if(!id){
+                    return false;
+                }
+                //build only when there's octaValidate attribute present
+                if(Object.keys(validate).length !== octaValidators.length) {validate[id] = [type, attr]};
+                ++myv;
             }
-            //build only when there's octaValidate attribute present
-            if(Object.keys(validate).length !== octaValidators.length) {validate[id] = [type, attr]};
         }
 
         //collect all minlength inputs
@@ -124,6 +137,7 @@ document.head.appendChild(style);
             }
         }
     })();
+
 function octaValidate(form){
     let form_id;
     //check if form id is passed as dom element
@@ -147,10 +161,7 @@ function octaValidate(form){
 
         //set class of input error
         var f = document.querySelector('#'+inputID);
-        if(f.classList.contains('octaValidate-inp-error')){
-            f.classList.remove('octaValidate-inp-error');
-            f.classList.add("octaValidate-inp-error");
-        }else{
+        if(!f.classList.contains('octaValidate-inp-error')){
             f.classList.add("octaValidate-inp-error");
         }
         //append to form .nextSibling
@@ -163,7 +174,7 @@ function octaValidate(form){
         let inputElem = (document.querySelector('#'+inputID)) ? document.querySelector('#'+inputID) : null ;
         //remove classlist
         if(inputElem !== null){
-            (inputElem.classList.value.includes('octaValidate-inp-error')) ? 
+            (inputElem.classList.contains('octaValidate-inp-error')) ? 
             inputElem.classList.remove('octaValidate-inp-error') : '';
         }else{
             console.log("%cInput ID ( "+ inputID+" ) is missing!", "color:#ff0000");
@@ -186,7 +197,7 @@ function octaValidate(form){
             }
             ++fly;
         }
-        //loop through validations
+        //loop through all form elements with an ID attached to it
         let formInputs = document.querySelectorAll('#'+form_id+' [id]');
         formInputs.forEach(input => {
             let formInputId = input.id;
@@ -205,48 +216,59 @@ function octaValidate(form){
                     return false;
                 }
 
-                //create event
+                //create event listener
                 function eventAction(){
-                //elem is needed as an argument because the validation will contain a reference to the HTML element
-                if(elem.value){
-                    if(eval(validationInfo) === false) {
-                        octaValidateNewError(index, validationText);
+                    //elem is needed as an argument because the validation will contain a reference to the  HTML element
+                    if(elem.value){
+                        if(eval(validationInfo) === false) {
+                            octaValidateNewError(index, validationText);
+                        }else{
+                            errors--,
+                            octaValidateRemoveError(index);
+                        }
                     }else{
-                        errors--,
+                        //remove the error when the value is empty
                         octaValidateRemoveError(index);
                     }
-                }else{
-                    //remove the error when the value is empty
-                    octaValidateRemoveError(index);
-                }
-
                 }
 
                 //loop through validations
                 validations.forEach(item =>{
                 //required
                 if(item === 'R' || type == 'required') {
-                    validationInfo = "elem.value";
-                    validationText = (elem.getAttribute('ov-required:msg')) ? elem.getAttribute('ov-required:msg') : "This field is required!";
-                    if(!elem.value) {
+                    validationText = (elem.getAttribute('ov-required:msg')) ? elem.getAttribute('ov-required:msg').toString() : "This field is required!";
+                    if(!elem.value || elem.value.trim() == "") {
                         errors++;
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", function(){
+                                //make it inline
+                                if(this.value.trim() == ""){
+                                    octaValidateNewError(index, validationText);
+                                }else{
+                                    errors--;
+                                    octaValidateRemoveError(index);
+                                }
+                            });
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", function(){
+                                //make it inline
+                                if(this.value.trim() == ""){
+                                    octaValidateNewError(index, validationText);
+                                }else{
+                                    errors--;
+                                    octaValidateRemoveError(index);
+                                }
+                            });
                         }
                         
                     }else{continueValidation++;}
                 }else{
-                    /*
-                    Patch for v1.2 continue the validation irrespective of the required attribute
-                    */
                     continueValidation++;
                 }//required
 
-                //user defined rule
-                if(OVCustomRules){
+                //user defined rule - custom validaton rules
+                if(elem.value && OVCustomRules && continueValidation){
                     for(var cv = 0; cv < validations.length; ++cv){
                         if(continueValidation && (Object.keys(OVCustomRules).indexOf(validations[cv]) !== -1)){
                         let ruleIndex = validations[cv];
@@ -255,34 +277,32 @@ function octaValidate(form){
                         var regExp = new RegExp(pattern);
 
                         validationInfo = "regExp.test(elem.value)";
-                        validationText = text;
+                        validationText = text.toString();
                         if(!regExp.test(elem.value)) {
                             errors++;
                             octaValidateNewError(index, text);
                             if(elem.addEventListener) {
-                                elem.addEventListener("focusout", eventAction);
+                                elem.addEventListener("change", eventAction);
                             }else if(elem.attachEvent){
-                                elem.attachEvent("focusout", eventAction);
+                                elem.attachEvent("change", eventAction);
                             }
                             continueValidation = 0;
                         }else{continueValidation++;}
                         }//custom
                     }
                 }
-                //patch for v 1.2. Check if elem.value is true before validating
+
                 if(elem.value && continueValidation && (item ==='EMAIL' || type == 'email')){
                     if(!octaValidations.ValidateEmail(elem.value)) {
-                        console.log('Valiating email');
                         errors++;
                         validationInfo = "octaValidations.ValidateEmail(elem.value)";
-                        validationText = (elem.getAttribute('ov-email:msg')) ? elem.getAttribute('ov-email:msg') : "Please provide a Valid Email Address!";
+                        validationText = (elem.getAttribute('ov-email:msg')) ? elem.getAttribute('ov-email:msg').toString() : "Please provide a Valid Email Address!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
-                        
                         continueValidation = 0;
                     }else{
                         continueValidation++;
@@ -295,14 +315,13 @@ function octaValidate(form){
                     if(!octaValidations.ValidateAlpha_Only(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateAlpha_Only(elem.value)";
-                        validationText = (elem.getAttribute('ov-alpha-only:msg:')) ? elem.getAttribute('ov-alpha-only:msg:') : "Please enter only Alphabets!";
+                        validationText = (elem.getAttribute('ov-alpha-only:msg:')) ? elem.getAttribute('ov-alpha-only:msg:').toString() : "Please enter only Alphabets!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
-                        
                         continueValidation = 0;
                     }else{continueValidation++;}
                 }else{
@@ -313,12 +332,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateAlpha_Spaces(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateAlpha_Spaces(elem.value)";
-                        validationText = (elem.getAttribute('ov-alpha-spaces:msg')) ? elem.getAttribute('ov-alpha-spaces:msg') : "Please enter only Alphabets or spaces!";
+                        validationText = (elem.getAttribute('ov-alpha-spaces:msg')) ? elem.getAttribute('ov-alpha-spaces:msg').toString() : "Please enter only Alphabets or spaces!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -331,12 +350,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateAlpha_Numeric(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateAlpha_Numeric(elem.value)";
-                        validationText = (elem.getAttribute('ov-alpha-numeric:msg')) ? elem.getAttribute('ov-alpha-numeric:msg') : "Please enter only Alphabets or Numbers!";
+                        validationText = (elem.getAttribute('ov-alpha-numeric:msg')) ? elem.getAttribute('ov-alpha-numeric:msg').toString() : "Please enter only Alphabets or Numbers!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -349,12 +368,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateLower_Alpha(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateLower_Alpha(elem.value)";
-                        validationText = (elem.getAttribute('ov-lower-alpha:msg')) ? elem.getAttribute('ov-lower-alpha:msg') : "Only letters in lowercase are supported!";
+                        validationText = (elem.getAttribute('ov-lower-alpha:msg')) ? elem.getAttribute('ov-lower-alpha:msg').toString() : "Only letters in lowercase are supported!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -367,12 +386,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateUpper_Alpha(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateUpper_Alpha(elem.value)";
-                        validationText = (elem.getAttribute('ov-upper-alpha:msg')) ? elem.getAttribute('ov-upper-alpha:msg') : "Only letters in uppercase are supported!";
+                        validationText = (elem.getAttribute('ov-upper-alpha:msg')) ? elem.getAttribute('ov-upper-alpha:msg').toString() : "Only letters in uppercase are supported!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -385,12 +404,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidatePWD(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidatePWD(elem.value)";
-                        validationText = (elem.getAttribute('ov-pwd:msg')) ? elem.getAttribute('ov-pwd:msg') : "Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters";
+                        validationText = (elem.getAttribute('ov-pwd:msg')) ? elem.getAttribute('ov-pwd:msg').toString() : "Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -403,12 +422,12 @@ function octaValidate(form){
                     if(isNaN(elem.value)) {
                         errors++;
                         validationInfo = "!isNaN(elem.value)";
-                        validationText = (elem.getAttribute('ov-digits:msg')) ? elem.getAttribute('ov-digits:msg') : "Please provide a valid Number!";
+                        validationText = (elem.getAttribute('ov-digits:msg')) ? elem.getAttribute('ov-digits:msg').toString() : "Please provide a valid Number!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -421,12 +440,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateUrl(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateUrl(elem.value)";
-                        validationText = (elem.getAttribute('ov-url:msg')) ? elem.getAttribute('ov-url:msg') : "Please provide a valid URL that begins with http or https!";
+                        validationText = (elem.getAttribute('ov-url:msg')) ? elem.getAttribute('ov-url:msg').toString() : "Please provide a valid URL that begins with http or https!";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -439,12 +458,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateUrl_QP(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateUrl_QP(elem.value)";
-                        validationText = (elem.getAttribute('ov-url-qp:msg')) ? elem.getAttribute('ov-url-qp:msg') : "Please provide a valid URL with a query parameter.";
+                        validationText = (elem.getAttribute('ov-url-qp:msg')) ? elem.getAttribute('ov-url-qp:msg').toString() : "Please provide a valid URL with a query parameter.";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -457,12 +476,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateDate_MDY(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateDate_MDY(elem.value)";
-                        validationText = (elem.getAttribute('ov-date-mdy:msg')) ? elem.getAttribute('ov-date-mdy:msg') : "Please provide a date with the format mm/dd/yyyy.";
+                        validationText = (elem.getAttribute('ov-date-mdy:msg')) ? elem.getAttribute('ov-date-mdy:msg').toString() : "Please provide a date with the format mm/dd/yyyy.";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         
                         continueValidation = 0;
@@ -475,12 +494,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateUserName(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateUserName(elem.value)";
-                        validationText = (elem.getAttribute('ov-username:msg')) ? elem.getAttribute('ov-username:msg') : "Your username should contain alphanumeric characters only.";
+                        validationText = (elem.getAttribute('ov-username:msg')) ? elem.getAttribute('ov-username:msg').toString() : "Your username should contain alphanumeric characters only.";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         continueValidation = 0;
                     }else{continueValidation++;}
@@ -492,12 +511,12 @@ function octaValidate(form){
                     if(!octaValidations.ValidateTEXT(elem.value)) {
                         errors++;
                         validationInfo = "octaValidations.ValidateTEXT(elem.value)";
-                        validationText = (elem.getAttribute('ov-text:msg')) ? elem.getAttribute('ov-text:msg') : "This field contains invalid characters.";
+                        validationText = (elem.getAttribute('ov-text:msg')) ? elem.getAttribute('ov-text:msg').toString() : "This field contains invalid characters.";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", eventAction);
+                            elem.addEventListener("change", eventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", eventAction);
+                            elem.attachEvent("change", eventAction);
                         }
                         continueValidation = 0;
                     }else{continueValidation++;}
@@ -506,11 +525,11 @@ function octaValidate(form){
                 }//text validation
 
                 if(continueValidation && item === 'CHECK' && 
-                ((type == 'checkbox') || (type == 'radio'))){
+                    ((type == 'checkbox') || (type == 'radio'))){
                     if(elem.checked === false) {
                         errors++;
                         validationInfo = "elem.checked";
-                        validationText = (elem.getAttribute("ov-check:msg")) ? elem.getAttribute("ov-check:msg") : 'This checkbox is required';
+                        validationText = (elem.getAttribute("ov-check:msg")) ? elem.getAttribute("ov-check:msg").toString() : 'This checkbox is required';
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
                             //use onchange because its a checkbox
@@ -543,7 +562,6 @@ function octaValidate(form){
         //prevent next validation
         nextValidation = 0;
 
-        //check if user removed an input ID using the inspect element
         let fly = 0; //from the song One day I'm gonna fly away by Unknown  :)
         while(fly < Object.keys(validateLength).length){
             let fly_id = Object.keys(validateLength)[fly]; //check the input ID that flew away.
@@ -553,11 +571,6 @@ function octaValidate(form){
             }
             ++fly;
         }
-        /*
-            Using ID, we are able to force users not to use the inspect tool to remove the form ID
-            Because if you do, the validation will return false and the form will fail to submit
-            All validations are stored upon page loading.. So don't think of it :)
-        */
 
         //do length validation
         let formInputsLength = document.querySelectorAll('#'+form_id+' [id]');
@@ -592,12 +605,13 @@ function octaValidate(form){
                     if(elem.value.length < len) {
                         errors++;
                         validationInfo = "elem.value.length < len";
-                        validationText = "Please enter "+len+" or more characters, you're currently at ("+elem.value.length+")";
+                        /*Consider adding attribute for attribute valiation text*/
+                        validationText = "Please enter "+len+" or more characters, you're currently at "+elem.value.length+"";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", ComparisonEventAction);
+                            elem.addEventListener("change", ComparisonEventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", ComparisonEventAction);
+                            elem.attachEvent("change", ComparisonEventAction);
                         }
                         
                         continueValidation = 0;
@@ -609,12 +623,12 @@ function octaValidate(form){
                         errors++;
 
                         validationInfo = "elem.value.length > len";
-                        validationText = "Please enter "+len+" characters or less. You're currently at ("+elem.value.length+")";
+                        validationText = "Please enter "+len+" characters or less. You're currently at "+elem.value.length+"";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", ComparisonEventAction);
+                            elem.addEventListener("change", ComparisonEventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", ComparisonEventAction);
+                            elem.attachEvent("change", ComparisonEventAction);
                         }
                         
                         continueValidation = 0;
@@ -626,14 +640,14 @@ function octaValidate(form){
                         errors++;
                         
                         validationInfo = "elem.value.length != len";
-                        validationText = "Please provide exactly "+len+" characters, you're currently at ("+elem.value.length+")";
+                        validationText = "Please provide exactly "+len+" characters, you're currently at "+elem.value.length+"";
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", ComparisonEventAction);
+                            elem.addEventListener("change", ComparisonEventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", ComparisonEventAction);
+                            elem.attachEvent("change", ComparisonEventAction);
                         }
-                        
+
                         continueValidation = 0;
                     }
                 }//length
@@ -644,6 +658,7 @@ function octaValidate(form){
     }else{
         nextValidation++; //do next validation
     }
+
     /**ATTRIBUTES VALIDATION */
     //equal to
     if(nextValidation && validateAttr){
@@ -691,24 +706,24 @@ function octaValidate(form){
                             errors--;
                             octaValidateRemoveError(index);
                         }
-                }else{
-                    octaValidateRemoveError(index);
+                    }else{
+                        octaValidateRemoveError(index);
+                    }
                 }
-            }
 
                 if(validation === 'EQUALTO'){
                     
                     EqualToElem = document.querySelector('#'+val);
-                    EqualToMsg = (elem.getAttribute('ov-equalto:msg')) ? elem.getAttribute('ov-equalto:msg') : 'Both Values do not match';
+                    EqualToMsg = (elem.getAttribute('ov-equalto:msg')) ? elem.getAttribute('ov-equalto:msg').toString() : 'Both Values do not match';
                     if(EqualToElem.value && (elem.value !== EqualToElem.value)) {
                         errors++;
                         validationInfo = "elem.value === EqualToElem.value";
                         validationText = EqualToMsg;
                         octaValidateNewError(index, validationText);
                         if(elem.addEventListener) {
-                            elem.addEventListener("focusout", AttributesEventAction);
+                            elem.addEventListener("change", AttributesEventAction);
                         }else if(elem.attachEvent){
-                            elem.attachEvent("focusout", AttributesEventAction);
+                            elem.attachEvent("change", AttributesEventAction);
                         }
                         
                         continueValidation = 0;

@@ -1,29 +1,15 @@
 /**
- * 
- * OctaValidate RegExp Library V1.0.3 
+ * OctaValidate RegExp Library V1.0.4 
  * author: Simon Ugorji
- * Last Edit : 4th April 2022
+ * Last Edit : 28th April 2022
  */
 function octaValidations(){
     //check email
     function octaValidateEmail(email){
-        /*
-            @details : Replacing the old regexp with the current one to fix a bug
-
-            @bug :  Old regexp cannot validate characters that are 37 in length.
-                    It will freeze the page and chrome will display a code_hung error
-                    In microsoft edge, you will see an option to terminate the script that
-                    isn't responding
-
-            @reproduction: use these characters to test the regexp below (ooooooooooooooooooooooooooooooooooooo)
-
-            @regexp : /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-
-        */
         if(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/.test(email)){
             return true;
         }   
-    return false;
+        return false;
     }
 
     //check Alphabets only
@@ -31,7 +17,7 @@ function octaValidations(){
         if(/^[a-zA-Z]+$/.test(text)){
             return true;
         }
-    return false;
+        return false;
     }
 
     //check lowercase alphabets only
@@ -39,7 +25,7 @@ function octaValidations(){
         if(/^[a-z]+$/.test(text)){
             return true;
         }
-    return false;
+        return false;
     }
 
     //check uppercase alphabets only
@@ -47,7 +33,7 @@ function octaValidations(){
         if(/^[A-Z]+$/.test(text)){
             return true;
         }
-    return false;
+        return false;
     }
 
     //check Alphabets and spaces
@@ -55,7 +41,7 @@ function octaValidations(){
         if(/^[a-zA-Z\s]+$/.test(text)){
             return true;
         }
-    return false;
+        return false;
     }
 
     //check Alpha Numberic strings
@@ -96,7 +82,7 @@ function octaValidations(){
 
     //username
     function octaValidateUserName(uname){
-        if(/[a-zA-Z][a-zA-Z0-9-_]/.test(uname)){
+        if(/^[a-zA-Z][a-zA-Z0-9-_]+$/.test(uname)){
             return true;
         }else{
             return false;

@@ -1,17 +1,17 @@
-# octaValidate V1.0.3
+# octaValidate V1.0.4
 
-This Script allows you to easily validate your forms on the client-side.
+This Tiny Script allows you to easily validate your forms on the client-side using sphisticated regular expressions and inbuilt validation rules.
 
-Before you can use this script, you need to have the files **validate_lib.js**, and **validate.js** ( present in the src directory ).
+Before you can use this script, you need to have the files **validate_lib.js**, and **validate.js** ( which are present in the src directory ).
 
-We have included a **demo** file ( demo.html ). You can open this file on your browser to see how octaValidate really works.
+We have included a **demo** file ( demo.html ) which you can open on your browser to see how octaValidate really works.
 
 ## How to Install
 
-- Download and extract the folder **octaValidate** to your project.
-- On the page where you wish to make use of it, open a script tag and link the file **validate.js** with an attribute of **type = module**.
+- Download and extract the latest release to your project.
+- In your project, create a script tag and link the file **validate.js** with an attribute of **type = module**.
 
-```
+```html
 <!doctype html>
 <html>
 
@@ -22,8 +22,8 @@ We have included a **demo** file ( demo.html ). You can open this file on your b
 > If you do not specify the attribute **type = module**, the script will fail to load!
 
 ## How to Use
-Assuming you have imported or installed the script on your page, create a form tag with input elements and set the attribute **octavalidate** on the form input that you want to validate based on your rule.
-```
+We assume you have imported the script in your project, create a form tag with input elements and set the attribute **octavalidate** on the form input that you want to validate.
+```html
 <form id="form_register">
 
     <input id="inp_email" name="email" type="email" octavalidate="R,EMAIL">
@@ -34,34 +34,32 @@ Assuming you have imported or installed the script on your page, create a form t
 
 </form>
 ```
-> Make sure that all input elements with the attribute **octavalidate** have an id attached to them. If you fail to provide an ID to the input element, we will skip any validation rule that you might have applied to that element.
+> Make sure that all input elements with the attribute **octavalidate** have an id attached to them. If you fail to attach an ID to the input element, we will skip any validation rule applied to that particular element.
 
 Now you need to check if the validations passed successfully, before you process the submitted data.
 
-The return type of our function is **Boolean**.
+The return type of the function is **Boolean**.
 
 **true** means that all validations passed successfully
 
 **false** means that one or more validations failed.
 
-Call the function and pass the **form id** as a parameter. This will enable us to validate that particular form.
+Call the function **octaValiate** and pass the **form id** as a parameter. This will enable us to validate that particular form.
 
-```
+```javascript
 <script>
-var formEl = document.querySelector('#form_register');
+const formEl = document.querySelector('#form_register');
 
 formEl.addEventListener('submit', function(){
     //run function and check return value
-
     if( octaValidate('form_register') )
     { 
         //validation successful
-
         //process form data here
 
     } else {
         //validation failed
-        //tell user this form contains errors.
+        //notify user that form validation failed.
     }
 
 })
@@ -69,20 +67,20 @@ formEl.addEventListener('submit', function(){
 ```
 You can also use **this** keyword to refer to the form. But make sure that the form has an **ID** attached to it.
 
-```
+```javascript
 <script>
-var formEl = document.querySelector('#form_register');
+const formEl = document.querySelector('#form_register');
 
 formEl.addEventListener('submit', function(){
     //run function and check return value
 
-    if( octaValidate(this) )
+    if( octaValidate(this.id) )
     { 
         //validation successful
-
         //process form data here
 
     } else {
+        //validation failed
         //notify user that form validation failed.
     }
 
@@ -92,7 +90,7 @@ formEl.addEventListener('submit', function(){
 
 ## RULES
 
-Here's a list of inbuilt or default validation rules.
+Here's a list of inbuilt validation rules.
 
 - R - Form field is required.
 - ALPHA_ONLY - Value must be alphabets only (lower-case or upper-case).
@@ -110,52 +108,46 @@ Here's a list of inbuilt or default validation rules.
 - TEXT - This rule validates general text input. Characters supported includes (. , / () [] & ! '' "" : ; ?)
 - CHECK - This rule validates a checkbox or a radio element.
   
-## Advanced
-In some cases where you need your custom validation rule implemented on a form input, you may use our global function to add yours.
+## CUSTOM VALIDATION RULES
+In some cases where you need to use custom validation rules, use the function below to build your rules.
 
-```
+```javascript
 <script>
 
-/* 
- syntax
-
-addOVCustomRules(TITLE, REGEXP, VALIDATION_MESSAGE);
-
+/*
+addOVCustomRules(RULE_TITLE, REG_EXP, VALIDATION_MESSAGE);
 */
 
 
 //custom email validation
 
-var title = "EML";
-var reg_exp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-var text = "Please povide a valid Email Address";
+const title = "EML";
+const reg_exp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const msg = "Please povide a valid Email Address";
 
-addOVCustomRules(title, reg_exp, text);
+addOVCustomRules(title, reg_exp, msg);
 
 </script>
 ```
-Then on your Input Element,
-```
+Then in your Input Element, provide the rule title.
+```html
 <input type="email" id="inp_email" octavalidate="EML">
 ```
-> All rule titles, are **case-sensitive!**. So if you provide a custom validation rule, you must use that exact rule title in your form input.
+> All rule titles, are **case-sensitive!**
 
-### MORE CUSTOM RULES
+## MORE CUSTOM RULES
 
-What if you wish to use more custom rules?
+What if you wish to build more rules?
 
-All you need to do is to create an object with your rule declarations inside it, ( following the syntax below ), then call the function **addMoreOVCustomRules** and pass the object as a parameter.
+All you need to do is to create an object with your rule declarations inside of it, ( following the syntax below ), then call the function **addMoreOVCustomRules** and pass the object as a parameter.
 
-```
-/* syntax
-
+```javascript
+/*
 var rules = {
     "RULE_TITLE" : [REG_EXP, "VALIDATION_MESSAGE"]
 }
-
 //build your validation rules
 addMoreOVCustomRules(rules);
-
 */
 
 //example
@@ -167,16 +159,14 @@ var rules = {
 //build rules
 addMoreOVCustomRules(rules);
 ```
-> Note that : You do not need to pass in your regular expression as a string! This is because *JavaScript* natively recognizes *regular expressions*.
+> Note that: You do not need to pass in your **regular expression** as a string! This is because *JavaScript* natively recognizes *regular expressions*.
 
-## What's New In v1.0.3?
+## CUSTOM VALIDATION TEXT
 
-- We added support for Custom Validation Messages
-### Custom Validation Messages
-We've added an extra attribute that will enable you to provide your custom validation messages incase a validation fails.
-> If you don't provide a custom validation message, the default will be used!
+We've added an extra attribute that will enable you to provide your custom validation text incase a validation fails.
+> This feature works for **inbuilt validation rules only**.
 
-| Validation Rule | Description| Validation Message Attribute| 
+| Validation Rule | Description| Validation Text Attribute| 
 |-----------------|------------|-------------------------|
 | R               |Required    | ov-required:msg         |
 | EMAIL           |EMAIL       | ov-email:msg         |
@@ -193,45 +183,62 @@ We've added an extra attribute that will enable you to provide your custom valid
 | USERNAME        |Username          | ov-username:msg |
 | TEXT            |General Text      | ov-text:msg
 | CHECK           |Checkbox (incluing radio elements) | ov-check:msg |
-| # EQUAL TO #    | Values must be thesame | ov-equalto:msg |
-
-> The **equal to** validation needs to be present in the Input element as an attribute on its own.
+| equalto    | Values must be thesame | ov-equalto:msg |
 
 ### Example
-
-```
+Here's how to use the custom validation text
+```html
 <input type="text" octavalidate="R,USERNAME" ov-required:msg="Your username is required" ov-username:msg="Username should contain letters or numbers" name="username" id="inp_uname">
 ```
-- We added validation support for checkboxes
-  
-You can now validate your checkboxes using the **CHECK** validation rule only. Note that the **R** (required rule) cannot be used to validate a checkbox. 
+### MaxLength, MinLength and Length
+
+You can validate: **maxlength, minlength and length.**
+
+- maxlength (5) - This means that value must be 5 characters or less
+- minlength (5) - This means that value must be up to 5 characters or more
+- length (5) - This means that value must be equal to 5 characters
+
+```html
+<input type="text" id="inp_maxlength" maxlength="5">
+
+<input type="text" id="inp_minlength" minlength="5">
+
+<input type="text" id="inp_length" length="5">
+
+```
+
+### Equal To
+
+You can check if two inputs contain the same values, using the attribute **equalto** on the input element, with a value containing the ID of the other input element to check against.
 
 ### Example
 
-```
-<input type="checkbox" id="inp_terms" octavalidate="CHECK" ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
-```
-- You can now check if two inputs contain the same values, using the attribute **equalto** on the input element, with a value containing the ID of the other input element to check against.
-
-### Example
-
-```
+```html
 <input type="password" id="inp_pwd1" octavalidate="R,PWD" ov-required:msg="Your Password is required">
 
 <!--check if both values match -->
 <input type="password" id="inp_pwd2" equalto="inp_pwd1" ov-equalto:msg="Both passwords do not match">
 ```
-- We fixed a bug in v1.0.2 [Issue #3](https://github.com/Octagon-simon/octaValidate/issues/3)
-  
-  We noticed that the validation rules provided on a particular element will only be processed if the Required Rule ( R ) is present. 
 
-  This Bug has been fixed. 
+### Checkbox
   
-- We added a feature to process validation rules when the element contains a value. This however will not work on the Required Rule ( R ).
+You can validate your checkboxes using the **CHECK** validation rule only. Note that the **R** (required rule) cannot be used to validate a checkbox. 
+
+### Example
+
+```html
+<input type="checkbox" id="inp_terms" octavalidate="CHECK" ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
+```
+
+## CHANGELOG
+
+- We fixed a bug in v1.0.3 [Issue #4](https://github.com/Octagon-simon/octaValidate/issues/4)
+- We changed the event listener to listen for change event instead of focusout
+- We fixed the regular expression for validating usernames
 
 ## DEMO
 
-- Download **octaValidate** and extract to a folder.
+- Download **octaValidate** and extract to your project.
 - Open **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** on a browser, then try to submit the form.
   
 ## Author

@@ -4,16 +4,19 @@
     <head>
         <meta name="author" content="Simon Ugorji">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="This Script helps to properly validate your HTML forms using sophisticated Regular Expressions and default Form Attributes">
+        <meta name="description" content="octaValidate: This Script helps to properly validate your HTML forms using sophisticated Regular Expressions and default Form Attributes">
         <meta name="title" content="Octavalidate Demo Page">
-        <meta property="og:description" content="This Script helps to properly validate your HTML forms using sophisticated Regular Expressions and default Form Attributes">
+        <meta property="og:description" content="octaValidate: This Script helps to properly validate your HTML forms using sophisticated Regular Expressions and default Form Attributes">
         <meta property="og:title" content="Octavalidate Demo Page">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.0/css/all.css" integrity="sha512-ajhUYg8JAATDFejqbeN7KbF2zyPbbqz04dgOLyGcYEk/MJD3V+HJhJLKvJ2VVlqrr4PwHeGTTWxbI+8teA7snw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
 <style> 
 
 @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200&display=swap');
 *{
     outline: none;
+    margin:0px;
+    padding:0px;
 }
 html, body{
     font-family: 'Mukta', sans-serif !important;
@@ -23,11 +26,13 @@ label{
 }
 input,textarea{
     display: block;
-    height: 3em;
+    height: 2.5em;
     border-radius: 5px;
-    background-color: #fffefe;
-    border: 1px solid #cfcfcf;
-    width: 100%;
+    background-color: #f5f5f5 !important;
+    border: 2px solid #e6e6e6;
+    max-width: 330px !important;
+    width: inherit !important;
+    padding-inline-start: 10px;
 }
 
 .alert {
@@ -61,7 +66,7 @@ input,textarea{
     padding:10px;
 }
 .notification > p{
-    padding-left: 10px;
+    padding-left: 5px;
     margin: 0px;
 }
 .notification.is-info{
@@ -84,6 +89,7 @@ input,textarea{
 }
 div.form-group{
     margin:10px 0 10px 0;
+    width: 100%;
 }
 button{
     all:unset;
@@ -98,8 +104,7 @@ hr{
 }
 .form-cont{
     padding:20px;
-    border:1px solid #ddd; 
-    border-radius:10px;
+    border:1px solid #ddd;
 }
 input[type="checkbox"]{
     width:initial;
@@ -110,33 +115,117 @@ input[type="checkbox"]{
 input[type="checkbox"]::after{
     border: 2px solid #e0455e;
 }
+.mt-10{
+    margin-top:10px;
+}
+.mb-10{
+    margin-bottom:10px;
+}
+.mt-0{
+    margin-top:0px !important;
+}
+.fw-bold{
+    font-weight:bold;
+}
+.p-10{
+    padding:10px;
+}
+.demo-bg-section{
+    height:300px;
+    width:100%;
+    position: absolute;
+    background-image: linear-gradient(120deg, #155799, #159957);
+    box-shadow:0px 5px 14px 5px #95a6ae;
+}
+.form-section{
+    position: relative;
+}
+.bg-white{
+    background-color: #fff !important;
+}
+.text-white{
+    color: #fff !important;
+}
+
+.social-section > .social-btn:not(:last-child){
+    margin-bottom: 10px;
+}
+.social-btn{
+    display: block;
+    padding: 5px;
+    border: 1px solid transparent;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0.2em;
+}
+.social-btn.twitter,.social-btn.linkedin{
+    border:1px solid #1D9BF0;
+    color: #1D9BF0;
+}
+.social-btn.twitter:hover,.social-btn.linkedin:hover{
+    background-color: #1D9BF0;
+    color: #fff;
+}
+.social-btn.facebook{
+    border:1px solid #4267b2;
+    color: #4267b2;
+}
+.social-btn.facebook:hover{
+    background-color: #4267b2;
+    color: #fff;
+}
+.social-btn.medium{
+    border:1px solid #202020;
+    color: #202020;
+}
+.social-btn.medium:hover{
+    background-color: #202020;
+    color: #fff;
+}
+.social-btn.polywork{
+    border:1px solid #a600c7;
+    color: #a600c7;
+}
+.social-btn.polywork:hover{
+    background-color: #a600c7;
+    color: #fff;
+}
+.social-btn > i {
+    margin-right:5px;
+    align-self:center;
+}
 </style>
 
 <script type="module" src="src/validate.js"></script>
 
-<body>
-    <h1 align="center">Demo</h1>
-    <div align="center">
-        <div class="text-left form-cont" style="max-width: 350px;">
+<body id="octavalidate_demo_page">
+    <section class="demo-bg-section"></section>
+    <div align="center" class="form-section">
+        <h1 class="text-center text-white" style="padding:20px">octaValidate Demo Page</h1>
+        <div class="text-left form-cont bg-white mt-10" style="max-width: 350px;">
             <div class="alert-section alert-register"></div>
             <form method="post" id="form_register">
-                <h3 class="">Sample Registration Form</h3>
+                <h2 class="text-center mt-0">Sample Registration Form</h2>
                 <div class="notification is-info">
-                    <p>We don't process any <b>Info entered </b>here and we don't store it either.</p>
+                    <p><b>We don't process any Info entered here </b>and <b>we don't store it either</b>.</p>
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" id="inp_login_email" octavalidate="EMAIL" placeholder="EMAIL">
+                    <label>Email <span style="color:#ff0000">*</span></label>
+                    <input type="text" id="inp_reg_email" octavalidate="R,EMAIL" placeholder="Your Email Address">
+                </div>
+                <div class="form-group">
+                    <label>Age <span style="color:#ff0000">*</span></label>
+                    <input type="text" id="inp_reg_age" octavalidate="R,DIGITS" ov-digits:msg="Your age must be 2 digits" length="2" placeholder="Your Age">
                 </div>
                 <div class="form-group">
                     <label>Password <span style="color:#ff0000">*</span></label>
-                    <input type="password" id="inp_login_pwd" octavalidate="R,PWD" ov-required:msg="A Password is required" placeholder="REQUIRED, PASSWORD">
+                    <input type="password" id="inp_reg_pwd" octavalidate="R,PASS" ov-required:msg="A Password is required" placeholder="Your Password">
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" id="inp_login_pwd2" equalto="inp_login_pwd" ov-equalto:msg="Both passwords do not match" placeholder="EQUAL TO PASSWORD">
+                    <input type="password" id="inp_reg_pwd2" equalto="inp_reg_pwd" ov-equalto:msg="Both passwords do not match" placeholder="Re-enter Password">
                 </div>
-                <div class="form-group">
+                <div class="mt-10">
                     <input type="checkbox" id="inp_terms" octavalidate="CHECK" ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
                 </div>
                 <div class="form-group">
@@ -144,17 +233,37 @@ input[type="checkbox"]::after{
                 </div>
             </form>
         </div>
+        <section class="social-section mt-10" style="max-width:370px;">
+            <h3 class="mt-10 mb-10 fw-bold">FOLLOW ME</h3>
+            <a href="https://twitter.com/ugorji_simon" target="_self" class="social-btn twitter"><i class="fab fa-twitter fa-xs"></i> Twitter</a>
+
+            <a href="https://facebook.com/simon.ugorji.106" target="_self" class="social-btn facebook"><i class="fab fa-facebook-f fa-xs"></i> Facebook</a>
+
+            <a href="https://www.linkedin.com/in/simon-ugorji-57a6a41a3" target="_self" class="social-btn linkedin"><i class="fab fa-linkedin-in fa-xs"></i> Linkedin</a>
+
+            <a href="https://simon-ugorji.medium.com" target="_self" class="social-btn medium"><i class="fas fa-external-link-alt fa-xs"></i> Medium</a>
+
+            <a href="https://www.polywork.com/octagon_simon" target="_self" class="social-btn polywork"><i class="fas fa-external-link-alt fa-xs"></i> Polywork</a>
+        </section>
     </div>
 </body>
 
 </html>
 <script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+        let a = "PASS";
+        let b = /^12345+$/;
+        let c = "Please Enter 12345";
+
+        addOVCustomRules(a,b,c);
+    })
 var formEl1 = document.querySelector('#form_register');
 
 formEl1.addEventListener('submit', function(e){
     //run function and check return value
     e.preventDefault();
-    if( octaValidate(this) )
+    if( octaValidate(this.id) )
     { 
         //return type == true - > validation successful
         showAlert('success', 'No Validation errors were found', 'reg');
@@ -162,7 +271,7 @@ formEl1.addEventListener('submit', function(e){
 
     } else {
         //return type == false - > validation failed
-        showAlert('error', 'This Form contains validation errors', 'reg');
+        showAlert('error', 'Form Validation Failed', 'reg');
     }
 
 })
@@ -174,7 +283,6 @@ alertbox.style.display = "none";
 //INITIALIZE ALERT TEXT
 const alertText = document.createElement("p");
 alertbox.appendChild(alertText);
-const loginAlert = document.querySelector('.alert-section.alert-login');
 const regAlert = document.querySelector('.alert-section.alert-register'); 
 
 //SHOW ALERT
@@ -187,12 +295,10 @@ function showAlert(type, sometext, alert) {
     hideAlert();
     alertbox.setAttribute("class", "alert");
     if(type == 'success'){
-            alertbox.classList.toggle('alert-success');
+        alertbox.classList.toggle('alert-success');
         
     }else{
-            alertbox.classList.toggle('alert-danger');
-        
-        
+        alertbox.classList.toggle('alert-danger');
     }
     alertbox.style.display = "block";
     alertText.innerText = sometext;
@@ -203,4 +309,8 @@ function hideAlert(){
     alertbox.style.display = "none";
     alertText.innerText = "";
 }
+
+/*
+- consider calling function again on every event action?
+*/
 </script>
