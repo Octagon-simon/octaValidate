@@ -1,6 +1,6 @@
 # octaValidate V1.1.0
 
-[octaValiate](./ov-success.png)
+![Logo](https://octagon-simon.github.io/octaValidate/ov-success.png)
 
 This Tiny Script helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes.
 
