@@ -1,7 +1,5 @@
 # octaValidate V1.1.0
 
-<img align="center" src="https://octagon-simon.github.io/octaValidate/ov-success.png" width="100px">
-
 
 This Tiny Script helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes.
 
@@ -281,6 +279,14 @@ The success callback will execute when there are no validation errors and the er
 - Download **octaValidate** and import it to your project.
 - Open **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** on a browser, then submit the form.
   
+## SCREENSHOTS
+
+<div align="center">
+    <img src="https://octagon-simon.github.io/octaValidate/img/form-error.png" width="200px">
+    <img src="https://octagon-simon.github.io/octaValidate/img/form-success.png" width="200px">
+    <img src="https://octagon-simon.github.io/octaValidate/img/contact-page.png" width="200px">
+</div>
+
 ## Author
 
 [Simon Ugorji](https://twitter.com/ugorji_simon)
