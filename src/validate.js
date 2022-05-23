@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.1.0
+ * OctaValidate main JS V1.1.1
  * author: Simon Ugorji
- * Last Edit : 21st May 2022
+ * Last Edit : 23rd May 2022
  */
 (function(){
     //global Styling
@@ -402,12 +402,14 @@ function octaValidate(form_ID, userConfig){
             if(validate !== null ||
                     validateAttr !== null){
                 //loop through all form elements with an ID attached to it
-                let formInputs = document.querySelectorAll(`#${form_id} input[id], textarea[id]`);
+                let formInputs = document.querySelectorAll(`#${form_id} [octavalidate], [length], [maxlength], [minlength], [equalto]`);
                 formInputs.forEach(input => {
-                    //errors is unique to the input id
-                    let formInputId = input.id;
-                    /* strict mode */
-                    //check if strict mode is enabled
+                    //check if id exists within the element
+                    if(input.id !== ""){
+                        //errors is unique to the input id
+                        let formInputId = input.id;
+                        /* strict mode */
+                        //check if strict mode is enabled
                         if(config.strictMode === true){
                             /* always reset the vcounters */
                             nextValidation = continueValidation = 0;
@@ -984,6 +986,7 @@ function octaValidate(form_ID, userConfig){
                     }else{
                         nextValidation++;
                     }//end of if id exists
+                    }//end of check if id is provided
                 }); //end of foreach loop
                 }//end of checkif validations exist
                 if(errors === 0){

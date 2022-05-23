@@ -1,4 +1,4 @@
-# octaValidate V1.1.0
+# octaValidate V1.1.1
 
 <img align="center" src="https://octagon-simon.github.io/octaValidate/img/ov-success.png" width="100px">
 
@@ -227,10 +227,11 @@ To define a callback, invoke this method and pass in your function as an argumen
 ```javascript
 //create new instance of the function
 let formVal  = new octaValidate('form_register');
-
+//success callback
 let successCB = function(){
     alert("No validation errors");
 }
+//error callback
 let errorCB = function(){
     alert(formVal.status()+" validation error(s)")
 }
@@ -267,9 +268,8 @@ let formVal = new octaValidate('form_register');
 - customRule(RULE_TITLE, REG_EXP, ERROR_TEXT): Invoke this method to define your custom validation rule.
 - moreCustomRules(RULES): Invoke this method to define more custom validation rules.
 - version(): Invoke this method to retrieve version info.
-- validateCallBack(success_callback, error_callback): Invoke this method, providing your success callback or error callback as arguments.
+- validateCallBack(success_callback, error_callback): Invoke this method, providing your success callback or error callback as arguments. The success callback will execute when there are no validation errors and the error callback will execute when there are validation errors
   
-The success callback will execute when there are no validation errors and the error callback will execute when there are validation errors
 
 ## READ THE ARTICLE
 
@@ -277,8 +277,7 @@ The success callback will execute when there are no validation errors and the er
 
 ## DEMO
 
-- Download **octaValidate** and import it to your project.
-- Open **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** on a browser, then submit the form.
+- Open **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** (also included in the folder) and submit the form.
   
 ## SCREENSHOTS
 
