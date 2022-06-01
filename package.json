@@ -1,0 +1,27 @@
+{
+  "name": "octavalidate",
+  "version": "1.1.1",
+  "description": "Easily validate your HTML Forms using validation rules, sophisticated regular expressions and form input attributes",
+  "main": "src/validate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Octagon-simon/octaValidate.git"
+  },
+  "keywords": [
+    "form-validator",
+    "html",
+    "forms",
+    "validator",
+    "regexp",
+    "validation-library"
+  ],
+  "author": "Simon Ugorji",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Octagon-simon/octaValidate/issues"
+  },
+  "homepage": "https://octagon-simon.github.io/octaValidate/"
+}
