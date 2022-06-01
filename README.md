@@ -8,9 +8,22 @@ We have included a **demo** file ( demo.html ) which you can view on your browse
 
 ## How to Install
 
+### CDN
+
+```html
+<script src="https://unpkg.com/octavalidate@1.1.1/src/validate.js"></script>
+```
+
+### NPM
+
+```bash
+npm i octavalidate
+```
+
+### LOCAL
 - Download and import the latest release to your project.
 - In your project, create a script tag and link the file **validate.js**.
-
+  
 ```html
 <script src="octaValidate/src/validate.js"> </script>
 ```
@@ -31,7 +44,7 @@ Create a form tag with input elements and set the attribute **octavalidate** wit
 ```
 > Make sure that all input elements have a unique identifier. If you fail to attach an id to the input element, any validation rule applied to the element will be ignored.
 
-Now you need to create a new instance of this function and pass in the **form id** as the first argument.
+Now you need to create a new instance of the function and pass in the **form id** as the first argument.
 
 Then begin validation on that particular form by invoking the **validate()** method.
 
