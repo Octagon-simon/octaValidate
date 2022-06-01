@@ -14,12 +14,6 @@ We have included a **demo** file ( demo.html ) which you can view on your browse
 <script src="https://unpkg.com/octavalidate@1.1.1/src/validate.js"></script>
 ```
 
-### NPM
-
-```bash
-npm i octavalidate
-```
-
 ### LOCAL
 - Download and import the latest release to your project.
 - In your project, create a script tag and link the file **validate.js**.
