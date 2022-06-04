@@ -16,7 +16,7 @@ We have included a **demo** file ( demo.html ) which you can view on your browse
 
 ### NPM
 
-```bash
+```shell
 npm i octavalidate
 ```
 ### LOCAL
@@ -265,7 +265,7 @@ We have provided 2 configuration options;
 To modify these options, provide it as the second argument when creating an instance of octaValidate.
 
 ```javascript
-let formVal = new octaValidation('form_register', {successBorder : true, strictMode : true});
+let formVal = new octaValidate('form_register', {successBorder : true, strictMode : true});
 ```
 
 ## REFERENCE METHODS
