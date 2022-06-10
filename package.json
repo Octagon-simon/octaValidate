@@ -1,7 +1,7 @@
 {
   "name": "octavalidate",
-  "version": "1.1.1",
-  "description": "Easily validate your HTML Forms using validation rules, sophisticated regular expressions and form input attributes",
+  "version": "1.1.2",
+  "description": "This JavaScript Library helps to validate your HTML Forms using validation rules, sophisticated regular expressions and form input attributes",
   "main": "src/validate.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

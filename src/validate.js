@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.1.1
+ * OctaValidate main JS V1.1.2
  * author: Simon Ugorji
- * Last Edit : 23rd May 2022
+ * Last Edit : 10th June 2022
  */
 (function(){
     //global Styling
@@ -24,42 +24,117 @@
 }());
 
 function octaValidate(form_ID, userConfig){
-    /**  reference functions **/
-    let isObject = (obj) => {
-        return(Object.prototype.toString.call(obj) === '[object Object]');
-    };
-    let findElem = (id) => {
-        //argument must be passed by ID
-        return(document.querySelector('#'+id) !== null);
-    };
+////---------------
 
-    //check if form id is present
-    if(typeof form_ID === "undefined") 
-        throw new Error("A valid Form Id must be passed as the first Argument during initialization");
-
-    //check if userConfig exists and is passed as an object
-    if(typeof userConfig !== "undefined" && !isObject(userConfig))
-        throw new Error("Configuration options must be passed as a valid object");
-
-    //store validation variables
-    let errors = 0; let continueValidation = 0; let nextValidation = 0;
-    
+/** STORAGE AREA **/
+    //store validation counters
+    let errors = continueValidation = nextValidation = 0;
     //store primary validations
-    let validate = {};
+    const validatePrimary = {};
     //store Attribute validations [length,minlength,maxlength,equalto]
-    let validateAttr = {};
+    const validateAttr = {};
     //success callback
     let cbSuccess = null;
     //error callback
     let cbError = null;
     //set form id (not publicly shown)
-    let formID = form_ID;
+    const formID = form_ID;
     //store config
-    let config = {
+    const config = {
         successBorder : false,
         strictMode : false,
+        strictWords : ["null", "NaN", "undefined"]
     };
-    
+    //version number
+    const versionNumber = "1.1.2";
+
+////---------------
+
+////---------------
+
+/** REFERENCE FUNCTIONS **/
+let isObject = (obj) => {
+    return(Object.prototype.toString.call(obj) === '[object Object]');
+};
+let findElem = (id) => {
+    return(document.querySelector('#'+id) !== null);
+};
+//insert error
+let ovNewError = (inputID, error) => {
+    //remove previous error
+    ovRemoveError(inputID);
+    //add error to element
+    const g = document.createElement("p");
+    g.setAttribute("id", "octaValidate_"+inputID);
+    g.setAttribute("class", "octaValidate-txt-error");
+    g.innerText = error;
+
+    //set class of input error
+    const f = document.querySelector('#'+inputID);
+    if(!f.classList.contains('octaValidate-inp-error')){
+        f.classList.add("octaValidate-inp-error");
+    }
+    //append to form .nextSibling
+    f.parentNode.appendChild(g, f);
+};
+//remove error
+let ovRemoveError = (inputID) => {
+    //remove error text
+    let errorElem = (document.querySelector('#octaValidate_'+inputID)) ? 
+        document.querySelector('#octaValidate_'+inputID) : null;
+    let inputElem = (document.querySelector('#'+inputID)) ? 
+        document.querySelector('#'+inputID) : null ;
+    //remove classlist
+    if(inputElem !== null){
+        (inputElem.classList.contains('octaValidate-inp-error')) ? 
+            inputElem.classList.remove('octaValidate-inp-error') : null;
+    }else{
+        throw new Error(`Input ID ${inputID} is missing!`);
+    }
+    if(errorElem !== null){
+        errorElem.remove();
+    }
+};
+//insert success class name
+let ovNewSuccess = (inputID) => {
+    //check if user wants a success border
+    if(config.successBorder == true){
+        //remove previous error
+        ovRemoveSuccess(inputID);
+        //set class of input error
+        const f = document.querySelector('#'+inputID);
+        if(!f.classList.contains('octaValidate-inp-success')){
+            f.classList.add("octaValidate-inp-success");
+        }
+    }
+};
+//remove success class name
+let ovRemoveSuccess = (inputID) => {
+    let inputElem = (document.querySelector('#'+inputID)) ? 
+        document.querySelector('#'+inputID) : null ;
+    //check if user wants a success border
+    if(config.successBorder == true){
+        //remove classlist
+        if(inputElem !== null){
+            (inputElem.classList.contains('octaValidate-inp-success')) ? 
+                inputElem.classList.remove('octaValidate-inp-success') : null;
+        }else{
+            throw new Error(`Input ID ${inputID} is missing!`);
+        }
+    }
+};
+
+////---------------
+
+////---------------
+
+/** ARGUMENTS CHECK **/
+    //check if form id is present
+    if(typeof form_ID === "undefined") 
+        throw new Error("A valid Form Id must be passed as the first Argument during initialization");
+    //check if userConfig exists and is passed as an object
+    if(typeof userConfig !== "undefined" && !isObject(userConfig))
+        throw new Error("Configuration options must be passed as a valid object");
     //store configuratiion
     if(typeof userConfig !== "undefined"){
         if(userConfig.successBorder !== undefined){
@@ -68,8 +143,17 @@ function octaValidate(form_ID, userConfig){
         if(userConfig.strictMode !== undefined){
             (userConfig.strictMode == true || userConfig.strictMode == false) ? config.strictMode = userConfig.strictMode : null;
         }
+        if(userConfig.strictWords !== undefined && userConfig.strictMode !== undefined){
+            (userConfig.strictMode == true && userConfig.strictWords.length !== 0) ? config.strictWords.push(...userConfig.strictWords) : null;
+        }
     }
-    //validation library
+
+////---------------
+
+////---------------
+
+/** CORE VALIDATION FUNCTIONS**/    
+    //the validation library
     let octaValidations = (function(){
             //check email
             function octaValidateEmail(email){
@@ -189,79 +273,8 @@ function octaValidate(form_ID, userConfig){
                 ValidateTEXT : octaValidateTEXT
             }
     }()); 
-
-    //Set form id for public eyes
-    this.form = (function(){
-        return(formID);
-    }());
     
-    /* reference functions */
-    //insert error
-    let ovNewError = (inputID, error) =>{
-        //remove previous error
-        ovRemoveError(inputID);
-        //add error to element
-        const g = document.createElement("p");
-        g.setAttribute("id", "octaValidate_"+inputID);
-        g.setAttribute("class", "octaValidate-txt-error");
-        g.innerText = error;
-
-        //set class of input error
-        const f = document.querySelector('#'+inputID);
-        if(!f.classList.contains('octaValidate-inp-error')){
-            f.classList.add("octaValidate-inp-error");
-        }
-        //append to form .nextSibling
-        f.parentNode.appendChild(g, f);
-    };
-    //remove error
-    let ovRemoveError = (inputID) => {
-        //remove error text
-        let errorElem = (document.querySelector('#octaValidate_'+inputID)) ? 
-            document.querySelector('#octaValidate_'+inputID) : null;
-        let inputElem = (document.querySelector('#'+inputID)) ? 
-            document.querySelector('#'+inputID) : null ;
-        //remove classlist
-        if(inputElem !== null){
-            (inputElem.classList.contains('octaValidate-inp-error')) ? 
-                inputElem.classList.remove('octaValidate-inp-error') : null;
-        }else{
-            throw new Error(`Input ID ${inputID} is missing!`);
-        }
-        if(errorElem !== null){
-            errorElem.remove();
-        }
-    };
-    //insert success class name
-    let ovNewSuccess = (inputID) =>{
-        //check if user wants a success border
-        if(config.successBorder == true){
-            //remove previous error
-            ovRemoveSuccess(inputID);
-            //set class of input error
-            const f = document.querySelector('#'+inputID);
-            if(!f.classList.contains('octaValidate-inp-success')){
-                f.classList.add("octaValidate-inp-success");
-            }
-        }
-    };
-    //remove success class name
-    let ovRemoveSuccess = (inputID) => {
-        let inputElem = (document.querySelector('#'+inputID)) ? 
-            document.querySelector('#'+inputID) : null ;
-        //check if user wants a success border
-        if(config.successBorder == true){
-            //remove classlist
-            if(inputElem !== null){
-                (inputElem.classList.contains('octaValidate-inp-success')) ? 
-                    inputElem.classList.remove('octaValidate-inp-success') : null;
-            }else{
-                throw new Error(`Input ID ${inputID} is missing!`);
-            }
-        }
-    };
-
-    //build validation rules
+    //build rules
     (function(form_id){
         //get all primary validations from the octavalidate attribute
         const ovPrimaryValidations = document.querySelectorAll(`#${form_id} [octavalidate]`);
@@ -280,18 +293,18 @@ function octaValidate(form_ID, userConfig){
 
             while(myv < ovPrimaryValidations.length){
                 //get id
-                let id = (ovPrimaryValidations[myv].getAttribute("id"))? ovPrimaryValidations[myv].getAttribute("id") : null;
+                const id = (ovPrimaryValidations[myv].getAttribute("id"))? ovPrimaryValidations[myv].getAttribute("id") : null;
                 //get attr
-                let attr = (ovPrimaryValidations[myv].getAttribute("octavalidate")) ? ovPrimaryValidations[myv].getAttribute("octavalidate") : null;
+                const attr = (ovPrimaryValidations[myv].getAttribute("octavalidate")) ? ovPrimaryValidations[myv].getAttribute("octavalidate") : null;
                 //get type
-                let type= (ovPrimaryValidations[myv].getAttribute("type")) ? ovPrimaryValidations[myv].getAttribute("type") : null;
+                const type= (ovPrimaryValidations[myv].getAttribute("type")) ? ovPrimaryValidations[myv].getAttribute("type") : null;
                 //exit if attribute existts but id is null
                 if(!id){
-                    throw new Error(`One or more fields in ${f} is missing an Identifier`)
+                    throw new Error(`One or more fields in ${form_id} is missing an id (Identifier)`)
                 }
-                //build only when there's octaValidate attribute present
-                if(Object.keys(validate).length !== ovPrimaryValidations.length)
-                    validate[id] = [type, attr];
+                //store rules
+                if(Object.keys(validatePrimary).length !== ovPrimaryValidations.length)
+                    validatePrimary[id] = [type, attr];
                 //increment
                 ++myv;
             }
@@ -302,8 +315,8 @@ function octaValidate(form_ID, userConfig){
             let lv = 0;
 
             while(lv < ovMinLengths.length){
-                let length = ovMinLengths[lv].getAttribute(`${f} minlength`);
-                let id = ovMinLengths[lv].id;
+                const length = Number(ovMinLengths[lv].getAttribute(`${f} minlength`));
+                const id = ovMinLengths[lv].id;
 
                 validateAttr[id] = ['MINLENGTH', length];
                 ++lv;
@@ -314,8 +327,8 @@ function octaValidate(form_ID, userConfig){
         if(ovMaxLengths){
             let lv = 0; 
             while(lv < ovMaxLengths.length){
-                let length = ovMaxLengths[lv].getAttribute("maxlength");
-                let id = ovMaxLengths[lv].id;
+                const length = Number(ovMaxLengths[lv].getAttribute("maxlength"));
+                const id = ovMaxLengths[lv].id;
 
                 validateAttr[id] = ['MAXLENGTH', length];
                 ++lv;
@@ -327,7 +340,7 @@ function octaValidate(form_ID, userConfig){
             let lv = 0; 
 
             while(lv < ovLengths.length){
-                let length = ovLengths[lv].getAttribute("length");
+                let length = Number(ovLengths[lv].getAttribute("length"));
                 let id = ovLengths[lv].id;
                 validateAttr[id] = ['LENGTH', length];
                 ++lv;
@@ -347,15 +360,15 @@ function octaValidate(form_ID, userConfig){
         }
     }(formID)); //end of build validation rules
     
-    //custom rules
+    //store custom rules
     let customRules = [];
     //add single rule
-    this.customRule = function (rule_title, regExp, text) {
+    function customRule(rule_title, regExp, text) {
         return(customRules[rule_title] = [regExp, text]);
     };
     //add multiple rules
-    this.moreCustomRules = function(rules){
-        if(!isObject(rules)) throw new Error("Argument must be an Object");
+    function moreCustomRules(rules){
+        if(!isObject(rules)) throw new Error("The rules you provided as a parameter must be a valid Object! Please refer to the documentation.");
 
         let r = 0;
 
@@ -367,14 +380,13 @@ function octaValidate(form_ID, userConfig){
             if(rule_title && regExp && text) 
                 customRules[rule_title] = [regExp, text] 
             else 
-                throw new Error(`Validation rule at index ${r} is Invalid!`);
-
+                throw new Error(`Custom Validation rule at index [${r}] is Invalid!`);
             ++r;
         }
     };
     
-    //form validation callback [still in development mode]
-    this.validateCallBack = function(success, error){
+    //form validation callback 
+    function validateCallBack(success, error){
         if(typeof success === "function"){
             cbSuccess = success;
         }
@@ -383,25 +395,22 @@ function octaValidate(form_ID, userConfig){
         }
     };
 
-    //validate form
-    this.validate = function(){
-        //return validation status
-        this.status = (function(){
-            return(errors);
-        }).bind(octaValidate);
-
+    //main function to validate form
+    function validate(){
+        
         const form_id = formID;
 
         //check if form id exists in DOM
-        if(!findElem(form_id)) throw new Error(`Form Element ${form_id} does not Exists in DOM`);
+        if(!findElem(form_id)) throw new Error(`Form Input Element [${form_id}] does not exist in the Browser DOM`);
         //Begin validation and return result
         return(function validateForm(){
-            //reset errors count anytime function is called
+            //reset vaidation counters anytime function is called
             errors = continueValidation = nextValidation = 0;
+            //form element
             elem = null;
-            if(validate !== null ||
+            if(validatePrimary !== null ||
                     validateAttr !== null){
-                //loop through all form elements with an ID attached to it
+                //loop through all form elements that needs validation
                 let formInputs = document.querySelectorAll(`#${form_id} [octavalidate], [length], [maxlength], [minlength], [equalto]`);
                 formInputs.forEach(input => {
                     //check if id exists within the element
@@ -418,19 +427,22 @@ function octaValidate(form_ID, userConfig){
                             let elem = (document.querySelector('#'+formInputId)) ? document.querySelector('#'+formInputId) : null;
                         
                             if(elem === null){
-                                throw new Error(`Input ID ${formInputId} is missing`);
+                                throw new Error(`The Form Input Element with the ID [${formInputId}] is nowhere to be found`);
                             }
-                            //remove whitespace from start and end
+                            //set strict words
+                            let strictWords = config.strictWords;
+                            //remove whitespace
                             elem.value = elem.value.trim();
-                            if((elem.value !== "") && (elem.value == "null" || elem.value == "undefined" || elem.value == "NaN")){
+                            
+                            if((elem.value !== "") && strictWords.includes(elem.value)){
                                 errors++;
-                                validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : "The value you provided is not allowed";
+                                validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : "This value is not accepted";
                                 ovRemoveSuccess(index);
                                 ovNewError(index, validationText);
                                 if(elem.addEventListener) {
                                     elem.addEventListener("change",  
                                         function(){
-                                        if(this.value && (this.value == "null" || this.value == "undefined" || this.value == "NaN")){
+                                        if(this.value && strictWords.includes(this.value)){
                                             errors++;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -439,11 +451,10 @@ function octaValidate(form_ID, userConfig){
                                             ovRemoveError(index);
                                             ovNewSuccess(index);
                                         }
-                                        validateForm();
                                     });
                                 }else if(elem.attachEvent){
                                     elem.attachEvent("change", function(){
-                                    if(elem.value === "null" || elem.value === "undefined" || elem.value === "NaN"){
+                                    if(this.value && strictWords.includes(this.value)){
                                         errors++;
                                         ovRemoveSuccess(index);
                                         ovNewError(index, validationText);
@@ -452,7 +463,6 @@ function octaValidate(form_ID, userConfig){
                                         ovRemoveError(index);
                                         ovNewSuccess(index);
                                     }
-                                    validateForm();
                                     });
                                 }
                             }else{
@@ -466,15 +476,15 @@ function octaValidate(form_ID, userConfig){
                         }
                         
                     //primary validation rules
-                    if(validate[formInputId] !== undefined){
+                    if(validatePrimary[formInputId] !== undefined){
                         if(nextValidation){
                             let index = formInputId;
-                            let type = validate[index][0];
-                            let validations = validate[index][1].split(',');
+                            let type = validatePrimary[index][0];
+                            let validations = validatePrimary[index][1].split(',');
                             continueValidation = 0;
                             nextValidation = 0;
                             let validationInfo;
-                            let validationText; //store user's custom message to display on validation failure
+                            let validationText; 
                             let elem = (document.querySelector('#'+index)) ? 
                                 document.querySelector('#'+index) : null;
                             
@@ -554,7 +564,7 @@ function octaValidate(form_ID, userConfig){
                                 continueValidation++;
                             }//required
     
-                            //handle custom validaton rules
+                            //handle custom rules
                             if(elem.value && (Object.keys(customRules).length !== 0) && continueValidation){
                                 //loop through custom validation rule
                                 if(customRules[item] !== undefined){
@@ -1008,8 +1018,37 @@ function octaValidate(form_ID, userConfig){
                 }
         }());
     };
-    //version info
-    this.version = (function(){
-        return(1.1);
-    }());
+
+////---------------
+
+////---------------
+
+/* make methods unwritable */
+    //Users cannot use the console to rewrite core methods
+    Object.defineProperties(this, {
+        'validate' : {
+            value : validate,
+            writable : false
+        },
+        'customRule' : {
+            value : customRule,
+            writable : false
+        },
+        'moreCustomRules' : {
+            value : moreCustomRules,
+            writable : false
+        },
+        'validateCallBack' : {
+            value : validateCallBack,
+            writable : false
+        }
+    });
+    //Set form id for public eyes
+    this.form = ( () => { return(formID) } )();
+    //version Number
+    this.version = ( () => { return(versionNumber) } )();
+    //validation status
+    this.status = () => { return(errors) };
+
+////---------------
 }

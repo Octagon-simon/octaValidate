@@ -4,9 +4,9 @@
     <head>
         <meta name="author" content="Simon Ugorji">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="octaValidate: This Tiny Script helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
+        <meta name="description" content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
         <meta name="title" content="Octavalidate Demo Page">
-        <meta property="og:description" content="octaValidate: This Tiny Script helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
+        <meta property="og:description" content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
         <meta property="og:title" content="Octavalidate Demo Page">
         <link rel="icon" href="img/ov-image.png">
     </head>
@@ -68,15 +68,13 @@ input,textarea{
     border-color: #81ff92;
 }
 .notification{
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
     padding: 20px;
 }
 .notification > p{
     margin: 0px;
 }
 .notification.is-info{
-    border-left:.5em solid #1d72aa;
+    border-left:.3em solid #1d72aa;
     background-color: #eef6fc;
     color: #1d72aa;
 }
@@ -142,7 +140,7 @@ input[type="checkbox"]{
 }
 .form-section{
     position: relative;
-    margin-top: 5rem;
+    margin-top: 6rem;
 }
 .bg-white{
     background-color: #fff !important;
@@ -153,32 +151,25 @@ input[type="checkbox"]{
 
 .social-btn{
     display: block;
-    padding: 10px;
-    border: 1px solid transparent;
     color: #fff;
     font-size: 15px;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing:1px;
+    border:.125rem solid transparent;
+    padding:.375rem .75rem;
+    border-radius:.25rem;
+    -webkit-transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
 }
 
-.social-btn.twitter,.social-btn.linkedin{
-    border:1px solid #1D9BF0;
-    color: #fff;
-    background-color: #1d9bf0;
-    
-}
-.social-btn.twitter:hover,.social-btn.linkedin:hover{
-    background-color: transparent;
-    color: #1D9BF0;
-    border:1px solid #1D9BF0;
-}
-.social-btn.facebook{
+.social-btn.facebook,.social-btn.twitter,.social-btn.linkedin{
     border:1px solid #4267b2;
     color: #fff;
     background-color: #4267b2;
 }
-.social-btn.facebook:hover{
+.social-btn.facebook:hover,.social-btn.twitter:hover,.social-btn.linkedin:hover{
     background-color: transparent;
     border:1px solid #4267b2;
     color: #4267b2;
@@ -249,7 +240,8 @@ input[type="checkbox"]{
     background-color: #02151d;
 }
 .briefing{
-    background-color:#eee;
+    background-color:#f6f6f6;
+    position: relative;
 }
 .brief-group{
     padding-inline-start: 20px;
@@ -274,28 +266,40 @@ code{
 .p-5{
     padding:5px;
 }
+.text-uppercase{
+    text-transform: uppercase;
+}
+#version_info{
+    font-weight:bold;
+    color :#fff;
+    margin:5px;
+}
+.text-gray{
+    color:#bbb;
+}
 </style>
 
-
-<script src="https://unpkg.com/octavalidate@1.1.1/src/validate.js"></script>
+<!-- <script src="https://unpkg.com/octavalidate@1.1.1/src/validate.js"></script> -->
+<script src="src/validate.js"></script>
 <body id="octavalidate_demo_page">
     <section class="demo-bg-section">
         <div align="center" class="mt-20">
             <img src="img/ov-success-white.png" width="50px" >
+            <p id="version_info"></p>
         </div>
     </section>
     <div align="center" class="form-section">
         <div class="text-left form-cont bg-white mt-100" style="max-width: 350px;">
             <div class="alert-section alert-register"></div>
             <form method="post" id="form_register">
-                <h2 class="text-center mt-0">Registration Form</h2>
+                <h2 class="text-center mt-0 text-uppercase">Registration Form</h2>
                 <div class="notification is-info mt-20 mb-20">
-                    <p>We don't process any Data entered here.</p>
+                    <p>This library will never process any data entered here.</p>
                 </div>
                 
                 <div class="form-group">
                     <label>Username <span style="color:#ff0000">*</span></label>
-                    <input type="text" id="inp_uname" octavalidate="R,ALPHA_ONLY" ov-username:msg="Please enter a valid username" placeholder="Your username" length="5">
+                    <input type="text" ov-strict-words="admin" id="inp_uname" octavalidate="R,ALPHA_ONLY" ov-username:msg="Please enter a valid username" placeholder="Your username" length="5">
                 </div>
                 <div class="form-group">
                     <label>Email <span style="color:#ff0000">*</span></label>
@@ -321,21 +325,22 @@ code{
 </body>
 <section class="briefing mt-20">
     <div class="p-20">
-        <h2>Registration Form</h2>
+        <h2>On The Registration Form</h2>
         <ul class="mt-20 brief-group">
             <li class="brief-item">Strict Mode is enabled</li>
         </ul>
         <p class="ml-20 mt-10 bg-white p-5">
             <code>
                 {
-                    strictMode: true
+                    strictMode: true, strictWords : ["null", "NaN", "undefined"]
                 }
             </code>
         </p>
         <ul class="mt-20 brief-group-inner">
             <li class="brief-item-inner">Reserved Keywords</li>
         </ul>
-        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, users are not allowed to submit reserved keywords as values.</p>
+        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, users are not allowed to submit <b>reserved keywords</b> as values. </p>
+        <p class="mt-10 ml-20">Aside from the default strict words, you are allowed to provide your own words to check against.</p>
         <div class="notification is-info mt-20 mb-20 mt-10 ml-20">
             <p>Try to provide <b>null, NaN</b> or <b>undefined</b> as a value, then submit.</p>
         </div>
@@ -353,16 +358,16 @@ code{
                 }
             </code>
         </p>
-        <p class="mt-10 ml-20">The input element should automatically set a green border if its validation is successful.</p>
+        <p class="mt-10 ml-20">The input element should automatically set a green border if its validation test was passed.</p>
         <ul class="mt-20 brief-group">
             <li class="brief-item">callBacks are defined</li>
         </ul>
         <p class="ml-20 mt-10 bg-white p-5">
             <code>
-                myForm.validateCallBack(success_callback, error_callback);
+                validateCallBack(success_callback, error_callback);
             </code>
         </p>
-        <p class="mt-10 ml-20">With the new callback feature, you can define a function that will be invoked if validation is successful or if validation fails then pass it as an argument to the <b>validateCallBack()</b> method.</p>
+        <p class="mt-10 ml-20">With the new callback feature, you can define a function that will be invoked if there are no errors or if there are errors, then pass it as an argument to the <b>validateCallBack()</b> method.</p>
         <ul class="mt-20 brief-group">
             <li class="brief-item">validation status is returned</li>
         </ul>
@@ -373,7 +378,7 @@ code{
         </p>
         <p class="mt-10 ml-20">Invoke this method anytime to see how many validation errors the form has.</p>
         <div class="notification is-info mt-20 mb-20 mt-10 ml-20">
-            <p>Combining the callback and status methods, you can alert the user in <b>real-time,</b> of the number of validation errors found, which is what we did above.</p>
+            <p>With the callback and status methods, you can alert the user in <b>real-time</b> of the number of validation errors on the form.</p>
         </div>
     </div>
 </section>
@@ -382,43 +387,50 @@ code{
         <h3 class="text-white mb-20">CONNECT WITH ME</h3>
         <ul class="list-inline list-unstyled">
             <li class="list-inline-item"><a href="https://twitter.com/ugorji_simon" target="_self" class="social-btn twitter">Twitter</a></li>
+            <li class="list-inline-item"><a href="https://simon-ugorji.medium.com" target="_self" class="social-btn medium">Medium</a></li>
             <li class="list-inline-item"><a href="https://facebook.com/simon.ugorji.106" target="_self" class="social-btn facebook">Facebook</a></li>
+            <li class="list-inline-item"><a href="https://dev.to/ugorji_simon" target="_self" class="social-btn medium">DevTo</a></li>
             <li class="list-inline-item">
                 <a href="https://www.linkedin.com/in/simon-ugorji-57a6a41a3" target="_self" class="social-btn linkedin">Linkedin</a>
             </li>
-            <li class="list-inline-item"><a href="https://simon-ugorji.medium.com" target="_self" class="social-btn medium">Medium</a></li>
-            <li class="list-inline-item"><a href="https://www.polywork.com/octagon_simon" target="_self" class="social-btn polywork">Polywork</a></li>
+            <li class="list-inline-item"><a href="https://octagon.hashnode.dev" target="_self" class="social-btn medium">HashNode</a></li>
         </ul>
     </div>
+    <div class="mt-20 mb-20">
+        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="simon.ugorji" data-color="#40DCA5" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+    </div>
+    <p class="text-gray mt-20">Octavalidate @ 1.1.2 🚀 From January 2022 </p>
 </footer>
 </html>
 <script>
 //create instance of class
-let val = new octaValidate('form_register', {successBorder: true, strictMode: true});
+let formVal = new octaValidate('form_register', {successBorder: true, strictMode: true, strictWords: ["admin"]});
+//set version number
+document.querySelector('#version_info').innerText = "Current Version: "+formVal.version;
 //add custom rule
-val.customRule("PASS", /^12345+$/, "Please enter 12345"); 
+formVal.customRule("PASS", /^12345+$/, "Please enter 12345"); 
 //define callback
-val.validateCallBack(function(){
+formVal.validateCallBack(function(){
     //success callback
-    showAlert('success', 'No Validation errors', 'reg');
+    showAlert('success', 'No Validation error', 'reg');
 }, function(){
     //error callback
-    showAlert('error', `${(val.status() !== 1) ? val.status()+" validation errors" : val.status()+" validation error"}`, 'reg');
+    showAlert('error', `${(formVal.status() !== 1) ? formVal.status()+" validation errors" : formVal.status()+" validation error"}`, 'reg');
 })
 
-let formEl1 = document.querySelector('#form_register');
-formEl1.addEventListener('submit', function(e){
+let formEl = document.querySelector('#form_register');
+formEl.addEventListener('submit', function(e){
     e.preventDefault();
     //invoke the validate method
-    if(val.validate() === true)
+    if(formVal.validate() === true)
     { 
         //return type == true - > validation successful
-        showAlert('success', 'No Validation errors', 'reg');
-        alert("Form has been submitted");
+        showAlert('success', 'No Validation error', 'reg');
+        alert("Demo Form has been submitted");
         //process form data here
     } else {
         //return type == false - > validation failed
-        showAlert('error', `${val.status()} validation errors`, 'reg');
+        showAlert('error', `${formVal.status()} validation errors`, 'reg');
     }
 
 })
@@ -434,20 +446,15 @@ const regAlert = document.querySelector('.alert-section.alert-register');
 
 //SHOW ALERT
 function showAlert(type, sometext, alert) {
-    if(alert == 'reg'){
-        regAlert.appendChild(alertbox);
-    }else{
-        loginAlert.appendChild(alertbox);
-    }
+    regAlert.appendChild(alertbox);
     hideAlert();
     alertbox.setAttribute("class", "alert");
     if(type == 'success'){
         alertbox.classList.toggle('alert-success');
-        regAlert.classList.add('mb-20');
     }else{
         alertbox.classList.toggle('alert-danger');
-        regAlert.classList.add('mb-20');
     }
+    regAlert.classList.add('mb-20');
     alertbox.style.display = "block";
     alertText.innerText = sometext;
 }
