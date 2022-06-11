@@ -272,7 +272,7 @@ To use any of these options, provide it as an object and pass as the second argu
 
 ```javascript
 //my function instance
-const formVal = new octaValidation('form_register', {successBorder : true, strictMode : true, strictWords : ["error", "false", "invalid"]});
+const formVal = new octaValidate('form_register', {successBorder : true, strictMode : true, strictWords : ["error", "false", "invalid"]});
 ```
 
 ## REFERENCE METHODS
