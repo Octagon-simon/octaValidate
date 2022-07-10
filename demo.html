@@ -1,305 +1,459 @@
 <!doctype html>
 <html>
-    <title>OctaValidate Demo Page</title>
-    <head>
-        <meta name="author" content="Simon Ugorji">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
-        <meta name="title" content="Octavalidate Demo Page">
-        <meta property="og:description" content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
-        <meta property="og:title" content="Octavalidate Demo Page">
-        <link rel="icon" href="img/ov-image.png">
-    </head>
-<style> 
+<title>OctaValidate Demo Page</title>
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+<head>
+    <meta name="author" content="Simon Ugorji">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description"
+        content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
+    <meta name="title" content="Octavalidate Demo Page">
+    <meta property="og:description"
+        content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
+    <meta property="og:title" content="Octavalidate Demo Page">
+    <link rel="icon" href="img/ov-image.png">
+</head>
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
-*{
-    outline: none;
-    margin:0px;
-    padding:0px;
-}
-html, body{
-    font-family: 'Roboto', sans-serif !important;
-}
-body{
-    display:contents;
-    min-height:100%;
-}
-label{
-    font-size: 1em;
-    display: block;
-    margin-bottom: 5px;
-}
-input,textarea{
-    display: block;
-    border-radius: 5px;
-    background-color: #fcfcfc !important;
-    border: 2px solid #aaaaaa;
-    max-width: 330px !important;
-    width: calc(100% - 20px);
-    padding: 10px;
-}
-
-.alert {
-    border: 1px solid transparent;
-    border-top-color: transparent;
-    border-right-color: transparent;
-    border-bottom-color: transparent;
-    border-left-color: transparent;
-    border-radius: 0.25rem;
-    text-align: center;
-    width: calc(100% - 10px);
-    padding:5px;
-}
-.alert > p{
-    margin-bottom: 5px;
-    margin-top: 5px;
-    font-size: 18px;
-}
-.alert-danger{
-    color: #ab2121;
-    background-color: #ffaebb;
-    border-color: #ffaebb;
-}
-.alert-success{
-    color: #0f701c;
-    background-color: #81ff92;
-    border-color: #81ff92;
-}
-.notification{
-    padding: 20px;
-}
-.notification > p{
-    margin: 0px;
-}
-.notification.is-info{
-    border-left:.3em solid #1d72aa;
-    background-color: #eef6fc;
-    color: #1d72aa;
-}
-
-.text-left{
-    text-align:left; 
-}
-.text-center{
-    text-align:center;
-}
-.reg-btn{
-    background-image: linear-gradient(120deg, #155799, #159957);
-}
-.block{
-    width:100%;
-}
-div.form-group{
-    margin:10px 0 10px 0;
-    width: 100%;
-}
-button{
-    all:unset;
-    text-align: center;
-    padding: 10px 0px 10px 0px;
-    color: #fff;
-    cursor: pointer;
-}
-hr{
-    border:1px solid whitesmoke;
-    margin:2em 0px 2em 0px;
-}
-.form-cont{
-    padding:20px;
-    border:1px solid #ddd;
-}
-input[type="checkbox"]{
-    width:initial;
-    display:initial;
-    margin-right:5px;
-    height:initial;
-}
-.mt-10{
-    margin-top:10px;
-}
-.mb-10{
-    margin-bottom:10px;
-}
-.mt-0{
-    margin-top:0px !important;
-}
-.fw-bold{
-    font-weight:bold;
-}
-.p-100{
-    padding:10px;
-}
-.demo-bg-section{
-    height:300px;
-    width:100%;
-    position: absolute;
-    background-image: linear-gradient(120deg, #155799, #159957);
-    box-shadow:0px 5px 14px 5px #95a6ae;
-}
-.form-section{
-    position: relative;
-    margin-top: 6rem;
-}
-.bg-white{
-    background-color: #fff !important;
-}
-.text-white{
-    color: #fff !important;
-}
-
-.social-btn{
-    display: block;
-    color: #fff;
-    font-size: 15px;
-    text-decoration: none;
-    text-transform: uppercase;
-    border:.125rem solid transparent;
-    padding:.375rem .75rem;
-    border-radius:.25rem;
-    -webkit-transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
-    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
-    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
-}
-
-.social-btn.facebook,.social-btn.twitter,.social-btn.linkedin{
-    border:1px solid #4267b2;
-    color: #fff;
-    background-color: #4267b2;
-}
-.social-btn.facebook:hover,.social-btn.twitter:hover,.social-btn.linkedin:hover{
-    background-color: transparent;
-    border:1px solid #4267b2;
-    color: #4267b2;
-}
-.social-btn.medium{
-    border:1px solid #202020;
-    color: #fff;
-    background-color: #202020;
-}
-.social-btn.medium:hover{
-    background-color: transparent;
-    color: #fff;
-    border:1px solid #202020;
-}
-.social-btn.polywork{
-    border:1px solid #a600c7;
-    color: #fff;
-    background-color: #a600c7;
-}
-.social-btn.polywork:hover{
-    background-color: transparent;
-    color: #a600c7;
-    border:1px solid #a600c7;
-}
-.mt-20{
-    margin-top:20px;
-}
-.mb-20{
-    margin-bottom:20px;
-}
-.ml-10{
-    margin-left:10px;
-}
-.ml-20{
-    margin-left:20px;
-}
-.mt-10{
-    margin-top:10px;
-}
-.p-20{
-    padding:20px;
-}
-.p-10{
-    padding:10px;
-}
-.list-inline,
-.list-unstyled {
- padding-left:0;
- list-style:none;
-}
-.list-inline-item {
- display:inline-block;
-}
-.list-inline-item:not(:last-child) {
- margin-right:.5rem;
-}
-@media screen and (max-width:520px) {
-    .list-inline-item{
-        display:block !important;
-        margin-bottom:10px;
+    * {
+        outline: none;
+        margin: 0px;
+        padding: 0px;
     }
+
+    html,
+    body {
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    body {
+        display: contents;
+        min-height: 100%;
+    }
+
+    label {
+        font-size: 1em;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input:not([type="file"]),
+    textarea {
+        display: block;
+        border-radius: 5px;
+        background-color: #fcfcfc !important;
+        border: 2px solid #aaaaaa;
+        max-width: 330px !important;
+        width: calc(100% - 20px);
+        padding: 10px;
+    }
+
+    .alert {
+        border: 1px solid transparent;
+        border-top-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        border-radius: 0.25rem;
+        text-align: center;
+        width: calc(100% - 10px);
+        padding: 5px;
+    }
+
+    .alert>p {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        font-size: 18px;
+    }
+
+    .alert-danger {
+        color: #fff;
+        background-color: #ef2546;
+    }
+
+    .alert-success {
+        color: #fff;
+        background-color: #18b96a;
+    }
+
+    .notification {
+        padding: 20px;
+    }
+
+    .notification>p {
+        margin: 0px;
+    }
+
+    .notification.is-info {
+        border-left: .3em solid #1d72aa;
+        background-color: #eef6fc;
+        color: #1d72aa;
+    }
+
+    .text-left {
+        text-align: left;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .reg-btn {
+        background-image: linear-gradient(120deg, #155799, #159957);
+    }
+
+    .block {
+        display: block !important;
+        width: 100%;
+    }
+
+    div.form-group {
+        margin: 10px 0 10px 0;
+        width: 100%;
+    }
+
+    button {
+        all: unset;
+        text-align: center;
+        padding: 10px 0px 10px 0px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    hr {
+        border: 1px solid whitesmoke;
+        margin: 2em 0px 2em 0px;
+    }
+
+    .form-cont {
+        padding: 20px;
+        border: 1px solid #ddd;
+    }
+
+    input[type="checkbox"] {
+        width: initial;
+        display: initial;
+        margin-right: 5px;
+        height: initial;
+    }
+
+    small {
+        display: block;
+        margin: 5px 0;
+    }
+
+    .mt-10 {
+        margin-top: 10px;
+    }
+
+    .mb-10 {
+        margin-bottom: 10px;
+    }
+
+    .mt-0 {
+        margin-top: 0px !important;
+    }
+
+    .fw-bold {
+        font-weight: bold;
+    }
+
+    .p-100 {
+        padding: 10px;
+    }
+
+    .demo-bg-section {
+        height: 300px;
+        width: 100%;
+        position: absolute;
+        background-image: linear-gradient(120deg, #155799, #159957);
+        box-shadow: 0px 5px 14px 5px #95a6ae;
+    }
+
+    .form-section {
+        position: relative;
+        margin-top: 6rem;
+    }
+
+    .bg-white {
+        background-color: #fff !important;
+    }
+
+    .text-white {
+        color: #fff !important;
+    }
+
+    .social-btn {
+        letter-spacing: 1px;
+        display: block;
+        color: #fff;
+        font-size: 15px;
+        text-decoration: none;
+        text-transform: uppercase;
+        border: .125rem solid transparent;
+        padding: .75rem;
+        border-radius: .25rem;
+        -webkit-transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, -webkit-box-shadow .15s ease-in-out;
+        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, -webkit-box-shadow .15s ease-in-out;
+        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, -webkit-box-shadow .15s ease-in-out;
+    }
+
+    .bmc-btn {
+        height: 50px !important
+    }
+
+    .social-btn.facebook,
+    .social-btn.twitter,
+    .social-btn.linkedin {
+        border: 1px solid #03A9F4;
+        color: #fff;
+        background-color: #03A9F4;
+    }
+
+    .social-btn.facebook:hover,
+    .social-btn.twitter:hover,
+    .social-btn.linkedin:hover {
+        background-color: transparent;
+        border: 1px solid #03A9F4;
+        color: #03A9F4;
+    }
+
+    .mt-20 {
+        margin-top: 20px;
+    }
+
+    .mb-20 {
+        margin-bottom: 20px;
+    }
+
+    .ml-10 {
+        margin-left: 10px;
+    }
+
+    .ml-20 {
+        margin-left: 20px;
+    }
+
+    .mt-10 {
+        margin-top: 10px;
+    }
+
+    .p-20 {
+        padding: 20px;
+    }
+
+    .p-10 {
+        padding: 10px;
+    }
+
+    .list-inline,
+    .list-unstyled {
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .list-inline-item {
+        display: inline-block;
+    }
+
     .list-inline-item:not(:last-child) {
-        margin-right:0;
+        margin-right: .5rem;
     }
-}
-.footer{
-    padding: 20px;
-    background-color: #02151d;
-}
-.briefing{
-    background-color:#f6f6f6;
-    position: relative;
-}
-.brief-group{
-    padding-inline-start: 20px;
-    list-style-type: disclosure-closed;
-}
-.brief-group-inner{
-    padding-inline-start: 20px;
-    list-style-type: square;
-}
-.brief-item{
-    font-size:1.1em;
-    color:#03A9F4;
-}
-.brief-item-inner{
-    font-size:1em;
-}
-code{
-    color:#00d1b2;
-    font-size: 1.1em;
-    font-weight: bold;
-}
-.p-5{
-    padding:5px;
-}
-.text-uppercase{
-    text-transform: uppercase;
-}
-#version_info{
-    font-weight:bold;
-    color :#fff;
-    margin:5px;
-}
-.text-gray{
-    color:#bbb;
-}
+
+    @media screen and (max-width:520px) {
+        .list-inline-item {
+            display: block !important;
+            margin-bottom: 10px;
+        }
+
+        .list-inline-item:not(:last-child) {
+            margin-right: 0;
+        }
+    }
+
+    .footer {
+        padding: 20px;
+        background-color: #02151d;
+    }
+
+    .briefing {
+        background-color: #f6f6f6;
+        position: relative;
+    }
+
+    .brief-group {
+        padding-inline-start: 20px;
+        list-style-type: disclosure-closed;
+    }
+
+    .brief-group-inner {
+        padding-inline-start: 20px;
+        list-style-type: square;
+    }
+
+    .brief-item {
+        font-size: 1.1em;
+        color: #03A9F4;
+    }
+
+    .brief-item-inner {
+        font-size: 1em;
+    }
+
+    code {
+        color: #00d1b2;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .p-5 {
+        padding: 5px;
+    }
+
+    .text-uppercase {
+        text-transform: uppercase;
+    }
+
+    #version_info {
+        font-weight: bold;
+        color: #fff;
+        margin: 5px;
+    }
+
+    .text-gray {
+        color: rgb(100, 100, 100);
+    }
+
+    input#file-upload-button {
+        padding: 10px !important;
+    }
+
+    /* The snackbar - position it at the bottom and in the middle of the screen */
+    /*
+        deleting a highlight saved less than 60 seconds ago shouldnt show highlight has been saved */
+    #alert_snackbar {
+        visibility: hidden;
+        /* Hidden by default. Visible on click */
+        min-width: 250px;
+        /* Set a default minimum width */
+        margin-left: -125px;
+        /* Divide value of min-width by 2 */
+        color: #fff;
+        /* White text color */
+        text-align: center;
+        /* Centered text */
+        border-radius: 2px;
+        /* Rounded borders */
+        padding: 16px;
+        /* Padding */
+        position: fixed;
+        /* Sit on top of the screen */
+        z-index: 1;
+        /* Add a z-index if needed */
+        left: 50%;
+        /* Center the snackbar */
+        bottom: 30px;
+        /* 30px from the bottom */
+    }
+
+    /* Show the snackbar when clicking on a button (class added with JavaScript) */
+    #alert_snackbar.show {
+        visibility: visible;
+        /* Show the snackbar */
+        /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    /* Animations to fade the snackbar in and out */
+    @-webkit-keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @-webkit-keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+
+    @keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
 </style>
 
-<!-- <script src="https://unpkg.com/octavalidate@1.1.2/src/validate.js"></script> -->
+<!-- CDN 
+    <script src="https://unpkg.com/octavalidate@1.1.3/native/validate.js"></script>
+-->
+
 <script src="src/validate.js"></script>
+
 <body id="octavalidate_demo_page">
     <section class="demo-bg-section">
         <div align="center" class="mt-20">
-            <img src="img/ov-success-white.png" width="50px" >
+            <img src="img/ov-success-white.png" width="50px">
             <p id="version_info"></p>
         </div>
     </section>
     <div align="center" class="form-section">
         <div class="text-left form-cont bg-white mt-100" style="max-width: 350px;">
-            <div class="alert-section alert-register"></div>
-            <form method="post" id="form_register">
-                <h2 class="text-center mt-0 text-uppercase">Registration Form</h2>
+            <form id="form_register" novalidate>
+                <h2 class="text-center mt-0 text-uppercase">DEMO Form</h2>
+                <h4 class="text-center mt-10 text-gray">Try to break through!</h4>
                 <div class="notification is-info mt-20 mb-20">
                     <p>This library will never process any data entered here.</p>
                 </div>
-                
+                <div class="form-group">
+                    <label>Single file upload <span style="color:#ff0000">*</span></label>
+                    <input type="file" id="inp_single_file" octavalidate="R" maxsize="2MB" accept=".jpg,.jpeg,.png">
+                    <small>.jpeg, .jpg, or .png file is only allowed, maximum size of file is 2MB</small>
+                </div>
+                <div class="form-group">
+                    <label>Multiple Files Upload <span style="color:#ff0000">*</span></label>
+                    <input type="file" id="inp_multiple_files" octavalidate="R" totalmaxsize="6MB" accept=".mp3"
+                        multiple>
+                    <small>.mp3 files only allowed, maximum size of all files is 6MB.</small>
+                </div>
                 <div class="form-group">
                     <label>Username <span style="color:#ff0000">*</span></label>
-                    <input type="text" ov-strict-words="admin" id="inp_uname" octavalidate="R,ALPHA_ONLY" ov-username:msg="Please enter a valid username" placeholder="Your username" length="5">
+                    <input type="text" id="inp_uname" octavalidate="R,ALPHA_ONLY"
+                        ov-username:msg="Please enter a valid username" placeholder="Your username" length="5">
                 </div>
                 <div class="form-group">
                     <label>Email <span style="color:#ff0000">*</span></label>
@@ -307,25 +461,31 @@ code{
                 </div>
                 <div class="form-group">
                     <label>Password <span style="color:#ff0000">*</span></label>
-                    <input type="password" id="inp_reg_pwd" octavalidate="R,PASS" ov-required:msg="A password is required" placeholder="Your Password">
+                    <input type="password" id="inp_reg_pwd" octavalidate="R,PASS"
+                        ov-required:msg="A password is required" placeholder="Your Password">
                 </div>
                 <div class="form-group">
                     <label>Re-enter password</label>
-                    <input type="password" id="inp_reg_pwd2" equalto="inp_reg_pwd" ov-equalto:msg="Both passwords do not match" placeholder="Re-enter Password">
+                    <input type="password" id="inp_reg_pwd2" equalto="inp_reg_pwd"
+                        ov-equalto:msg="Both passwords do not match" placeholder="Re-enter Password">
                 </div>
                 <div class="mt-100">
-                    <input type="checkbox" id="inp_terms" octavalidate="CHECK" ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
+                    <input type="checkbox" id="inp_terms" octavalidate="R"
+                        ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
                 </div>
                 <div class="form-group">
-                    <button class="reg-btn block"type="submit">Register</button>
+                    <button class="reg-btn block" type="submit">Register</button>
                 </div>
             </form>
         </div>
     </div>
+    <div id="alert_snackbar" class="alert-danger">
+        Light attracts bugs!
+    </div>
 </body>
 <section class="briefing mt-20">
     <div class="p-20">
-        <h2>On The Registration Form</h2>
+        <h2>On The Demo Form</h2>
         <ul class="mt-20 brief-group">
             <li class="brief-item">Strict Mode is enabled</li>
         </ul>
@@ -339,15 +499,18 @@ code{
         <ul class="mt-20 brief-group-inner">
             <li class="brief-item-inner">Reserved Keywords</li>
         </ul>
-        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, users are not allowed to submit <b>reserved keywords</b> as values. </p>
-        <p class="mt-10 ml-20">Aside from the default strict words, you are allowed to provide your own words to check against.</p>
+        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, users are not allowed to submit <b>reserved
+                keywords</b>. </p>
+        <p class="mt-10 ml-20">Aside from the default strict words, you are allowed to provide a custom set of words to
+            check against.</p>
         <div class="notification is-info mt-20 mb-20 mt-10 ml-20">
             <p>Try to provide <b>null, NaN</b> or <b>undefined</b> as a value, then submit.</p>
         </div>
         <ul class="mt-20 brief-group-inner">
             <li class="brief-item-inner">Input value is Trimmed</li>
         </ul>
-        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, <b>extra white</b> space at the start and at the end of an input element is removed.</p>
+        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, <b>extra white</b> space at the start and at the end of
+            an input element is removed.</p>
         <ul class="mt-20 brief-group">
             <li class="brief-item">successBorder is enabled</li>
         </ul>
@@ -358,7 +521,8 @@ code{
                 }
             </code>
         </p>
-        <p class="mt-10 ml-20">The input element should automatically set a green border if its validation test was passed.</p>
+        <p class="mt-10 ml-20">The input element should automatically set a green border if validation test was passed.
+        </p>
         <ul class="mt-20 brief-group">
             <li class="brief-item">callBacks are defined</li>
         </ul>
@@ -367,7 +531,9 @@ code{
                 validateCallBack(success_callback, error_callback);
             </code>
         </p>
-        <p class="mt-10 ml-20">With the new callback feature, you can define a function that will be invoked if there are no errors or if there are errors, then pass it as an argument to the <b>validateCallBack()</b> method.</p>
+        <p class="mt-10 ml-20">With the new callback feature, you can define a function that will be invoked if there
+            are no errors or if there are errors, then pass it as an argument to the <b>validateCallBack()</b> method.
+        </p>
         <ul class="mt-20 brief-group">
             <li class="brief-item">validation status is returned</li>
         </ul>
@@ -376,9 +542,10 @@ code{
                 myForm.status();
             </code>
         </p>
-        <p class="mt-10 ml-20">Invoke this method anytime to see how many validation errors the form has.</p>
+        <p class="mt-10 ml-20">Invoke this method anytime to see how many validation errors on the form.</p>
         <div class="notification is-info mt-20 mb-20 mt-10 ml-20">
-            <p>With the callback and status methods, you can alert the user in <b>real-time</b> of the number of validation errors on the form.</p>
+            <p>With the callback and status methods, you can alert the user in <b>real-time</b> of the number of
+                validation errors on the form.</p>
         </div>
     </div>
 </section>
@@ -386,82 +553,62 @@ code{
     <div class="mw-500">
         <h3 class="text-white mb-20">CONNECT WITH ME</h3>
         <ul class="list-inline list-unstyled">
-            <li class="list-inline-item"><a href="https://twitter.com/ugorji_simon" target="_self" class="social-btn twitter">Twitter</a></li>
-            <li class="list-inline-item"><a href="https://simon-ugorji.medium.com" target="_self" class="social-btn medium">Medium</a></li>
-            <li class="list-inline-item"><a href="https://facebook.com/simon.ugorji.106" target="_self" class="social-btn facebook">Facebook</a></li>
-            <li class="list-inline-item"><a href="https://dev.to/ugorji_simon" target="_self" class="social-btn medium">DevTo</a></li>
+            <li class="list-inline-item"><a href="https://twitter.com/ugorji_simon" target="_blank"
+                    class="social-btn twitter">Twitter</a></li>
             <li class="list-inline-item">
-                <a href="https://www.linkedin.com/in/simon-ugorji-57a6a41a3" target="_self" class="social-btn linkedin">Linkedin</a>
+                <a href="https://www.linkedin.com/in/simon-ugorji-57a6a41a3" target="_blank"
+                    class="social-btn linkedin">Linkedin</a>
             </li>
-            <li class="list-inline-item"><a href="https://octagon.hashnode.dev" target="_self" class="social-btn medium">HashNode</a></li>
         </ul>
     </div>
     <div class="mt-20 mb-20">
-        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="simon.ugorji" data-color="#40DCA5" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+            data-name="bmc-button" data-slug="simon.ugorji" data-color="#40DCA5" data-emoji="" data-font="Cookie"
+            data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
+            data-coffee-color="#FFDD00"></script>
     </div>
-    <p class="text-gray mt-20">Octavalidate @ 1.1.2 🚀 From January 2022 </p>
+    <p class="text-gray mt-20">Octavalidate @ 1.1.3 🚀 Since January 2022 </p>
 </footer>
+
 </html>
 <script>
-//create instance of class
-let formVal = new octaValidate('form_register', {successBorder: true, strictMode: true, strictWords: ["admin"]});
-//set version number
-document.querySelector('#version_info').innerText = "Current Version: "+formVal.version;
-//add custom rule
-formVal.customRule("PASS", /^12345+$/, "Please enter 12345"); 
-//define callback
-formVal.validateCallBack(function(){
-    //success callback
-    showAlert('success', 'No Validation error', 'reg');
-}, function(){
-    //error callback
-    showAlert('error', `${(formVal.status() !== 1) ? formVal.status()+" validation errors" : formVal.status()+" validation error"}`, 'reg');
-})
+    //create instance of class
+    let formVal = new octaValidate('form_register', { successBorder: true, strictMode: true, strictWords: ["admin"] });
+    //set version number
+    document.querySelector('#version_info').innerText = "Current Version: " + formVal.version();
+    //add custom rule
+    formVal.customRule("PASS", /^12345+$/, "Please enter 12345");
+    //define callback
+    formVal.validateCallBack(function () {
+        //success callback
+        showAlert('No Validation error', 'alert-success');
+    }, function () {
+        //error callback
+        showAlert(`${(formVal.status() !== 1) ? formVal.status() + " validation errors" : formVal.status() + " validation error"}`, 'alert-danger');
+    })
 
-let formEl = document.querySelector('#form_register');
-formEl.addEventListener('submit', function(e){
-    e.preventDefault();
-    //invoke the validate method
-    if(formVal.validate() === true)
-    { 
-        //return type == true - > validation successful
-        showAlert('success', 'No Validation error', 'reg');
-        alert("Demo Form has been submitted");
-        //process form data here
-    } else {
-        //return type == false - > validation failed
-        showAlert('error', `${formVal.status()} validation errors`, 'reg');
+    let formEl = document.querySelector('#form_register');
+    formEl.addEventListener('submit', function (e) {
+        e.preventDefault();
+        //invoke the validate method
+        if (formVal.validate() === true) {
+            //return type == true - > validation successful
+            showAlert('No Validation error', 'alert-success');
+            alert("Couldn't break through?\nDemo Form passed the validation test!");
+            //process form data here
+        } else {
+            //return type == false - > validation failed
+            showAlert(`${formVal.status()} validation errors`, 'alert-danger');
+        }
+
+    })
+
+    function showAlert(text = "Light Attracts Bugs!", addClass = "alert-danger") {
+        const p = document.querySelector("#alert_snackbar");
+        p.classList = "";
+        p.classList.add("show", addClass);
+        p.innerHTML = text;
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { p.classList.remove("show"); }, 3000);
     }
-
-})
-//INITIALIZE ALERT BOX
-const alertbox = document.createElement("div");
-alertbox.setAttribute("class", "alert");
-alertbox.style.display = "none";
-
-//INITIALIZE ALERT TEXT
-const alertText = document.createElement("p");
-alertbox.appendChild(alertText);
-const regAlert = document.querySelector('.alert-section.alert-register'); 
-
-//SHOW ALERT
-function showAlert(type, sometext, alert) {
-    regAlert.appendChild(alertbox);
-    hideAlert();
-    alertbox.setAttribute("class", "alert");
-    if(type == 'success'){
-        alertbox.classList.toggle('alert-success');
-    }else{
-        alertbox.classList.toggle('alert-danger');
-    }
-    regAlert.classList.add('mb-20');
-    alertbox.style.display = "block";
-    alertText.innerText = sometext;
-}
-//HIDE ALERT
-function hideAlert(){
-    alertbox.removeAttribute("class");
-    alertbox.style.display = "none";
-    alertText.innerText = "";
-}
 </script>
