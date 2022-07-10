@@ -344,18 +344,3 @@ Need a detailed explanation on how to use this library?
 ## Contributors
 
 [Simon Ugorji](https://twitter.com/ugorji_simon)
-
-##changelogs
-Introduction to filelist api javascript post with a link to octavalidate
-
-looping through files using object.entries, getting name, time modified, size using multiple attribute
-getting file extension and checking if file name matches the accept attribute
-
-You dont need CHECK rule to validate checkboxes or radio elements again. just use the R rule but you still need ov-check:msg & ov-file:msg
-
-
-I modified maxlength, minlength. I added size,minsize,maxsize,totalsize,accept, totalsize, totalminsize, totalmaxsize validation
-using size or minsize or maxsize you're checking each file. use the total siffix to check all files at once
-
-screenshots, demo page, donate, connect with me
-dropdown -> api, rules, file, checkbox  watch this repo for new updates
