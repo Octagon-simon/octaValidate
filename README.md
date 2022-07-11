@@ -1,4 +1,4 @@
-# <img align="center" src="https://octagon-simon.github.io/octaValidate/img/ov-success.png" width="25px"> octaValidate V1.1.3 
+# <img align="center" src="https://octagon-simon.github.io/octaValidate/img/ov-success.png" width="25px"> octaValidate V1.1.4 
 
 This library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes.
 
@@ -13,7 +13,7 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.1.3/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@1.1.4/native/validate.js"></script>
 ```
 
 ### NPM
@@ -276,6 +276,8 @@ We have 3 configuration options:
   
    This option alows you to provide words that users are not supposed to submit. For eg ["null", "error", "false"]. In order to use this option, you must set **strictMode** to **true**.
 
+> From Version 1.1.4 upwards, any value provided by the user that matches any of the strict words, will be flagged as "not allowed".
+
 To use any of these options, provide it as an object and pass it as the second argument when creating an instance of octaValidate.
 
 ```javascript
@@ -330,6 +332,7 @@ Need a detailed explanation on how to use this library?
     <img src="https://octagon-simon.github.io/octaValidate/img/contact-page.png" width="200px">
     <img src="https://octagon-simon.github.io/octaValidate/img/file-1.png" width="200px">
     <img src="https://octagon-simon.github.io/octaValidate/img/file-2.png" width="200px">
+    <img src="https://octagon-simon.github.io/octaValidate/img/strict-1.png" width="200px">
 </div>
 
 ## Author

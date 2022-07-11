@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.1.3
+ * OctaValidate main JS V1.1.4
  * author: Simon Ugorji
- * Last Edit : 10th July 2022
+ * Last Edit : 11th July 2022
  */
 (function () {
     //global Styling
@@ -46,7 +46,7 @@ function octaValidate(form_ID, userConfig) {
         strictWords: ["null", "NaN", "undefined"]
     };
     //version number
-    const versionNumber = "1.1.3";
+    const versionNumber = "1.1.4";
 
     ////---------------
 
@@ -599,7 +599,14 @@ function octaValidate(form_ID, userConfig) {
                                 //remove whitespace
                                 elem.value = elem.value.trim();
                             }
-                            if ((elem.value !== "") && strictWords.includes(elem.value)) {
+                            let elemHasStrictWords = () => {
+                                const res = strictWords.filter(s => { return elem.value.match(new RegExp(`${'(' + s + ')'}`, 'i')) });
+                                if (res !== undefined && res.length !== 0) {
+                                    return true;
+                                }
+                                return false;
+                            };
+                            if ((elem.value !== "") && elemHasStrictWords()) {
                                 //I totally forgot that objects are passed by reference :(
                                 errors[formInputId]++;
                                 validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : "This value is not allowed";
@@ -608,7 +615,7 @@ function octaValidate(form_ID, userConfig) {
                                 if (elem.addEventListener) {
                                     elem.addEventListener("change",
                                         function () {
-                                            if (this.value && strictWords.includes(this.value)) {
+                                            if (this.value && elemHasStrictWords()) {
                                                 errors[formInputId]++;
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
@@ -620,7 +627,7 @@ function octaValidate(form_ID, userConfig) {
                                         });
                                 } else if (elem.attachEvent) {
                                     elem.attachEvent("change", function () {
-                                        if (this.value && strictWords.includes(this.value)) {
+                                        if (this.value && elemHasStrictWords()) {
                                             errors[formInputId]++;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
