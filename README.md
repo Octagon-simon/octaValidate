@@ -341,8 +341,9 @@ Need a detailed explanation on how to use this library?
 
 ## Support Me
 
-[Buy me a Coffee](https://buymeacoffee.com/simon.ugorji)
+[Donate with PayPal](https://www.paypal.com/donate/?hosted_button_id=ZYK9PQ8UFRTA4)
 
+[Buy me a coffee](https://buymeacoffee.com/simon.ugorji)
 
 ## Contributors
 
