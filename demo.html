@@ -22,12 +22,16 @@
         padding: 0px;
     }
 
-    html,
     body {
         font-family: 'Roboto', sans-serif !important;
-    }
-
-    body {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
         display: contents;
         min-height: 100%;
     }
@@ -38,33 +42,39 @@
         margin-bottom: 5px;
     }
 
-    input:not([type="file"]),
-    textarea {
+    input {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    h2 {
+        font-size: calc(1.325rem + .9vw);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    input:not([type="file"]) {
         display: block;
         border-radius: 5px;
         background-color: #fcfcfc !important;
         border: 2px solid #aaaaaa;
-        max-width: 330px !important;
-        width: calc(100% - 20px);
+        width: 100%;
+        width: -moz-available;
+        width: -webkit-fill-available;
+        width: fill-available;
         padding: 10px;
-    }
-
-    .alert {
-        border: 1px solid transparent;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-left-color: transparent;
-        border-radius: 0.25rem;
-        text-align: center;
-        width: calc(100% - 10px);
-        padding: 5px;
-    }
-
-    .alert>p {
-        margin-bottom: 5px;
-        margin-top: 5px;
-        font-size: 18px;
     }
 
     .alert-danger {
@@ -127,8 +137,10 @@
     }
 
     .form-cont {
-        padding: 20px;
+        padding: var(--container-padding);
         border: 1px solid #ddd;
+        border-radius: 20px;
+        max-width: var(--container-width);
     }
 
     input[type="checkbox"] {
@@ -141,6 +153,7 @@
     small {
         display: block;
         margin: 5px 0;
+        font-size: .875em
     }
 
     .mt-10 {
@@ -204,17 +217,13 @@
         height: 50px !important
     }
 
-    .social-btn.facebook,
-    .social-btn.twitter,
-    .social-btn.linkedin {
+    .social-btn {
         border: 1px solid #03A9F4;
         color: #fff;
         background-color: #03A9F4;
     }
 
-    .social-btn.facebook:hover,
-    .social-btn.twitter:hover,
-    .social-btn.linkedin:hover {
+    .social-btn:hover {
         background-color: transparent;
         border: 1px solid #03A9F4;
         color: #03A9F4;
@@ -302,12 +311,6 @@
         font-size: 1em;
     }
 
-    code {
-        color: #00d1b2;
-        font-size: 1.1em;
-        font-weight: bold;
-    }
-
     .p-5 {
         padding: 5px;
     }
@@ -316,18 +319,8 @@
         text-transform: uppercase;
     }
 
-    #version_info {
-        font-weight: bold;
-        color: #fff;
-        margin: 5px;
-    }
-
     .text-gray {
         color: rgb(100, 100, 100);
-    }
-
-    input#file-upload-button {
-        padding: 10px !important;
     }
 
     /* The snackbar - position it at the bottom and in the middle of the screen */
@@ -346,8 +339,6 @@
         /* Centered text */
         border-radius: 2px;
         /* Rounded borders */
-        padding: 16px;
-        /* Padding */
         position: fixed;
         /* Sit on top of the screen */
         z-index: 1;
@@ -356,6 +347,11 @@
         /* Center the snackbar */
         bottom: 30px;
         /* 30px from the bottom */
+        height: 3rem;
+        display: inline-flex;
+        align-self: center;
+        justify-content: center;
+        flex-direction: column;
     }
 
     /* Show the snackbar when clicking on a button (class added with JavaScript) */
@@ -416,10 +412,29 @@
             opacity: 0;
         }
     }
+
+    .footer-link a {
+        text-decoration: underline;
+        color: rgb(150, 150, 150);
+    }
+
+    .footer-link a:hover {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .link {
+        color: inherit;
+    }
+
+    :root {
+        --container-width: 370px;
+        --container-padding: 20px;
+    }
 </style>
 
 <!-- CDN 
-    <script src="https://unpkg.com/octavalidate@1.1.4/native/validate.js"></script>
+    <script src="https://unpkg.com/octavalidate@1.2.0/native/validate.js"></script>
 -->
 
 <script src="src/validate.js"></script>
@@ -428,31 +443,24 @@
     <section class="demo-bg-section">
         <div align="center" class="mt-20">
             <img src="img/ov-success-white.png" width="50px">
-            <p id="version_info"></p>
         </div>
     </section>
     <div align="center" class="form-section">
-        <div class="text-left form-cont bg-white mt-100" style="max-width: 350px;">
-            <form id="form_register" novalidate>
+        <div class="text-left form-cont bg-white mt-100">
+            <form id="form_demo" novalidate>
                 <h2 class="text-center mt-0 text-uppercase">DEMO Form</h2>
-                <h4 class="text-center mt-10 text-gray">Try to break through!</h4>
                 <div class="notification is-info mt-20 mb-20">
                     <p>This library will never process any data entered here.</p>
                 </div>
                 <div class="form-group">
-                    <label>Single file upload <span style="color:#ff0000">*</span></label>
-                    <input type="file" id="inp_single_file" octavalidate="R" maxsize="2MB" accept=".jpg,.jpeg,.png">
-                    <small>.jpeg, .jpg, or .png file is only allowed, maximum size of file is 2MB</small>
-                </div>
-                <div class="form-group">
                     <label>Multiple Files Upload <span style="color:#ff0000">*</span></label>
-                    <input type="file" id="inp_multiple_files" octavalidate="R" totalmaxsize="6MB" accept=".mp3"
-                        multiple>
-                    <small>.mp3 files only allowed, maximum size of all files is 6MB.</small>
+                    <input type="file" id="inp_multiple_files" octavalidate="R" minfiles="5" maxsize="10mb"
+                        accept-mime="audio/*" multiple>
+                    <small>5 Audio files only allowed, maximum size is 10MB.</small>
                 </div>
                 <div class="form-group">
                     <label>Username <span style="color:#ff0000">*</span></label>
-                    <input type="text" id="inp_uname" octavalidate="R,ALPHA_ONLY"
+                    <input type="text" id="inp_uname" octavalidate="R,USERNAME"
                         ov-username:msg="Please enter a valid username" placeholder="Your username" length="5">
                 </div>
                 <div class="form-group">
@@ -474,7 +482,7 @@
                         ov-check:msg="You have to accept the terms and conditions">I accept the terms and conditions
                 </div>
                 <div class="form-group">
-                    <button class="reg-btn block" type="submit">Register</button>
+                    <button class="reg-btn block" type="submit">RUN TEST</button>
                 </div>
             </form>
         </div>
@@ -485,66 +493,48 @@
 </body>
 <section class="briefing mt-20">
     <div class="p-20">
-        <h2>On The Demo Form</h2>
+        <h2>On The Form</h2>
         <ul class="mt-20 brief-group">
             <li class="brief-item">Strict Mode is enabled</li>
         </ul>
-        <p class="ml-20 mt-10 bg-white p-5">
-            <code>
-                {
-                    strictMode: true, strictWords : ["null", "NaN", "undefined"]
-                }
-            </code>
-        </p>
         <ul class="mt-20 brief-group-inner">
             <li class="brief-item-inner">Reserved Keywords</li>
         </ul>
-        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, users are not allowed to submit <b>reserved
-                keywords</b>. </p>
-        <p class="mt-10 ml-20">Aside from the default strict words, you are allowed to provide a custom set of words to
-            check against.</p>
+        <p class="mt-10 ml-20">With <b>strict mode</b> enabled, users are not allowed to provide some <b>reserved
+                keywords</b> as values for form inputs. </p>
+        <p class="mt-10 ml-20">Aside from the default words, you are allowed to provide a custom set of words to check
+            against, <a class="link" href="https://octagon-simon.github.io/projects/octavalidate/config.html">please
+                refer to
+                the documentation.</a></p>
         <div class="notification is-info mt-20 mb-20 mt-10 ml-20">
             <p>Try to provide <b>null, NaN</b> or <b>undefined</b> as a value, then submit.</p>
         </div>
         <ul class="mt-20 brief-group-inner">
-            <li class="brief-item-inner">Input value is Trimmed</li>
+            <li class="brief-item-inner">Input value is trimmed</li>
         </ul>
         <p class="mt-10 ml-20">With <b>strict mode</b> enabled, <b>extra white</b> space at the start and at the end of
-            an input element is removed.</p>
+            an input value is removed.</p>
         <ul class="mt-20 brief-group">
-            <li class="brief-item">successBorder is enabled</li>
+            <li class="brief-item">Success border is enabled</li>
         </ul>
-        <p class="ml-20 mt-10 bg-white p-5">
-            <code>
-                {
-                    successBorder: true
-                }
-            </code>
-        </p>
-        <p class="mt-10 ml-20">The input element should automatically set a green border if validation test was passed.
+        <p class="mt-10 ml-20">The input element should automatically set a green border if its validation test was
+            passed.
         </p>
         <ul class="mt-20 brief-group">
-            <li class="brief-item">callBacks are defined</li>
+            <li class="brief-item">callbacks are defined</li>
         </ul>
-        <p class="ml-20 mt-10 bg-white p-5">
-            <code>
-                validateCallBack(success_callback, error_callback);
-            </code>
+        <p class="mt-10 ml-20">With the callback feature, you can declare a function that will be invoked if validation
+            tests passes or fails, then pass it as an argument to the <b>validateCallBack()</b> method.
         </p>
-        <p class="mt-10 ml-20">With the new callback feature, you can define a function that will be invoked if there
-            are no errors or if there are errors, then pass it as an argument to the <b>validateCallBack()</b> method.
-        </p>
+        <p class="mt-10 ml-20"><a class="link"
+                href="https://octagon-simon.github.io/projects/octavalidate/api.html#callback">Learn
+                more about the callback method</a></p>
         <ul class="mt-20 brief-group">
             <li class="brief-item">validation status is returned</li>
         </ul>
-        <p class="ml-20 mt-10 bg-white p-5">
-            <code>
-                myForm.status();
-            </code>
-        </p>
-        <p class="mt-10 ml-20">Invoke this method anytime to see how many validation errors on the form.</p>
+        <p class="mt-10 ml-20">Invoke this method anytime to see the number of validation errors on the form.</p>
         <div class="notification is-info mt-20 mb-20 mt-10 ml-20">
-            <p>With the callback and status methods, you can alert the user in <b>real-time</b> of the number of
+            <p>With the callback and status methods, you can alert the user in <b>real time</b> of the number of
                 validation errors on the form.</p>
         </div>
     </div>
@@ -554,12 +544,14 @@
         <h3 class="text-white mb-20">CONNECT WITH ME</h3>
         <ul class="list-inline list-unstyled">
             <li class="list-inline-item"><a href="https://twitter.com/ugorji_simon" target="_blank"
-                    class="social-btn twitter">Twitter</a></li>
+                    class="social-btn">Twitter</a></li>
             <li class="list-inline-item">
                 <a href="https://www.linkedin.com/in/simon-ugorji-57a6a41a3" target="_blank"
-                    class="social-btn linkedin">Linkedin</a>
+                    class="social-btn">LinkedIn</a>
             </li>
         </ul>
+        <p class="footer-link mt-20"><a href="https://octagon-simon.github.io/projects/octavalidate/">Visit the
+                Documentation</a></p>
     </div>
     <div class="mt-20 mb-20">
         <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
@@ -567,42 +559,40 @@
             data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
             data-coffee-color="#FFDD00"></script>
     </div>
-    <p class="text-gray mt-20">Octavalidate @ 1.1.4 🚀 Since January 2022 </p>
+    <p class="text-gray mt-20">Octavalidate @ 1.2.0 🚀 Since January 2022 </p>
 </footer>
 
 </html>
 <script>
     //create instance of class
-    let formVal = new octaValidate('form_register', { successBorder: true, strictMode: true, strictWords: ["admin"] });
-    //set version number
-    document.querySelector('#version_info').innerText = "Current Version: " + formVal.version();
+    let myForm = new octaValidate('form_demo', { successBorder: true, strictMode: true });
     //add custom rule
-    formVal.customRule("PASS", /^12345+$/, "Please enter 12345");
+    myForm.customRule("PASS", /^12345+$/, "Please enter 12345");
     //define callback
-    formVal.validateCallBack(function () {
+    myForm.validateCallBack(function () {
         //success callback
         showAlert('No Validation error', 'alert-success');
     }, function () {
         //error callback
-        showAlert(`${(formVal.status() !== 1) ? formVal.status() + " validation errors" : formVal.status() + " validation error"}`, 'alert-danger');
-    })
+        showAlert(`${(myForm.status() !== 1) ? myForm.status() + " validation errors" : myForm.status() + " validation error"}`, 'alert-danger');
+    });
 
-    let formEl = document.querySelector('#form_register');
+    /*Handle submission here*/
+    let formEl = document.querySelector('#form_demo');
     formEl.addEventListener('submit', function (e) {
         e.preventDefault();
         //invoke the validate method
-        if (formVal.validate() === true) {
+        if (myForm.validate()) {
             //return type == true - > validation successful
             showAlert('No Validation error', 'alert-success');
-            alert("Couldn't break through?\nDemo Form passed the validation test!");
             //process form data here
         } else {
             //return type == false - > validation failed
-            showAlert(`${formVal.status()} validation errors`, 'alert-danger');
+            showAlert(`${myForm.status()} validation errors`, 'alert-danger');
         }
-
     })
 
+    //custom function to toggle alert snackbar
     function showAlert(text = "Light Attracts Bugs!", addClass = "alert-danger") {
         const p = document.querySelector("#alert_snackbar");
         p.classList = "";

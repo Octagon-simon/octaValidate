@@ -1,8 +1,10 @@
-# <img align="center" src="https://octagon-simon.github.io/octaValidate/img/ov-success.png" width="25px"> octaValidate V1.1.4 
+# <img align="center" src="https://octagon-simon.github.io/octaValidate/img/ov-success.png" width="25px"> octaValidate V1.2.0
 
 This library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes.
 
 We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** file which you can open to see how this library really works.
+
+We have developed this Library to work server-side on PHP language and as such, you can validate your forms server-side using this Library for PHP. [Visit the repository](https://github.com/Octagon-simon/octaValidate-PHP)
 
 ## DOCUMENTATION
 
@@ -13,7 +15,7 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.1.4/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@1.2.0/native/validate.js"></script>
 ```
 
 ### NPM
@@ -59,12 +61,12 @@ The return type of the **validate()** method is **Boolean**.
 
 ```javascript
 //create new instance of the function
-const formVal  = new octaValidate('form_register');
+const myForm = new octaValidate('FORM_ID');
 //listen for submit event
-document.querySelector('#form_register').addEventListener('submit', function(e){
+document.getElementById('FORM_ID').addEventListener('submit', function(e){
     e.preventDefault();
     //invoke the method
-    if(formVal.validate() === true)
+    if(myForm.validate() === true)
     { 
       //validation successful, process form data here
     } else {
@@ -90,22 +92,21 @@ Here are the inbuilt validation rules.
 - URL - The value must be a valid URL
 - URL_QP - The value must be a valid URL and may contain Query parameters.
 - USERNAME - The value may contain letters, numbers, a hyphen or an underscore.
-- TEXT - The value may contain any of these special Characters (. , / () [] & ! '' "" : ; ?)
-- CHECK - The checkbox or a radio element is required.
+- TEXT - The value may contain any of these special characters (. , / () [] & ! '' "" : ; ?)
 
-Didn't see the rule you're looking for? Don't worry!
+Didn't see a validation rule that you need for your form? Don't worry!
 
-With **octaValidate**, you have the power to define your custom validation rule and it will be processed as if it were an inbuilt rule.
+With **octaValidate**, you have the power to define your custom rule and it will be processed as if it were an inbuilt rule.
   
 ## CUSTOM VALIDATION RULES
 
-In some cases where you need to define a custom validation rule, use the method below.
+In some cases where you need to define a custom rule, use the method below.
 
 ```javascript
 //syntax for custom rule
-formVal.customRule(RULE_TITLE, REG_EXP, ERROR_TEXT);
+myForm.customRule(RULE_TITLE, REG_EXP, ERROR_TEXT);
 ```
-Here's a custom validation rule to validate an email address.
+Here's a custom rule to validate an email address.
 
 ```javascript
 //custom email validation
@@ -113,17 +114,17 @@ const rule_title = "EML";
 const reg_exp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const err_txt = "Please povide a valid Email Address";
 //create new instance of the function
-const formVal = new octaValidate('form_register');
+const myForm = new octaValidate('form_register');
 //define the custom rule
-formVal.customRule(rule_title, reg_exp, err_txt);
+myForm.customRule(rule_title, reg_exp, err_txt);
 ```
 
-Then on your Input Element, provide the validation rule **[ EML ]**.
+Then on your Input Element, provide the rule title **[ EML ]**.
 
 ```html
 <input type="email" id="inp_email" octavalidate="EML">
 ```
-> Note that: All Validation rules are **case-sensitive!**
+> Note that: All Rule Titles are **case-sensitive!**
 
 ## MORE CUSTOM RULES
 
@@ -139,9 +140,9 @@ var rules = {
 };
 
 //create new instance of the function
-const formVal  = new octaValidate('form_register');
+const myForm = new octaValidate('form_register');
 //define more custom rules
-formVal.moreCustomRules(rules);
+myForm.moreCustomRules(rules);
 ```
 > Note that: You do not need to pass in your **regular expression** as a string! This is because the *JavaScript engine* natively recognizes *regular expressions*.
 
@@ -168,12 +169,12 @@ The table below shows the validation rule and the attribute that you can use to 
 | USERNAME        |Username          | ov-username:msg |
 | TEXT            |General Text      | ov-text:msg |
 
-Here's how to use the custom validation text
+Here's how to use the custom error message
 
 ```html
 <input type="text" octavalidate="R,USERNAME" ov-required:msg="Your username is required" ov-username:msg="Username should contain letters or numbers" name="username" id="inp_uname">
 ```
-> With the latest release, you can now validate a CHECKBOX, RADIO ELEMENT or a FILE INPUT ELEMENT using the **R** validation rule to mark the field as **required**, and you may provide a custom message using the **ov-required:msg** attribute.
+> Validate a CHECKBOX, or a FILE INPUT ELEMENT using the **R** validation rule to mark the field as **required**, and you may provide a custom message using the **ov-required:msg** attribute.
 
 ## ATTRIBUTES VALIDATION
 
@@ -211,19 +212,15 @@ You can check if two inputs contain the same values, using the attribute **equal
 ```
 ### FILE VALIDATION
 
-You can validate: **accept, size, minsize, maxsize, totalsize, totalminsize and totalmaxsize** by providing it as an attribute to the file input element.
+You can validate: **accept, accept-mime, size, minsize, maxsize** by providing it as an attribute to the file input element.
 
-- accept - Use this attribute to list out the file types allowed for upload
-- size (2mb) `single` - This means that the file provided must be 2mb in size
-- minsize (5mb) `single` - This means that the file provided must be up to 5mb or more.
-- maxsize (5mb) `single` - This means that the file provided must be 5mb or less.
-- totalsize (2mb) `multiple` - This means that all files provided must have a size equal to 2mb.
-- totalminsize (5mb) `multiple` - This means that all files provided must have a size that is up to 5mb or more.
-- totalmaxsize (5mb) `multiple` - This means that all files provided must have a size that is 5mb or less.
-
-> `multiple` means that the file upload type must have a multiple attribute to support more than one file.
-
-Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/file.html) to learn more about validating a file input element with octavalidate.
+- accept - Use this attribute to list out the file extensions allowed for upload
+- accept - Use this attribute to list out the file MIME types allowed for upload. It supports a wildcard eg audio/*
+- size (2mb) `single or multiple` - This means that the file provided must be 2mb in size
+- minsize (5mb) `single or multiple` - This means that the file provided must be up to 5mb or more.
+- maxsize (5mb) `single or multiple` - This means that the file provided must be 5mb or less.
+  
+Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/file.html) to learn more about validating a file input element.
 
 ## API METHODS
 
@@ -233,9 +230,9 @@ You can invoke the **status()** method anytime to check the number of validation
 
 ```javascript
 //Your validation instance
-const formVal = new octaValidate('form_register');
+const myForm = new octaValidate('form_register');
 //check validation errors
-formVal.status();
+myForm.status();
 ```
 
 ### CALLBACKS
@@ -246,21 +243,21 @@ To define a callback, invoke this method and pass in your function as an argumen
 
 ```javascript
 //create new instance of the function
-const formVal = new octaValidate('form_register');
+const myForm = new octaValidate('form_register');
 //success callback
 let successCB = function(){
     alert("No validation error");
 }
 //error callback
 let errorCB = function(){
-    alert(formVal.status()+" validation error(s)")
+    alert(myForm.status()+" validation error(s)")
 }
 //invoke the method
-formVal.validateCallBack(successCB, errorCB);
+myForm.validateCallBack(successCB, errorCB);
 ```
 If there are no validation errors, **successCB** will be executed but if there are validation errors, the **errorCB** will be executed.
 
-> Note: This callback feature will only work if validation has started on the form. Make sure to start validation on the form by invoking the **validate()** method. 
+> Note: This callback feature will only work if validation has started on the form. Make sure to start validating the form by invoking the **validate()** method when the form is being submitted. 
 
 ## CONFIGURATION
 
@@ -276,13 +273,19 @@ We have 3 configuration options:
   
    This option alows you to provide words that users are not supposed to submit. For eg ["null", "error", "false"]. In order to use this option, you must set **strictMode** to **true**.
 
-> From Version 1.1.4 upwards, any value provided by the user that matches any of the strict words, will be flagged as "not allowed".
+> Since Version 1.1.4, any value provided by the user that matches any of the strict words, will be flagged as "not allowed".
 
 To use any of these options, provide it as an object and pass it as the second argument when creating an instance of octaValidate.
 
 ```javascript
+//config options
+const options = {
+  successBorder : true, 
+  strictMode : true, 
+  strictWords : ["error", "false", "invalid"]
+}
 //my function instance
-const formVal = new octaValidate('form_register', {successBorder : true, strictMode : true, strictWords : ["error", "false", "invalid"]});
+const myForm = new octaValidate('FORM_ID', options);
 ```
 
 ## REFERENCE METHODS
@@ -290,7 +293,7 @@ After creating a new instance of the function, the methods below becomes availab
 
 ```javascript
 //create instance of the function
-const formVal = new octaValidate('form_register');
+const myForm = new octaValidate('FORM_ID');
 ```
 
 - **validate()**
@@ -315,6 +318,7 @@ const formVal = new octaValidate('form_register');
 
     Invoke this method, providing your success callback or error callback as arguments. The success callback will execute when there are no validation errors and the error callback will execute when there are validation errors
   
+> There are more methods than the ones listed above, Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/api.html) to learn more.
 
 ## LEARN MORE
 Need a detailed explanation on how to use this library? 

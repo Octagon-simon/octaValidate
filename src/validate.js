@@ -1,26 +1,36 @@
 /**
- * OctaValidate main JS V1.1.4
+ * OctaValidate main JS V1.2.0
  * author: Simon Ugorji
- * Last Edit : 11th July 2022
+ * Last Edit : 27th July 2022
  */
 (function () {
     //global Styling
-    const ovStyle = document.createElement("style");
-    ovStyle.id = "octaValidate-global-style";
-    ovStyle.innerHTML = `
-    .octaValidate-inp-error:not([type="checkbox"]), .octaValidate-inp-error:not([type="radio"]){
+    if (!document.querySelector('#octavalidate-global-style')) {
+        const ovStyle = document.createElement("style");
+        ovStyle.id = "octavalidate-global-style";
+        ovStyle.innerHTML = `
+        .octavalidate-inp-error:not([type="checkbox"], [type="file"], [type="radio"]){
         border-color: #e43f5a !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
     } 
-    .octaValidate-inp-success:not([type="checkbox"]), .octaValidate-inp-success:not([type="radio"]){
+    .octavalidate-inp-success:not([type="checkbox"], [type="file"], [type="radio"]){
         border-color: #4caf50 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
     }
-    .octaValidate-txt-error{
+    .octavalidate-txt-error{
+        display:block;
         color : #d10745;
-        font-size: 1rem !important;
-        font-weight: 400;
+        font-size: 1rem;
         margin: 5px 0px 0px 0px;
     }`;
-    document.head.appendChild(ovStyle);
+        document.head.appendChild(ovStyle);
+    }
 }());
 
 function octaValidate(form_ID, userConfig) {
@@ -31,7 +41,7 @@ function octaValidate(form_ID, userConfig) {
     let errors = {}, continueValidation = {}, nextValidation = {};
     //store primary validations
     const validatePrimary = {};
-    //store Attribute validations [length,minlength,maxlength,equalto]
+    //store Attribute validations [length,minlength,etc]
     const validateAttr = {};
     //success callback
     let cbSuccess = null;
@@ -46,9 +56,7 @@ function octaValidate(form_ID, userConfig) {
         strictWords: ["null", "NaN", "undefined"]
     };
     //version number
-    const versionNumber = "1.1.4";
-
-    ////---------------
+    const versionNumber = "1.2.0";
 
     ////---------------
 
@@ -57,6 +65,7 @@ function octaValidate(form_ID, userConfig) {
         return (Object.prototype.toString.call(obj) === '[object Object]');
     };
     const isArray = (ary) => {
+        //never used right? Don't worry, Leave am like that :)
         return (Object.prototype.toString.call(ary) === '[object Array]');
     };
     const findElem = (id) => {
@@ -69,14 +78,14 @@ function octaValidate(form_ID, userConfig) {
         ovRemoveError(inputID);
         //add error to element
         const g = document.createElement("p");
-        g.setAttribute("id", "octaValidate_" + inputID);
-        g.setAttribute("class", "octaValidate-txt-error");
+        g.setAttribute("id", "octavalidate_" + inputID);
+        g.setAttribute("class", "octavalidate-txt-error");
         g.innerText = error;
 
         //set class of input error
-        const f = document.querySelector('#' + inputID);
-        if (!f.classList.contains('octaValidate-inp-error')) {
-            f.classList.add("octaValidate-inp-error");
+        const f = document.querySelector('#' + formID + " #" + inputID);
+        if (!f.classList.contains('octavalidate-inp-error')) {
+            f.classList.add("octavalidate-inp-error");
         }
         //append to form .nextSibling
         f.parentNode.appendChild(g, f);
@@ -84,16 +93,16 @@ function octaValidate(form_ID, userConfig) {
     //remove error
     const ovRemoveError = (inputID) => {
         //remove error text
-        let errorElem = (document.querySelector('#octaValidate_' + inputID)) ?
-            document.querySelector('#octaValidate_' + inputID) : null;
+        let errorElem = (document.querySelector('#octavalidate_' + inputID)) ?
+            document.querySelector('#octavalidate_' + inputID) : null;
         let inputElem = (document.querySelector('#' + inputID)) ?
             document.querySelector('#' + inputID) : null;
         //remove classlist
         if (inputElem !== null) {
-            (inputElem.classList.contains('octaValidate-inp-error')) ?
-                inputElem.classList.remove('octaValidate-inp-error') : null;
+            (inputElem.classList.contains('octavalidate-inp-error')) ?
+                inputElem.classList.remove('octavalidate-inp-error') : null;
         } else {
-            throw new Error(`Input ID ${inputID} is missing!`);
+            ovDoError(`Input ID ${inputID} is missing!`);
         }
         if (errorElem !== null) {
             errorElem.remove();
@@ -107,8 +116,8 @@ function octaValidate(form_ID, userConfig) {
             ovRemoveSuccess(inputID);
             //set class of input error
             const f = document.querySelector('#' + inputID);
-            if (!f.classList.contains('octaValidate-inp-success')) {
-                f.classList.add("octaValidate-inp-success");
+            if (!f.classList.contains('octavalidate-inp-success')) {
+                f.classList.add("octavalidate-inp-success");
             }
         }
     };
@@ -120,14 +129,26 @@ function octaValidate(form_ID, userConfig) {
         if (config.successBorder == true) {
             //remove classlist
             if (inputElem !== null) {
-                (inputElem.classList.contains('octaValidate-inp-success')) ?
-                    inputElem.classList.remove('octaValidate-inp-success') : null;
+                (inputElem.classList.contains('octavalidate-inp-success')) ?
+                    inputElem.classList.remove('octavalidate-inp-success') : null;
             } else {
-                throw new Error(`Input ID ${inputID} is missing!`);
+                ovDoError(`Input ID ${inputID} is missing!`);
             }
         }
     };
-
+    //throw an error / exception
+    const ovDoError = function (err) {
+        if (!findElem('octavalidate-exception')) {
+            const errEl = document.createElement('p');
+            errEl.id = "octavalidate-exception";
+            errEl.setAttribute('class', 'octavalidate-txt-error');
+            errEl.style.textAlign = "center";
+            errEl.innerText = "An Exception has occured. Please open the browser's console to preview & debug.";
+            document.getElementById(formID).firstElementChild.before(errEl);
+        }
+        //throw error
+        throw new Error(err);
+    }
     //convert size
     const sizeInBytes = (size) => {
         const prevSize = size;
@@ -135,7 +156,7 @@ function octaValidate(form_ID, userConfig) {
         size = size.toLowerCase().replaceAll(' ', '');
         //check size
         if (/[0-9]+(bytes|kb|mb|gb|tb|pb)+$/i.test(size) === false) {
-            throw new Error(`The size ${prevSize} you provided is Invalid. Please check for typos or make sure that you are providing a size from bytes up to Petabytes`);
+            ovDoError(`The size ${prevSize} you provided is Invalid. Please check for typos or make sure that you are providing a size from bytes up to Petabytes`);
         }
         //get the number
         const sizeNum = Number(size.split('').map(sn => { return ((!(isNaN(sn)) ? sn : '')) }).join(''));
@@ -145,27 +166,22 @@ function octaValidate(form_ID, userConfig) {
             return ((res !== -1) ? size.substring(res) : "");
         })();
         /**
-         * 1KB = 1000 bytes
-         * 1MB = 1 000 000 bytes
-         * 1GB = 1 000 000 000 bytes 
-         * 1TB = 1 000 000 000 000 bytes
-         * 1PB = 1000 bytes ^ 5 [I stopped here. Add yours]
+         * 1KB = 1024 bytes 
+         * 1PB = 1024 bytes ^ 5 [I stopped here. Add yours]
          */
         switch (sizeExt) {
-            case "":
-                return (Number(sizeNum));
             case "bytes":
                 return (Number(sizeNum));
             case "kb":
-                return (Number(sizeNum * 1000));
+                return (Number(sizeNum * 1024));
             case "mb":
-                return (Number(sizeNum * 1000 * 1000));
+                return (Number(sizeNum * 1024 * 1024));
             case "gb":
-                return (Number(sizeNum * 1000 * 1000 * 1000));
+                return (Number(sizeNum * 1024 * 1024 * 1024));
             case "tb":
-                return (Number(sizeNum * 1000 * 1000 * 1000 * 1000));
+                return (Number(sizeNum * 1024 * 1024 * 1024 * 1024));
             case "pb":
-                return (Number(sizeNum * 1000 * 1000 * 1000 * 1000 * 1000));
+                return (Number(sizeNum * 1024 * 1024 * 1024 * 1024 * 1024));
             default:
                 return (0);
         }
@@ -173,15 +189,13 @@ function octaValidate(form_ID, userConfig) {
 
     ////---------------
 
-    ////---------------
-
-    /** ARGUMENTS CHECK **/
+    /** PARAMETERS CHECK **/
     //check if form id is present
     if (typeof form_ID === "undefined")
-        throw new Error("A valid Form Id must be passed as the first Argument during initialization");
+        ovDoError("A valid Form Id must be passed as the first Argument during initialization");
     //check if userConfig exists and is passed as an object
     if (typeof userConfig !== "undefined" && !isObject(userConfig))
-        throw new Error("Configuration options must be passed as a valid object");
+        ovDoError("Configuration options must be passed as a valid object");
     //store configuratiion
     if (typeof userConfig !== "undefined") {
         if (userConfig.successBorder !== undefined) {
@@ -197,10 +211,7 @@ function octaValidate(form_ID, userConfig) {
 
     ////---------------
 
-    ////---------------
-
     /** CORE VALIDATION LIBRARY**/
-    //the validation library
     let octaValidations = (function () {
         //check email
         function octaValidateEmail(email) {
@@ -321,9 +332,9 @@ function octaValidate(form_ID, userConfig) {
         }
     }());
 
-    //build rules
+    //build & store rules
     (function (form_id) {
-        //get all primary validations from the octavalidate attribute
+        //get all rules from the octavalidate attribute
         const ovPrimaryValidations = document.querySelectorAll(`#${form_id} [octavalidate]`);
         //get all minlengths
         const ovMinLengths = document.querySelectorAll(`#${form_id} [minlength]`);
@@ -339,14 +350,16 @@ function octaValidate(form_ID, userConfig) {
         const ovMinSize = document.querySelectorAll(`#${form_id} [minsize]`);
         //get maxsize
         const ovMaxSize = document.querySelectorAll(`#${form_id} [maxsize]`);
-        //get total size
-        const ovTotalSize = document.querySelectorAll(`#${form_id} [totalsize]`);
-        //get total minsize
-        const ovTotalMinSize = document.querySelectorAll(`#${form_id} [totalminsize]`);
-        //get total maxsize
-        const ovTotalMaxSize = document.querySelectorAll(`#${form_id} [totalmaxsize]`);
+        //get files
+        const ovFiles = document.querySelectorAll(`#${form_id} [files]`);
+        //get minfiles
+        const ovMinFiles = document.querySelectorAll(`#${form_id} [minfiles]`);
+        //get maxfiles
+        const ovMaxFiles = document.querySelectorAll(`#${form_id} [maxfiles]`);
         //get accept
         const ovAccept = document.querySelectorAll(`#${form_id} [accept]`);
+        //get accept Mime
+        const ovAcceptMime = document.querySelectorAll(`#${form_id} [accept-mime]`);
         //collect primary validations [octavalidate] attribute
         if (ovPrimaryValidations) {
             let e = 0;
@@ -354,12 +367,12 @@ function octaValidate(form_ID, userConfig) {
                 //get id
                 const id = ovPrimaryValidations[e].id;
                 //get attr
-                const attrVal = (ovPrimaryValidations[e].getAttribute("octavalidate")) ? ovPrimaryValidations[e].getAttribute("octavalidate") : null;
+                const attrVal = (ovPrimaryValidations[e].getAttribute("octavalidate")) ? ovPrimaryValidations[e].getAttribute("octavalidate") : ovDoError('Validation rules must be entered within the "octavalidate" attribute and each rule must be separated by a comma.');
                 //get type
                 const type = (ovPrimaryValidations[e].getAttribute("type")) ? ovPrimaryValidations[e].getAttribute("type") : null;
                 //exit if attribute existts but id is null
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
                 //["R", "required"], ["EMAIL", "email"], ["R", "radio"]
                 validatePrimary[id] = (validatePrimary[id] === undefined) ? [attrVal, type] : [...validatePrimary[id], attrVal, type];
@@ -369,158 +382,206 @@ function octaValidate(form_ID, userConfig) {
         }
         //collect minlength validations
         if (ovMinLengths) {
-            let lv = 0;
-            while (lv < ovMinLengths.length) {
-                const val = Number(ovMinLengths[lv].getAttribute('minlength'));
-                const id = ovMinLengths[lv].id;
+            let e = 0;
+            while (e < ovMinLengths.length) {
+                const val = (ovMinLengths[e].getAttribute('minlength')) ? Number(ovMinLengths[e].getAttribute('minlength')) : ovDoError('You must provide a value for the "minlength" attribute');
+                const id = ovMinLengths[e].id;
                 //exit if attribute existts but id is null
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['MINLENGTH:' + val] : [...validateAttr[id], 'MINLENGTH:' + val];
-                ++lv;
+                ++e;
             }
         }
 
         //collect all maxlength inputs
         if (ovMaxLengths) {
-            let lv = 0;
-            while (lv < ovMaxLengths.length) {
-                const val = Number(ovMaxLengths[lv].getAttribute("maxlength"));
-                const id = ovMaxLengths[lv].id;
+            let e = 0;
+            while (e < ovMaxLengths.length) {
+                const val = (ovMaxLengths[e].getAttribute("maxlength")) ? Number(ovMaxLengths[e].getAttribute("maxlength")) : ovDoError('You must provide a value for the "maxlength" attribute');;
+                const id = ovMaxLengths[e].id;
                 //exit if attribute existts but id is null
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['MAXLENGTH:' + val] : [...validateAttr[id], 'MAXLENGTH:' + val];
-                ++lv;
+                ++e;
             }
         }
 
         //collect all length inputs
         if (ovLengths) {
-            let lv = 0;
-            while (lv < ovLengths.length) {
-                let val = Number(ovLengths[lv].getAttribute("length"));
-                let id = ovLengths[lv].id;
+            let e = 0;
+            while (e < ovLengths.length) {
+                let val = (ovLengths[e].getAttribute("length")) ? Number(ovLengths[e].getAttribute("length")) : ovDoError('You must provide a value for the "length" attribute');;
+                let id = ovLengths[e].id;
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['LENGTH:' + val] : [...validateAttr[id], 'LENGTH:' + val];
-                ++lv;
+                ++e;
             }
         }
 
         //collect equalto
         if (ovEqualTo) {
-            let eqv = 0;
-            while (eqv < ovEqualTo.length) {
-                const id = ovEqualTo[eqv].id;
-                const val = ovEqualTo[eqv].getAttribute('equalto');
+            let e = 0;
+            while (e < ovEqualTo.length) {
+                const id = ovEqualTo[e].id;
+                const val = (ovEqualTo[e].getAttribute('equalto')) ? ovEqualTo[e].getAttribute('equalto') : ovDoError('You must provide a form input ID on the "equalto" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
+                if (ovEqualTo[e].type === "file")
+                    ovDoError(`In order to use the "equalto" attribute, this form input ${id} must not be of type "file"`);
+
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['EQUALTO:' + val] : [...validateAttr[id], 'EQUALTO:' + val];
-                ++eqv;
+                ++e;
             }
         }
 
-        //collect size
+        //collect size for file upload
         if (ovSize) {
             let e = 0;
             while (e < ovSize.length) {
-                //how to store size = 10mb, maxsize =20mb per input id
                 const id = ovSize[e].id;
-                const val = ovSize[e].getAttribute('size');
+                const val = (ovSize[e].getAttribute('size')) ? ovSize[e].getAttribute('size') : ovDoError('You must provide a valid digital storage on the "size" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
+                //check if type is file
+                if (ovSize[e].type !== "file")
+                    ovDoError(`In order to use the "size" attribute, this form input ${id} must be of type "file"`);
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['SIZE:' + val] : [...validateAttr[id], 'SIZE:' + val];
                 ++e;
             }
         }
 
-        //collect min-size
+        //collect min-size for file upload
         if (ovMinSize) {
             let e = 0;
             while (e < ovMinSize.length) {
                 let id = ovMinSize[e].id;
-                let val = ovMinSize[e].getAttribute('minsize');
+                let val = (ovMinSize[e].getAttribute('minsize')) ? ovMinSize[e].getAttribute('minsize') : ovDoError('You must provide a valid digital storage on the "minsize" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
+                //check if type is file
+                if (ovMinSize[e].type !== "file")
+                    ovDoError(`In order to use the "minsize" attribute, this form input ${id} must be of type "file"`);
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['MINSIZE:' + val] : [...validateAttr[id], 'MINSIZE:' + val];
                 ++e;
             }
         }
 
-        //collect max-size
+        //collect max-size for file upload
         if (ovMaxSize) {
             let e = 0;
             while (e < ovMaxSize.length) {
                 let id = ovMaxSize[e].id;
-                let val = ovMaxSize[e].getAttribute('maxsize');
+                let val = (ovMaxSize[e].getAttribute('maxsize')) ? ovMaxSize[e].getAttribute('maxsize') : ovDoError('You must provide a valid digital storage on the "maxsize" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
+                //check if type is file
+                if (ovMaxSize[e].type !== "file")
+                    ovDoError(`In order to use the "maxsize" attribute, this form input ${id} must be of type "file"`);
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['MAXSIZE:' + val] : [...validateAttr[id], 'MAXSIZE:' + val];
                 ++e;
             }
         }
 
-        //collect size
-        if (ovTotalSize) {
+        //collect total files allowed for upload
+        if (ovFiles) {
             let e = 0;
-            while (e < ovTotalSize.length) {
-                //how to store size = 10mb, maxsize =20mb per input id
-                let id = ovTotalSize[e].id;
-                let val = ovTotalSize[e].getAttribute('totalsize');
+            while (e < ovFiles.length) {
+                let id = ovFiles[e].id;
+                let val = (ovFiles[e].getAttribute('files')) ? Number(ovFiles[e].getAttribute('files')) : ovDoError('You must provide the number of files to be selected on the "files" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
-                validateAttr[id] = (validateAttr[id] === undefined) ? ['TOTALSIZE:' + val] : [...validateAttr[id], 'TOTALSIZE:' + val];
+                //check if multiple attribute is present
+                if (!(ovFiles[e].multiple))
+                    ovDoError(`In order to use the "files" attribute, this form input ${id} must have the attribute "multiple"`);
+                //check if type is file
+                if (ovFiles[e].type !== "file")
+                    ovDoError(`In order to use the "files" attribute, this form input ${id} must be of type "file"`);
+                validateAttr[id] = (validateAttr[id] === undefined) ? ['FILES:' + val] : [...validateAttr[id], 'FILES:' + val];
                 ++e;
             }
         }
 
-        //collect min-size
-        if (ovTotalMinSize) {
+        //collect minimum files allowed for upload
+        if (ovMinFiles) {
             let e = 0;
-            while (e < ovTotalMinSize.length) {
-                let id = ovTotalMinSize[e].id;
-                let val = ovTotalMinSize[e].getAttribute('totalminsize');
+            while (e < ovMinFiles.length) {
+                let id = ovMinFiles[e].id;
+                let val = (ovMinFiles[e].getAttribute('minfiles')) ? Number(ovMinFiles[e].getAttribute('minfiles')) : ovDoError('You must provide the minimum files to be selected on the "minfiles" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
-                validateAttr[id] = (validateAttr[id] === undefined) ? ['TOTALMINSIZE:' + val] : [...validateAttr[id], 'TOTALMINSIZE:' + val];
+                //check if multiple attribute is present
+                if (!(ovMinFiles[e].multiple))
+                    ovDoError(`In order to use the "minfiles" attribute, this form input ${id} must have the attribute "multiple"`);
+                //check if type is file
+                if (ovMinFiles[e].type !== "file")
+                    ovDoError(`In order to use the "minfiles" attribute, this form input ${id} must be of type "file"`);
+                validateAttr[id] = (validateAttr[id] === undefined) ? ['MINFILES:' + val] : [...validateAttr[id], 'MINFILES:' + val];
                 ++e;
             }
         }
 
-        //collect max-size
-        if (ovTotalMaxSize) {
+        //collect maximum files allowed for upload
+        if (ovMaxFiles) {
             let e = 0;
-            while (e < ovTotalMaxSize.length) {
-                let id = ovTotalMaxSize[e].id;
-                let val = ovTotalMaxSize[e].getAttribute('totalmaxsize');
+            while (e < ovMaxFiles.length) {
+                let id = ovMaxFiles[e].id;
+                let val = (ovMaxFiles[e].getAttribute('maxfiles')) ? Number(ovMaxFiles[e].getAttribute('maxfiles')) : ovDoError('You must provide the maximum files to be selected on the "maxfiles" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
-                validateAttr[id] = (validateAttr[id] === undefined) ? ['TOTALMAXSIZE:' + val] : [...validateAttr[id], 'TOTALMAXSIZE:' + val];
+                //check if multiple attribute is present
+                if (!(ovMaxFiles[e].multiple))
+                    ovDoError(`In order to use the "maxfiles" attribute, this form input ${id} must have the attribute "multiple"`);
+                //check if type is file
+                if (ovMaxFiles[e].type !== "file")
+                    ovDoError(`In order to use the "maxfiles" attribute, this form input ${id} must be of type "file"`);
+                validateAttr[id] = (validateAttr[id] === undefined) ? ['MAXFILES:' + val] : [...validateAttr[id], 'MAXFILES:' + val];
                 ++e;
             }
         }
 
-        //collect max-size
+        //collect accepted file extensions
         if (ovAccept) {
             let e = 0;
             while (e < ovAccept.length) {
                 let id = ovAccept[e].id;
-                let val = ovAccept[e].getAttribute('accept');
+                let val = (ovAccept[e].getAttribute('accept')) ? ovAccept[e].getAttribute('accept') : ovDoError('You must provide the file extensions to be matched against on the "accept" attribute');
                 if (!id) {
-                    throw new Error(`One or more fields in ${form_id} is missing an id [Identifier]`);
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
                 }
+                //check if type is file
+                if (ovAccept[e].type !== "file")
+                    ovDoError(`In order to use the "accept" attribute, this form input ${id} must be of type "file"`);
                 validateAttr[id] = (validateAttr[id] === undefined) ? ['ACCEPT:' + val] : [...validateAttr[id], 'ACCEPT:' + val];
+                ++e;
+            }
+        }
+
+        //collect accepted file MIME types
+        if (ovAcceptMime) {
+            let e = 0;
+            while (e < ovAcceptMime.length) {
+                let id = ovAcceptMime[e].id;
+                let val = (ovAcceptMime[e].getAttribute('accept-mime')) ? ovAcceptMime[e].getAttribute('accept-mime') : ovDoError('You must provide the file MIME types to be matched against on the "accept-mime" attribute');
+                if (!id) {
+                    ovDoError(`One or more fields in ${form_id} does not have an id [Identifier] attached to it.`);
+                }
+                //check if type is file
+                if (ovAcceptMime[e].type !== "file")
+                    ovDoError(`In order to use the "accept-mime" attribute, this form input ${id} must be of type "file"`);
+                validateAttr[id] = (validateAttr[id] === undefined) ? ['ACCEPT-MIME:' + val] : [...validateAttr[id], 'ACCEPT-MIME:' + val];
                 ++e;
             }
         }
@@ -530,25 +591,28 @@ function octaValidate(form_ID, userConfig) {
     let customRules = [];
     //add single rule
     function customRule(rule_title, regExp, text) {
-        return (customRules[rule_title] = [regExp, text]);
+        //store rule
+        customRules[rule_title] = [regExp, text];
+        return (customRules[rule_title] !== undefined ? true : false);
     };
     //add multiple rules
     function moreCustomRules(rules) {
-        if (!isObject(rules)) throw new Error("The rules you provided must be a valid Object! Please refer to the README file.");
+        if (!isObject(rules)) ovDoError("The rules you provided must be a valid Object! Please refer on the README file.");
 
         let r = 0;
 
         while (r < Object.keys(rules).length) {
-            const rule_title = Object.keys(rules)[r]; //get rule/index
-            const regExp = rules[rule_title][0]; //get Regexpression
-            const text = rules[rule_title][1].toString(); //get validation message
+            const rule_title = Object.keys(rules)[r]; //get rule title / index
+            const regExp = rules[rule_title][0]; //get RegExp
+            const text = rules[rule_title][1].toString(); //get error text
 
             if (rule_title && regExp && text)
                 customRules[rule_title] = [regExp, text]
             else
-                throw new Error(`Custom Validation rule at index [${r}] is Invalid!`);
+                ovDoError(`Custom Validation rule at index [${r}] is Invalid!`);
             ++r;
         }
+        return (customRules[rule_title] !== undefined ? true : false);
     };
 
     //form validation callback 
@@ -567,19 +631,19 @@ function octaValidate(form_ID, userConfig) {
         const form_id = formID;
 
         //check if form id exists in DOM
-        if (!findElem(form_id)) throw new Error(`Form Input Element [${form_id}] does not exist in the Browser DOM`);
+        if (!findElem(form_id)) ovDoError(`Form Input Element [${form_id}] does not exist in the Browser DOM`);
         //Begin validation and return result
         return (function validateForm() {
             if (validatePrimary !== null ||
                 validateAttr !== null) {
                 //loop through all form elements that needs validation
-                let formInputs = document.querySelectorAll(`#${form_id} [octavalidate], [length], [maxlength], [minlength], [equalto], [maxsize], [minsize], [accept], [size], [totalsize], [totalminsize], [totalmaxsize]`);
+                let formInputs = document.querySelectorAll(`#${form_id} [octavalidate], [length], [maxlength], [minlength], [equalto], [size], [maxsize], [minsize], [accept], [accept-mime], [files], [minfiles], [maxfiles]`);
                 formInputs.forEach(input => {
                     //check if id exists within the element
                     if (input.id !== "") {
-                        //errors is unique to the input id [was not initially implemented :)]
+                        //errors is unique on the input id [was not initially implemented :)]
                         let formInputId = input.id;
-                        //errors is unique to the input id
+                        //errors is unique on the input id
                         errors[formInputId] = 0;
                         continueValidation[formInputId] = 0;
                         nextValidation[formInputId] = 0;
@@ -591,11 +655,11 @@ function octaValidate(form_ID, userConfig) {
                             let elem = (document.querySelector('#' + formInputId)) ? document.querySelector('#' + formInputId) : null;
 
                             if (elem === null) {
-                                throw new Error(`The Form Input Element with the ID [${formInputId}] is nowhere to be found`);
+                                ovDoError(`The Form Input Element with the ID [${formInputId}] is nowhere to be found`);
                             }
                             //set strict words
                             let strictWords = config.strictWords;
-                            if (elem.type != "file" && elem.type != "checkbox" && elem.type != "radio") {
+                            if (elem.type !== "file" && elem.type !== "checkbox" && elem.type !== "radio") {
                                 //remove whitespace
                                 elem.value = elem.value.trim();
                             }
@@ -606,8 +670,7 @@ function octaValidate(form_ID, userConfig) {
                                 }
                                 return false;
                             };
-                            if ((elem.value !== "") && elemHasStrictWords()) {
-                                //I totally forgot that objects are passed by reference :(
+                            if ((elem.value !== "") && elemHasStrictWords() && elem.type !== "file" && elem.type !== "checkbox" && elem.type !== "radio") {
                                 errors[formInputId]++;
                                 validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : "This value is not allowed";
                                 ovRemoveSuccess(index);
@@ -664,12 +727,12 @@ function octaValidate(form_ID, userConfig) {
                                     document.querySelector('#' + index) : null;
 
                                 if (elem === null) {
-                                    throw new Error(`Input ID ${index} is missing`);
+                                    ovDoError(`Input ID ${index} is missing`);
                                 }
 
                                 //create event listener
                                 let eventAction = () => {
-                                    if (type !== "radio" && type !== "checkbox") {
+                                    if (type !== "file" && type !== "checkbox" && type !== "radio") {
                                         if (elem.value) {
                                             if (eval(validationInfo) === false) {
                                                 errors[formInputId]++;
@@ -702,14 +765,14 @@ function octaValidate(form_ID, userConfig) {
                                     //required
                                     if (item === 'R' || (elem.getAttribute('required') !== null)) {
                                         if (type == "checkbox" || type == "radio") {
-                                            if (elem.checked === false) {
+                                            if (!elem.checked) {
                                                 errors[formInputId]++;
-                                                validationInfo = "elem.checked";
+                                                validationInfo = `${!elem.checked}`;
                                                 validationText = (elem.getAttribute("ov-required:msg")) ? elem.getAttribute("ov-required:msg").toString() : 'This checkbox is required';
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
                                                 if (elem.addEventListener) {
-                                                    elem.addEventListener("change", eventAction);
+                                                    elem.addEventListener("change", eventAction, { once: true });
                                                 } else if (elem.attachEvent) {
                                                     elem.attachEvent("change", eventAction);
                                                 }
@@ -726,7 +789,7 @@ function octaValidate(form_ID, userConfig) {
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
                                                 if (elem.addEventListener) {
-                                                    elem.addEventListener("change", eventAction);
+                                                    elem.addEventListener("change", eventAction, { once: true });
                                                 } else if (elem.attachEvent) {
                                                     elem.attachEvent("change", eventAction);
                                                 }
@@ -789,7 +852,7 @@ function octaValidate(form_ID, userConfig) {
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, errText);
                                                 if (elem.addEventListener) {
-                                                    elem.addEventListener("change", eventAction);
+                                                    elem.addEventListener("change", eventAction, { once: true });
                                                 } else if (elem.attachEvent) {
                                                     elem.attachEvent("change", eventAction);
                                                 }
@@ -811,7 +874,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -826,11 +889,11 @@ function octaValidate(form_ID, userConfig) {
                                         if (!octaValidations.ValidateAlpha_Only(elem.value)) {
                                             errors[formInputId]++;
                                             validationInfo = "octaValidations.ValidateAlpha_Only(elem.value)";
-                                            validationText = (elem.getAttribute('ov-alpha-only:msg:')) ? elem.getAttribute('ov-alpha-only:msg:').toString() : "Please enter only Alphabets!";
+                                            validationText = (elem.getAttribute('ov-alpha-only:msg:')) ? elem.getAttribute('ov-alpha-only:msg:').toString() : "Please enter only Letters!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -844,11 +907,11 @@ function octaValidate(form_ID, userConfig) {
                                         if (!octaValidations.ValidateAlpha_Spaces(elem.value)) {
                                             errors[formInputId]++;
                                             validationInfo = "octaValidations.ValidateAlpha_Spaces(elem.value)";
-                                            validationText = (elem.getAttribute('ov-alpha-spaces:msg')) ? elem.getAttribute('ov-alpha-spaces:msg').toString() : "Please enter only Alphabets or spaces!";
+                                            validationText = (elem.getAttribute('ov-alpha-spaces:msg')) ? elem.getAttribute('ov-alpha-spaces:msg').toString() : "Please enter only Letters or spaces!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -863,11 +926,11 @@ function octaValidate(form_ID, userConfig) {
                                         if (!octaValidations.ValidateAlpha_Numeric(elem.value)) {
                                             errors[formInputId]++;
                                             validationInfo = "octaValidations.ValidateAlpha_Numeric(elem.value)";
-                                            validationText = (elem.getAttribute('ov-alpha-numeric:msg')) ? elem.getAttribute('ov-alpha-numeric:msg').toString() : "Please enter only Alphabets or Numbers!";
+                                            validationText = (elem.getAttribute('ov-alpha-numeric:msg')) ? elem.getAttribute('ov-alpha-numeric:msg').toString() : "Please enter only Letters or Numbers!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -882,11 +945,11 @@ function octaValidate(form_ID, userConfig) {
                                         if (!octaValidations.ValidateLower_Alpha(elem.value)) {
                                             errors[formInputId]++;
                                             validationInfo = "octaValidations.ValidateLower_Alpha(elem.value)";
-                                            validationText = (elem.getAttribute('ov-lower-alpha:msg')) ? elem.getAttribute('ov-lower-alpha:msg').toString() : "Only letters in lowercase are supported!";
+                                            validationText = (elem.getAttribute('ov-lower-alpha:msg')) ? elem.getAttribute('ov-lower-alpha:msg').toString() : "Only letters in lowercase are allowed!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -900,12 +963,12 @@ function octaValidate(form_ID, userConfig) {
                                         if (!octaValidations.ValidateUpper_Alpha(elem.value)) {
                                             errors[formInputId]++;
                                             validationInfo = "octaValidations.ValidateUpper_Alpha(elem.value)";
-                                            validationText = (elem.getAttribute('ov-upper-alpha:msg')) ? elem.getAttribute('ov-upper-alpha:msg').toString() : "Only letters in uppercase are supported!";
+                                            validationText = (elem.getAttribute('ov-upper-alpha:msg')) ? elem.getAttribute('ov-upper-alpha:msg').toString() : "Only letters in uppercase are allowed!";
                                             ovRemoveSuccess(index);
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -924,7 +987,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -941,11 +1004,11 @@ function octaValidate(form_ID, userConfig) {
                                             validationInfo = "!isNaN(elem.value)";
                                             validationText = (elem.getAttribute('ov-digits:msg')) ?
                                                 elem.getAttribute('ov-digits:msg').toString() :
-                                                "Please provide a valid Number!";
+                                                "Please provide a valid Number";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -964,7 +1027,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -983,7 +1046,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -1002,7 +1065,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -1021,7 +1084,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -1041,7 +1104,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction);
+                                                elem.addEventListener("change", eventAction, { once: true });
                                             } else if (elem.attachEvent) {
                                                 elem.attachEvent("change", eventAction);
                                             }
@@ -1072,8 +1135,12 @@ function octaValidate(form_ID, userConfig) {
                                 let validationText;
 
                                 let elem = (document.querySelector('#' + index)) ? document.querySelector('#' + index) : null;
+                                //get element type
+                                let type = elem.type;
+                                //get multiple attribute (true or false)
+                                let isMultiple = elem.multiple;
                                 if (elem === null) {
-                                    throw new Error(`Input ID ${index} is missing`);
+                                    ovDoError(`Input ID ${index} is missing`);
                                 };
                                 let attributesEventAction = () => {
                                     if (elem.value) {
@@ -1094,17 +1161,25 @@ function octaValidate(form_ID, userConfig) {
                                 };
                                 //['MINSIZE:2MB', 'MAXSIZE:5MB']
                                 validateAttr[formInputId].forEach(f => {
-                                    if (f.split(':')[0] === 'ACCEPT') {
+                                    /*
+                                    * Regular Expressions
+                                    *
+                                    * mime type [image/jpeg] /.\/+[^*]/
+                                    * mime type with wildcard [image/*] /.\/\*{1}/
+                                    * file extension /\.{1}./
+                                    **/
+                                    if (f.split(':')[0] === 'ACCEPT' && type == 'file') {
                                         //get and convert to lowercase
                                         const requiredFileExts = f.split(':')[1].replaceAll(' ', '').split(',').map(m => {
                                             return (m.toLowerCase());
                                         });
-                                        if (elem.files !== null && elem.files.length !== 0) {
-                                            Object.entries(elem.files).forEach(ef => {
-                                                //consider using mime type + accept attribute to check for uploaded files ?
-                                                if (!(requiredFileExts.includes(ef[1].name.toLowerCase().substring(ef[1].name.toLowerCase().lastIndexOf("."))))) {
+                                        if (elem.files !== null && elem.files.length !== 0 && requiredFileExts.length !== 0) {
+                                            //loop through selected files
+                                            for (let ef of elem.files) {
+                                                //get file extension from name and check if it is allowed
+                                                if (!(requiredFileExts.includes(ef.name.toLowerCase().substring(ef.name.toLowerCase().lastIndexOf("."))))) {
                                                     errors[formInputId]++;
-                                                    validationInfo = `${!(requiredFileExts.includes(ef[1].name.toLowerCase().substring(ef[1].name.toLowerCase().lastIndexOf("."))))}`;
+                                                    validationInfo = `${!(requiredFileExts.includes(ef.name.toLowerCase().substring(ef.name.toLowerCase().lastIndexOf("."))))}`;
                                                     validationText = (elem.getAttribute("ov-accept:msg")) ? (elem.getAttribute("ov-accept:msg")) : "File type is not supported";
                                                     ovRemoveSuccess(index);
                                                     ovNewError(index, validationText);
@@ -1117,9 +1192,34 @@ function octaValidate(form_ID, userConfig) {
                                                 } else {
                                                     continueValidation[formInputId]++;
                                                 }
-                                            })
+                                            }
                                         }
-                                    } else if (f.split(':')[0] === 'SIZE') {
+                                    } else if (f.split(':')[0] === 'ACCEPT-MIME' && type == 'file') {
+                                        //get and convert to lowercase
+                                        const requiredFileMime = f.split(':')[1].replaceAll(' ', '').split(',').map(m => {
+                                            return (m.toLowerCase());
+                                        });
+                                        if (elem.files !== null && elem.files.length !== 0 && requiredFileMime.length !== 0) {
+                                            //loop through selected files
+                                            for (let ef of elem.files) {
+                                                //check if required mimes includes the file type & wildcard
+                                                if (!(requiredFileMime.includes(ef.type)) && !(requiredFileMime.includes(ef.type.split(ef.type.substr(ef.type.indexOf('/')))[0] + "/*"))) {
+                                                    errors[formInputId]++;
+                                                    validationInfo = `${!(requiredFileMime.includes(ef.type)) && !(requiredFileMime.includes(ef.type.split(ef.type.substr(ef.type.indexOf('/')))[0] + "/*"))}`;
+                                                    validationText = (elem.getAttribute("ov-accept-mime:msg")) ? (elem.getAttribute("ov-accept-mime:msg")) : "File type is not supported";
+                                                    ovRemoveSuccess(index);
+                                                    ovNewError(index, validationText);
+                                                    if (elem.addEventListener) {
+                                                        elem.addEventListener("change", attributesEventAction);
+                                                    } else if (elem.attachEvent) {
+                                                        elem.attachEvent("change", attributesEventAction);
+                                                    }
+                                                } else {
+                                                    continueValidation[formInputId] = 0;
+                                                }
+                                            }
+                                        }
+                                    } else if (f.split(':')[0] === 'SIZE' && type == 'file' && !isMultiple) {
                                         const requiredSize = sizeInBytes(f.split(':')[1]);
                                         if (elem.files !== null && elem.files.length !== 0) {
                                             Object.entries(elem.files).forEach(ef => {
@@ -1141,7 +1241,7 @@ function octaValidate(form_ID, userConfig) {
                                             })
                                         }
 
-                                    } else if (f.split(':')[0] === 'MINSIZE') {
+                                    } else if (f.split(':')[0] === 'MINSIZE' && type == 'file' && !isMultiple) {
                                         const requiredSize = sizeInBytes(f.split(':')[1]);
                                         if (elem.files !== null && elem.files.length !== 0) {
                                             Object.entries(elem.files).forEach(ef => {
@@ -1163,7 +1263,7 @@ function octaValidate(form_ID, userConfig) {
                                             })
                                         }
 
-                                    } else if (f.split(':')[0] === 'MAXSIZE') {
+                                    } else if (f.split(':')[0] === 'MAXSIZE' && type == 'file' && !isMultiple) {
                                         const requiredSize = sizeInBytes(f.split(':')[1]);
                                         if (elem.files !== null && elem.files.length !== 0) {
                                             Object.entries(elem.files).forEach(ef => {
@@ -1185,17 +1285,17 @@ function octaValidate(form_ID, userConfig) {
                                             })
                                         }
 
-                                    } else if (f.split(':')[0] === 'TOTALSIZE') {
+                                    } else if (f.split(':')[0] === 'SIZE' && type == 'file' && isMultiple) {
                                         const requiredSize = sizeInBytes(f.split(':')[1]);
                                         if (elem.files !== null && elem.files.length !== 0) {
                                             let uploadedSize = 0;
-                                            Object.entries(elem.files).forEach(ef => {
-                                                uploadedSize += ef[1].size;
-                                            })
+                                            for (let ef of elem.files) {
+                                                uploadedSize += ef.size;
+                                            }
                                             if (uploadedSize !== requiredSize) {
                                                 errors[formInputId]++;
                                                 validationInfo = `${(uploadedSize !== requiredSize)}`;
-                                                validationText = (elem.getAttribute("ov-totalsize:msg")) ? (elem.getAttribute("ov-totalsize:msg")) : "Total File size must be equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
+                                                validationText = (elem.getAttribute("ov-totalsize:msg")) ? (elem.getAttribute("ov-totalsize:msg")) : "Please select files that is equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
                                                 if (elem.addEventListener) {
@@ -1208,18 +1308,17 @@ function octaValidate(form_ID, userConfig) {
                                                 continueValidation[formInputId]++;
                                             }
                                         }
-                                    } else if (f.split(':')[0] === 'TOTALMINSIZE') {
+                                    } else if (f.split(':')[0] === 'MINSIZE' && type == 'file' && isMultiple) {
                                         const requiredSize = sizeInBytes(f.split(':')[1]);
-
                                         if (elem.files !== null && elem.files.length !== 0) {
                                             let uploadedSize = 0;
-                                            Object.entries(elem.files).forEach(ef => {
-                                                uploadedSize += ef[1].size;
-                                            })
+                                            for (let ef of elem.files) {
+                                                uploadedSize += ef.size;
+                                            }
                                             if (!(uploadedSize >= requiredSize)) {
                                                 errors[formInputId]++;
                                                 validationInfo = `${!(uploadedSize >= requiredSize)}`;
-                                                validationText = (elem.getAttribute("ov-totalminsize:msg")) ? (elem.getAttribute("ov-totalminsize:msg")) : "Total File size must be equal to or greater than " + f.split(':')[1].replace(' ', '').toUpperCase();
+                                                validationText = (elem.getAttribute("ov-totalminsize:msg")) ? (elem.getAttribute("ov-totalminsize:msg")) : "Please select files that is more than or equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
                                                 if (elem.addEventListener) {
@@ -1232,18 +1331,17 @@ function octaValidate(form_ID, userConfig) {
                                                 continueValidation[formInputId]++;
                                             }
                                         }
-
-                                    } else if (f.split(':')[0] === 'TOTALMAXSIZE') {
+                                    } else if (f.split(':')[0] === 'MAXSIZE' && type == 'file' && isMultiple) {
                                         const requiredSize = sizeInBytes(f.split(':')[1]);
                                         if (elem.files !== null && elem.files.length !== 0) {
                                             let uploadedSize = 0;
-                                            Object.entries(elem.files).forEach(ef => {
-                                                uploadedSize += ef[1].size;
-                                            })
+                                            for (let ef of elem.files) {
+                                                uploadedSize += ef.size;
+                                            }
                                             if (!(uploadedSize <= requiredSize)) {
                                                 errors[formInputId]++;
                                                 validationInfo = `${!(uploadedSize <= requiredSize)}`;
-                                                validationText = (elem.getAttribute("ov-totalminsize:msg")) ? (elem.getAttribute("ov-totalminsize:msg")) : "Total File size must be equal to or less than " + f.split(':')[1].replace(' ', '').toUpperCase();
+                                                validationText = (elem.getAttribute("ov-totalminsize:msg")) ? (elem.getAttribute("ov-totalminsize:msg")) : "Please select files that is less than or equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
                                                 if (elem.addEventListener) {
@@ -1257,6 +1355,63 @@ function octaValidate(form_ID, userConfig) {
                                             }
                                         }
 
+                                    } else if (f.split(':')[0] === 'FILES' && type == 'file' && isMultiple) {
+                                        const requiredNum = Number(f.split(':')[1]);
+                                        if (elem.files !== null && elem.files.length !== 0) {
+                                            if (elem.files.length !== requiredNum) {
+                                                errors[formInputId]++;
+                                                validationInfo = `${(elem.files.length !== requiredNum)}`;
+                                                validationText = (elem.getAttribute("ov-files:msg")) ? (elem.getAttribute("ov-files:msg")) : "Please select " + f.split(':')[1].replace(' ', '') + " files";
+                                                ovRemoveSuccess(index);
+                                                ovNewError(index, validationText);
+                                                if (elem.addEventListener) {
+                                                    elem.addEventListener("change", attributesEventAction);
+                                                } else if (elem.attachEvent) {
+                                                    elem.attachEvent("change", attributesEventAction);
+                                                }
+                                                continueValidation[formInputId] = 0;
+                                            } else {
+                                                continueValidation[formInputId]++;
+                                            }
+                                        }
+                                    } else if (f.split(':')[0] === 'MINFILES' && type == 'file' && isMultiple) {
+                                        const requiredNum = Number(f.split(':')[1]);
+                                        if (elem.files !== null && elem.files.length !== 0) {
+                                            if (!(elem.files.length >= requiredNum)) {
+                                                errors[formInputId]++;
+                                                validationInfo = `${!(elem.files.length >= requiredNum)}`;
+                                                validationText = (elem.getAttribute("ov-minfiles:msg")) ? (elem.getAttribute("ov-minfiles:msg")) : "Please select " + f.split(':')[1].replace(' ', '') + " files or more";
+                                                ovRemoveSuccess(index);
+                                                ovNewError(index, validationText);
+                                                if (elem.addEventListener) {
+                                                    elem.addEventListener("change", attributesEventAction);
+                                                } else if (elem.attachEvent) {
+                                                    elem.attachEvent("change", attributesEventAction);
+                                                }
+                                                continueValidation[formInputId] = 0;
+                                            } else {
+                                                continueValidation[formInputId]++;
+                                            }
+                                        }
+                                    } else if (f.split(':')[0] === 'MAXFILES' && type == 'file' && isMultiple) {
+                                        const requiredNum = Number(f.split(':')[1]);
+                                        if (elem.files !== null && elem.files.length !== 0) {
+                                            if (!(elem.files.length <= requiredNum)) {
+                                                errors[formInputId]++;
+                                                validationInfo = `${!(elem.files.length <= requiredNum)}`;
+                                                validationText = (elem.getAttribute("ov-maxfiles:msg")) ? (elem.getAttribute("ov-maxfiles:msg")) : "Please select " + f.split(':')[1].replace(' ', '') + " files or less";
+                                                ovRemoveSuccess(index);
+                                                ovNewError(index, validationText);
+                                                if (elem.addEventListener) {
+                                                    elem.addEventListener("change", attributesEventAction);
+                                                } else if (elem.attachEvent) {
+                                                    elem.attachEvent("change", attributesEventAction);
+                                                }
+                                                continueValidation[formInputId] = 0;
+                                            } else {
+                                                continueValidation[formInputId]++;
+                                            }
+                                        }
                                     } else if (f.split(':')[0] === 'MINLENGTH') {
                                         if (!(elem.value.length >= Number(f.split(':')[1]))) {
                                             errors[formInputId]++;
@@ -1329,7 +1484,7 @@ function octaValidate(form_ID, userConfig) {
                                 })
                             }
                         } else {
-                            //do nothing :);
+                            //do nothing :), No use right? Leave it for me :)
                         }//end of if id exists
                     }//end of check if id is provided
                 }); //end of foreach loop
@@ -1367,8 +1522,6 @@ function octaValidate(form_ID, userConfig) {
 
     ////---------------
 
-    ////---------------
-
     /* make methods unwritable */
     //Users cannot use the console to rewrite core methods
     Object.defineProperties(this, {
@@ -1403,6 +1556,104 @@ function octaValidate(form_ID, userConfig) {
         })
         return res;
     };
-
+    //make compatible with backend errors display
+    this.showBackendErrors = function (errorsObj = undefined) {
+        if (typeof errorsObj == "undefined" || !isObject(errorsObj) || Object.keys(errorsObj).length === 0)
+            ovDoError(
+                "A Valid Object must be passed as an argument to the [showBackendErrors] method if you want to display server-side Form Errors.")
+        //assign form id
+        const form_id = Object.keys(errorsObj)[0];
+        if (!findElem(form_id))
+            ovDoError(`A form with this id [${form_id}] does not Exist`)
+        //remove errors is present
+        this.removeBackendErrors(form_id);
+        //loop through error object
+        Object.entries(errorsObj[form_id]).forEach(eo => {
+            const inputName = (eo[0] !== undefined) ? eo[0] : null;
+            const errorText = (eo[1] !== undefined) ? eo[1] : null;
+            if (inputName && errorText) {
+                //check if this error is for 2 form inputs
+                if (inputName.match(/:/)) {
+                    inputName.split(':').forEach(inp => {
+                        //loop through all form inputs
+                        document.querySelectorAll('#' + form_id + ' [name]').forEach(ie => {
+                            if (ie.name === inp) {
+                                //remove success class
+                                ie.classList.remove('octavalidate-inp-success');
+                                //add error class
+                                if (!ie.classList.contains('octavalidate-inp-error')) {
+                                    ie.classList.add("octavalidate-inp-error");
+                                }
+                                //create error text
+                                const g = document.createElement("p");
+                                //check if id exists on element
+                                if (ie.id) {
+                                    g.setAttribute("id", "octavalidate_" + ie.id);
+                                } else {
+                                    //use input name if id does not exist
+                                    g.setAttribute("id", "octavalidate_" + inp);
+                                }
+                                g.setAttribute("class", "octavalidate-txt-error");
+                                g.innerText = errorText;
+                                //insert after
+                                ie.after(g);
+                            }
+                        });
+                    })
+                } else {
+                    //loop through all form inputs
+                    document.querySelectorAll('#' + form_id + ' [name]').forEach(ie => {
+                        if (ie.name === inputName) {
+                            //remove success class
+                            ie.classList.remove('octavalidate-inp-success');
+                            //add error class
+                            if (!ie.classList.contains('octavalidate-inp-error')) {
+                                ie.classList.add("octavalidate-inp-error");
+                            }
+                            //create error text
+                            const g = document.createElement("p");
+                            if (ie.id) {
+                                g.setAttribute("id", "octavalidate_" + ie.id);
+                            } else {
+                                g.setAttribute("id", "octavalidate_" + inputName);
+                            }
+                            g.setAttribute("class", "octavalidate-txt-error");
+                            g.innerText = errorText;
+                            //insert after
+                            ie.after(g);
+                        }
+                    });
+                }
+            }
+        });
+    };
+    this.removeBackendErrors = function (form_id = formID) {
+        if (!findElem(form_id))
+            ovDoError(`A form with this id [${form_id}] does not Exist`);
+        const formChildren = document.querySelector('#' + form_id).children;
+        let ind = 0;
+        if (formChildren) {
+            while (ind < formChildren.length) {
+                //p tag
+                const pTag = formChildren[ind].querySelector('p');
+                //input tag
+                const inputTag = formChildren[ind].querySelector('input');
+                //textarea
+                const textTag = formChildren[ind].querySelector('textarea');
+                if (pTag && pTag.classList.contains('octavalidate-txt-error')) {
+                    pTag.remove();
+                }
+                if (inputTag && inputTag.classList.contains('octavalidate-inp-error')) {
+                    inputTag.classList.remove('octavalidate-inp-error');
+                    inputTag.classList.add('octavalidate-inp-success');
+                }
+                if (textTag && textTag.classList.contains('octavalidate-inp-error')) {
+                    textTag.classList.remove('octavalidate-inp-error');
+                    textTag.classList.add('octavalidate-inp-success');
+                }
+                ind++;
+            }
+        }
+    }
     ////---------------
 }
