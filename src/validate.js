@@ -1,8 +1,9 @@
 /**
- * OctaValidate main JS V1.2.0
+ * OctaValidate main JS V1.2.2
  * author: Simon Ugorji
- * Last Edit : 27th July 2022
+ * Last Edit : 2nd October 2022
  */
+
 (function () {
     //global Styling
     if (!document.querySelector('#octavalidate-global-style')) {
@@ -51,12 +52,12 @@ function octaValidate(form_ID, userConfig) {
     const formID = form_ID;
     //store config
     const config = {
-        successBorder: false,
+        successBorder: true,
         strictMode: false,
         strictWords: ["null", "NaN", "undefined"]
     };
     //version number
-    const versionNumber = "1.2.0";
+    const versionNumber = "1.2.2";
 
     ////---------------
 
@@ -597,7 +598,7 @@ function octaValidate(form_ID, userConfig) {
     };
     //add multiple rules
     function moreCustomRules(rules) {
-        if (!isObject(rules)) ovDoError("The rules you provided must be a valid Object! Please refer on the README file.");
+        if (!isObject(rules)) ovDoError("The rules provided must be a valid Object! Please refer to the documentation");
 
         let r = 0;
 
@@ -663,22 +664,22 @@ function octaValidate(form_ID, userConfig) {
                                 //remove whitespace
                                 elem.value = elem.value.trim();
                             }
-                            let elemHasStrictWords = () => {
-                                const res = strictWords.filter(s => { return elem.value.match(new RegExp(`${'(' + s + ')'}`, 'i')) });
-                                if (res !== undefined && res.length !== 0) {
-                                    return true;
-                                }
-                                return false;
-                            };
-                            if ((elem.value !== "") && elemHasStrictWords() && elem.type !== "file" && elem.type !== "checkbox" && elem.type !== "radio") {
+                            //handle strict words
+                            const checkStrictWords = (value) => {
+                                const res = strictWords.filter(s => { return value.match(new RegExp(`${'(' + s + ')'}`, 'i')) })
+
+                                return res
+                            }
+
+                            if ((elem.value !== "") && (checkStrictWords(elem.value).length !== 0) && elem.type !== "file" && elem.type !== "checkbox" && elem.type !== "radio") {
                                 errors[formInputId]++;
-                                validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : "This value is not allowed";
+                                validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : `Please remove or replace ${checkStrictWords(elem.value)}`;
                                 ovRemoveSuccess(index);
                                 ovNewError(index, validationText);
                                 if (elem.addEventListener) {
                                     elem.addEventListener("change",
                                         function () {
-                                            if (this.value && elemHasStrictWords()) {
+                                            if (this.value && (checkStrictWords(this.value).length !== 0)) {
                                                 errors[formInputId]++;
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
@@ -690,7 +691,7 @@ function octaValidate(form_ID, userConfig) {
                                         });
                                 } else if (elem.attachEvent) {
                                     elem.attachEvent("change", function () {
-                                        if (this.value && elemHasStrictWords()) {
+                                        if (this.value && (checkStrictWords(this.value).length !== 0)) {
                                             errors[formInputId]++;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1483,9 +1484,7 @@ function octaValidate(form_ID, userConfig) {
                                     }
                                 })
                             }
-                        } else {
-                            //do nothing :), No use right? Leave it for me :)
-                        }//end of if id exists
+                        }
                     }//end of check if id is provided
                 }); //end of foreach loop
                 //console.log(errors);
@@ -1597,6 +1596,28 @@ function octaValidate(form_ID, userConfig) {
                                 g.innerText = errorText;
                                 //insert after
                                 ie.after(g);
+                                //Listen to change in input value, then remove the error
+                            if (ie.addEventListener) {
+                                ie.addEventListener("change", function(){
+                                    if(this.value.trim() !== ""){
+                                        this.classList.remove("octavalidate-inp-error");
+                                        //if error text element exists
+                                        if(g){
+                                            g.remove()
+                                        }
+                                    }
+                                }, { once: true });
+                            } else if (elem.attachEvent) {
+                                ie.attachEvent("change", function(){
+                                    if(this.value.trim() !== ""){
+                                        this.classList.remove("octavalidate-inp-error");
+                                        //if error text element exists
+                                        if(g){
+                                            g.remove()
+                                        }
+                                    }
+                                });
+                            }
                             }
                         });
                     })
@@ -1621,6 +1642,28 @@ function octaValidate(form_ID, userConfig) {
                             g.innerText = errorText;
                             //insert after
                             ie.after(g);
+                            //Listen to change in input value, then remove the error
+                            if (ie.addEventListener) {
+                                ie.addEventListener("change", function(){
+                                    if(this.value.trim() !== ""){
+                                        this.classList.remove("octavalidate-inp-error");
+                                        //if error text element exists
+                                        if(g){
+                                            g.remove()
+                                        }
+                                    }
+                                }, { once: true });
+                            } else if (elem.attachEvent) {
+                                ie.attachEvent("change", function(){
+                                    if(this.value.trim() !== ""){
+                                        this.classList.remove("octavalidate-inp-error");
+                                        //if error text element exists
+                                        if(g){
+                                            g.remove()
+                                        }
+                                    }
+                                });
+                            }
                         }
                     });
                 }

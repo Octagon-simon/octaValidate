@@ -1,10 +1,20 @@
-# <img align="center" src="https://octagon-simon.github.io/octaValidate/img/ov-success.png" width="25px"> octaValidate V1.2.0
+# Octavalidate - JS V1.2.2
 
-This library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes.
+This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
-We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** file which you can open to see how this library really works.
+We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** file which you can play with to see how this library really works.
 
-We have developed this Library to work server-side on PHP language and as such, you can validate your forms server-side using this Library for PHP. [Visit the repository](https://github.com/Octagon-simon/octaValidate-PHP)
+## OTHER RELEASES
+
+### Octavalidate - PHP
+Use the PHP release of this library to validate your forms server-side.
+
+[Visit the repository](https://github.com/Octagon-simon/octaValidate-PHP)
+
+### Octavalidate - NodeJS
+Use the NodeJS release of this library to validate your forms server-side. 
+
+[Visit the repository](https://github.com/Octagon-simon/octaValidate-nodejs)
 
 ## DOCUMENTATION
 
@@ -15,7 +25,7 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.2.0/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@1.2.2/native/validate.js"></script>
 ```
 
 ### NPM
@@ -25,7 +35,7 @@ Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/
 ### LOCAL
 
 - Download and import the latest release to your project.
-- In your project, create a script tag and link the file **validate.js**.
+- In your project, create a script tag and link the file `validate.js`.
 - Place the script before the <code>&lt;/head&gt;</code> tag.
 ```html
 <script src="octaValidate/src/validate.js"></script>
@@ -49,15 +59,15 @@ Create a form tag with input elements and set the attribute **octavalidate** wit
 
 Now you need to create a new instance of the function and pass in the **form id** as the first argument, and any configurationoptions as the second argument.
 
-Then begin validation on that particular form by invoking the **validate()** method.
+Then begin validation on that particular form by invoking the `validate()` method.
 
-> It is recommended to invoke the **validate()** method when the form is submitted.
+> It is recommended to invoke the `validate()` method when the form is submitted.
 
-The return type of the **validate()** method is **Boolean**.
+The return type of the `validate()` method is `Boolean`.
 
-- **true** means that there are no validation errors
+- `true` means that there are no validation errors
 
-- **false** means that there are validation errors
+- `false` means that there are validation errors
 
 ```javascript
 //create new instance of the function
@@ -77,7 +87,7 @@ document.getElementById('FORM_ID').addEventListener('submit', function(e){
 
 ## VALIDATION RULES
 
-Here are the inbuilt validation rules.
+Here is the list of default validation rules.
 
 - R - A value is required.
 - ALPHA_ONLY - The value must be letters only! (lower-case or upper-case).
@@ -94,13 +104,13 @@ Here are the inbuilt validation rules.
 - USERNAME - The value may contain letters, numbers, a hyphen or an underscore.
 - TEXT - The value may contain any of these special characters (. , / () [] & ! '' "" : ; ?)
 
-Didn't see a validation rule that you need for your form? Don't worry!
+Can't see a validation rule that you need for your form? Don't worry!
 
-With **octaValidate**, you have the power to define your custom rule and it will be processed as if it were an inbuilt rule.
+With `octaValidate`, you have the power to define a custom rule and it will be processed as if it were a default rule.
   
 ## CUSTOM VALIDATION RULES
 
-In some cases where you need to define a custom rule, use the method below.
+In some cases where you need a custom rule, use the method below to define one for your form.
 
 ```javascript
 //syntax for custom rule
@@ -119,18 +129,18 @@ const myForm = new octaValidate('form_register');
 myForm.customRule(rule_title, reg_exp, err_txt);
 ```
 
-Then on your Input Element, provide the rule title **[ EML ]**.
+Then on your Input Element, provide the rule title `[ EML ]`.
 
 ```html
 <input type="email" id="inp_email" octavalidate="EML">
 ```
-> Note that: All Rule Titles are **case-sensitive!**
+> Note: All Rule Titles are **case-sensitive!**
 
 ## MORE CUSTOM RULES
 
 What if you want to define more validation rules?
 
-All you need to do is to create an object with your validation rule, regular expression and error text separated by a comma, then invoke the method **moreCustomRules()**.
+All you need to do is to create an object with your validation rule, regular expression and error text separated by a comma, then invoke the `moreCustomRules()` method.
 
 ```javascript
 //EMAIL AND URL VALIDATION RULES
@@ -144,13 +154,13 @@ const myForm = new octaValidate('form_register');
 //define more custom rules
 myForm.moreCustomRules(rules);
 ```
-> Note that: You do not need to pass in your **regular expression** as a string! This is because the *JavaScript engine* natively recognizes *regular expressions*.
+> Note: You do not need to pass in your **regular expression** as a string! This is because the *JavaScript engine* natively recognizes *regular expressions*.
 
 ## CUSTOM ERROR MESSAGE
 
 We've added an extra attribute that will enable you to provide your custom error message incase a validation fails.
 
-The table below shows the validation rule and the attribute that you can use to change its error message.
+The table below shows the default validation rules and their attibutes for a custom error message.
 
 | Validation Rule | Description| Validation Text Attribute| 
 |-----------------|------------|-------------------------|
@@ -174,11 +184,11 @@ Here's how to use the custom error message
 ```html
 <input type="text" octavalidate="R,USERNAME" ov-required:msg="Your username is required" ov-username:msg="Username should contain letters or numbers" name="username" id="inp_uname">
 ```
-> Validate a CHECKBOX, or a FILE INPUT ELEMENT using the **R** validation rule to mark the field as **required**, and you may provide a custom message using the **ov-required:msg** attribute.
+>The `R` validation rule validates a CHECKBOX, FILE INPUT ELEMENT, or a TEXT input by marking them as **required fields** and you may provide a custom validation error text using the attribute `ov-required:msg`.
 
 ## ATTRIBUTES VALIDATION
 
-Currently we have 3 types of attribute validation:
+Currently we have 3 categories of attribute validation:
 
 - length validation
 - EqualTo validation
@@ -186,7 +196,7 @@ Currently we have 3 types of attribute validation:
   
 ### LENGTH VALIDATION
 
-You can validate: **maxlength, minlength and length** by providing it as an attribute to the form input.
+You can validate: `maxlength, minlength and length` by providing it as an attribute to the form input.
 
 - maxlength (5) - This means that value must be 5 characters or less.
 - minlength (5) - This means that value must be up to 5 characters or more.
@@ -203,7 +213,7 @@ You can validate: **maxlength, minlength and length** by providing it as an attr
 
 ### EQUALTO VALIDATION
 
-You can check if two inputs contain the same values, using the attribute **equalto** on the input element, with a value containing the ID of the other input element to check against.
+You can check if two inputs contain the same values, using the attribute `equalto` on the input element, with a value containing the ID of the other input element to check against.
 
 ```html
 <input type="password" id="inp_pwd1" octavalidate="R,PWD" ov-required:msg="Your Password is required">
@@ -212,21 +222,21 @@ You can check if two inputs contain the same values, using the attribute **equal
 ```
 ### FILE VALIDATION
 
-You can validate: **accept, accept-mime, size, minsize, maxsize** by providing it as an attribute to the file input element.
+You can validate: `accept, accept-mime, size, minsize, maxsize` by providing it as an attribute to the file input element.
 
 - accept - Use this attribute to list out the file extensions allowed for upload
-- accept - Use this attribute to list out the file MIME types allowed for upload. It supports a wildcard eg audio/*
-- size (2mb) `single or multiple` - This means that the file provided must be 2mb in size
-- minsize (5mb) `single or multiple` - This means that the file provided must be up to 5mb or more.
-- maxsize (5mb) `single or multiple` - This means that the file provided must be 5mb or less.
+- accept-mime - Use this attribute to list out the file MIME types allowed for upload. It supports a wildcard eg audio/\*, image/png
+- size (2MB) `single or multiple` - This means that the file provided must be 2MB in size
+- minsize (5MB) `single or multiple` - This means that the file provided must be up to 5MB or more.
+- maxsize (5MB) `single or multiple` - This means that the file provided must be 5MB or less.
   
-Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/file.html) to learn more about validating a file input element.
+Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/file.html) to learn more about file validation.
 
 ## API METHODS
 
 ### STATUS
 
-You can invoke the **status()** method anytime to check the number of validation errors on the form.
+Invoke the `status()` method anytime to check the number of validation errors present on the form.
 
 ```javascript
 //Your validation instance
@@ -237,9 +247,9 @@ myForm.status();
 
 ### CALLBACKS
 
-You can now define a function that will execute if there are validation errors or a function that will execute if there are no validation errors.
+You can define a function that will execute if there are validation errors or a function that will execute if there are no validation errors.
 
-To define a callback, invoke this method and pass in your function as an argument.
+To define a callback, invoke the method below then pass in your function as an argument.
 
 ```javascript
 //create new instance of the function
@@ -255,9 +265,9 @@ let errorCB = function(){
 //invoke the method
 myForm.validateCallBack(successCB, errorCB);
 ```
-If there are no validation errors, **successCB** will be executed but if there are validation errors, the **errorCB** will be executed.
+If there are no validation errors, `successCB` will be executed but if there are validation errors, the `errorCB` will be executed.
 
-> Note: This callback feature will only work if validation has started on the form. Make sure to start validating the form by invoking the **validate()** method when the form is being submitted. 
+> Note: This callback feature will only work if validation has started on the form. Make sure to start validating the form by invoking the `validate()` method when the form is being submitted. 
 
 ## CONFIGURATION
 
@@ -265,15 +275,15 @@ We have 3 configuration options:
 
 - successBorder: <code>Boolean</code>
   
-  This option sets a green border on the input element if its validation is successful. Default value is **false**.
+  This option sets a green border on the input element if its validation is successful. Default value is now `true`.
 - strictMode: <code>Boolean</code>
   
-  This option removes extra white space from the start and at the end of a form input and also prevents the user from providing reserved keywords as values. Default value is **false**.
+  This option removes extra white space from the start and at the end of a form input and also prevents the user from providing reserved keywords as values. Default value is `false`.
 - strictWords: <code>Array</code>
   
-   This option alows you to provide words that users are not supposed to submit. For eg ["null", "error", "false"]. In order to use this option, you must set **strictMode** to **true**.
+   This option alows you to provide words that users are not supposed to submit. For eg ["null", "error", "false", "fake", "admin"]. In order to use this option, you must set `strictMode` to `true`.
 
-> Since Version 1.1.4, any value provided by the user that matches any of the strict words, will be flagged as "not allowed".
+> Since Version 1.1.4, any value provided by the user that matches any of the strict words, will be flagged as a value that is "not allowed".
 
 To use any of these options, provide it as an object and pass it as the second argument when creating an instance of octaValidate.
 
@@ -282,7 +292,7 @@ To use any of these options, provide it as an object and pass it as the second a
 const options = {
   successBorder : true, 
   strictMode : true, 
-  strictWords : ["error", "false", "invalid"]
+  strictWords : ["error", "false", "invalid", "fake", "admin"]
 }
 //my function instance
 const myForm = new octaValidate('FORM_ID', options);
@@ -296,25 +306,25 @@ After creating a new instance of the function, the methods below becomes availab
 const myForm = new octaValidate('FORM_ID');
 ```
 
-- **validate()**
+- `validate()`
   
   Invoke this method to begin validation
-- **status()** 
+- `status()` 
   
   Invoke this method to see the number of validation errors on a form
-- **form()** 
+- `form()` 
   
   This method returns the form ID.
-- **customRule(RULE_TITLE, REG_EXP, ERROR_TEXT)**
+- `customRule(RULE_TITLE, REG_EXP, ERROR_TEXT)`
   
    Invoke this method to define your custom validation rule.
-- **moreCustomRules(RULES)**
+- `moreCustomRules(RULES)`
   
     Invoke this method to define more custom validation rules.
-- **version()**
+- `version()`
   
   Invoke this method to retrieve the library's version number.
-- **validateCallBack(success_callback, error_callback)**
+- `validateCallBack(success_callback, error_callback)`
 
     Invoke this method, providing your success callback or error callback as arguments. The success callback will execute when there are no validation errors and the error callback will execute when there are validation errors
   
