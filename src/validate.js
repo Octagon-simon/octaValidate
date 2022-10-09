@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.2.2
+ * OctaValidate main JS V1.2.3
  * author: Simon Ugorji
- * Last Edit : 2nd October 2022
+ * Last Edit : 9th October 2022
  */
 
 (function () {
@@ -54,10 +54,10 @@ function octaValidate(form_ID, userConfig) {
     const config = {
         successBorder: true,
         strictMode: false,
-        strictWords: ["null", "NaN", "undefined"]
+        strictWords: ["undefined"]
     };
     //version number
-    const versionNumber = "1.2.2";
+    const versionNumber = "1.2.3";
 
     ////---------------
 
@@ -206,7 +206,11 @@ function octaValidate(form_ID, userConfig) {
             (userConfig.strictMode == true || userConfig.strictMode == false) ? config.strictMode = userConfig.strictMode : null;
         }
         if (userConfig.strictWords !== undefined && userConfig.strictMode !== undefined) {
-            (userConfig.strictMode == true && userConfig.strictWords.length !== 0) ? config.strictWords.push(...userConfig.strictWords) : null;
+            if(userConfig.strictMode && userConfig.strictWords.length !== 0) {
+                //merge both arrays but remove duplicates
+                config.strictWords = [... new Set([... config.strictWords, ... userConfig.strictWords])]
+                //admin, undefined, null, NaN
+            } 
         }
     }
 
@@ -673,7 +677,7 @@ function octaValidate(form_ID, userConfig) {
 
                             if ((elem.value !== "") && (checkStrictWords(elem.value).length !== 0) && elem.type !== "file" && elem.type !== "checkbox" && elem.type !== "radio") {
                                 errors[formInputId]++;
-                                validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : `Please remove or replace ${checkStrictWords(elem.value)}`;
+                                validationText = (elem.getAttribute('ov-strict:msg')) ? elem.getAttribute('ov-strict:msg').toString() : `Please remove or replace '${checkStrictWords(elem.value).join(', ')}'`;
                                 ovRemoveSuccess(index);
                                 ovNewError(index, validationText);
                                 if (elem.addEventListener) {

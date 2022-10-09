@@ -434,7 +434,7 @@
 </style>
 
 <!-- CDN 
-    <script src="https://unpkg.com/octavalidate@1.2.2/native/validate.js"></script>
+    <script src="https://unpkg.com/octavalidate@1.2.3/native/validate.js"></script>
 -->
 
 <script src="src/validate.js"></script>
@@ -567,13 +567,16 @@
             data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
             data-coffee-color="#FFDD00"></script>
     </div>
-    <p class="text-gray mt-20">Octavalidate @ 1.2.2 🚀 Since January 2022 </p>
+    <p class="text-gray mt-20">Octavalidate @ 1.2.3 🚀 Since January 2022 </p>
 </footer>
 
 </html>
 <script>
-    //create instance of class
-    let myForm = new octaValidate('form_demo');
+    //create instance of class null, NaN,undefined,admin,empty
+    let myForm = new octaValidate('form_demo', {
+        strictMode : true,
+        strictWords : ["null", "empty", "undefined", "NaN"]
+    });
     //add custom rule
     myForm.customRule("PASS", /^12345+$/, "Please enter 12345");
     //define callback
