@@ -6,10 +6,10 @@
     <meta name="author" content="Simon Ugorji">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description"
-        content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
+        content="Octavalidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
     <meta name="title" content="Octavalidate Demo Page">
     <meta property="og:description"
-        content="octaValidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
+        content="Octavalidate: This JavaScript Library helps to validate your HTML forms using validation rules, sophisticated regular expressions and form input attributes">
     <meta property="og:title" content="Octavalidate Demo Page">
     <link rel="icon" href="img/ov-image.png">
 </head>
@@ -433,10 +433,6 @@
     }
 </style>
 
-<!-- CDN 
-    <script src="https://unpkg.com/octavalidate@1.2.3/native/validate.js"></script>
--->
-
 <script src="src/validate.js"></script>
 
 <body id="octavalidate_demo_page">
@@ -460,12 +456,14 @@
                 </div>
                 <div class="form-group">
                     <label>Username <span style="color:#ff0000">*</span></label>
-                    <input type="text" id="inp_uname" octavalidate="R,USERNAME" ov-required:msg="Your username is required"
-                        ov-username:msg="Please enter a valid username" placeholder="Your username" length="5">
+                    <input type="text" id="inp_uname" octavalidate="R,USERNAME"
+                        ov-required:msg="Your username is required" ov-username:msg="Please enter a valid username"
+                        placeholder="Your username" length="5">
                 </div>
                 <div class="form-group">
                     <label>Email <span style="color:#ff0000">*</span></label>
-                    <input type="text" ov-required:msg="Your Email Address is required" id="inp_reg_email" octavalidate="R,EMAIL" placeholder="Your Email Address">
+                    <input type="text" ov-required:msg="Your Email Address is required" id="inp_reg_email"
+                        octavalidate="R,EMAIL" placeholder="Your Email Address">
                 </div>
                 <div class="form-group">
                     <label>Password <span style="color:#ff0000">*</span></label>
@@ -552,13 +550,18 @@
         </ul>
         <p class="footer-link mt-20">
             <a href="https://octagon-simon.github.io/projects/octavalidate/">Visit the
-                Documentation</a>
+                Documentation for Native JS</a>
+        </p>
+        <p class="footer-link mt-20">
+            <a href="https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-react/">Check out Octavalidate for
+                React</a>
         </p>
         <p class="footer-link mt-20">
             <a href="https://octagon-simon.github.io/projects/octavalidate/php/">Check out Octavalidate for PHP</a>
         </p>
         <p class="footer-link mt-20">
-            <a href="https://octagon-simon.github.io/projects/octavalidate/nodejs/">Check out Octavalidate for Nodejs</a>
+            <a href="https://octagon-simon.github.io/projects/octavalidate/nodejs/">Check out Octavalidate for
+                Nodejs</a>
         </p>
     </div>
     <div class="mt-20 mb-20">
@@ -567,15 +570,15 @@
             data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
             data-coffee-color="#FFDD00"></script>
     </div>
-    <p class="text-gray mt-20">Octavalidate @ 1.2.3 🚀 Since January 2022 </p>
+    <p class="text-gray mt-20">Octavalidate @ 1.2.5 🚀 Since January 2022 </p>
 </footer>
 
 </html>
 <script>
     //create instance of class null, NaN,undefined,admin,empty
     let myForm = new octaValidate('form_demo', {
-        strictMode : true,
-        strictWords : ["null", "empty", "undefined", "NaN"]
+        strictMode: true,
+        strictWords: ["null", "empty", "undefined", "NaN"]
     });
     //add custom rule
     myForm.customRule("PASS", /^12345+$/, "Please enter 12345");
@@ -585,7 +588,7 @@
         showAlert('No Validation error', 'alert-success');
     }, function () {
         //error callback
-        showAlert(`${(Number(myForm.status()) !== 1) ? myForm.status() + " validation errors" : myForm.status() + " validation error"}`, 'alert-danger');
+        showAlert(`${(Number(myForm.status()) > 1) ? myForm.status() + " validation errors" : myForm.status() + " validation error"}`, 'alert-danger');
     });
 
     /*Handle submission here*/
@@ -599,7 +602,7 @@
             //process form data here
         } else {
             //return type == false - > validation failed
-            showAlert(`${myForm.status()} validation errors`, 'alert-danger');
+            showAlert(`${(Number(myForm.status()) > 1) ? myForm.status() + " validation errors" : myForm.status() + " validation error"}`, 'alert-danger');
         }
     })
 

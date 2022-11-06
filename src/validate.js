@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.2.3
+ * OctaValidate main JS V1.2.5
  * author: Simon Ugorji
- * Last Edit : 9th October 2022
+ * Last Edit : 6th November 2022
  */
 
 (function () {
@@ -57,7 +57,7 @@ function octaValidate(form_ID, userConfig) {
         strictWords: ["undefined"]
     };
     //version number
-    const versionNumber = "1.2.3";
+    const versionNumber = "1.2.5";
 
     ////---------------
 
@@ -72,8 +72,12 @@ function octaValidate(form_ID, userConfig) {
     const findElem = (id) => {
         return (document.querySelector('#' + id) !== null);
     };
+
+    //function to replace eval() according to reviews from socket.io
+    //this function evaluates a string as an anonymous function
+    const runExp = (exp) => Function('return '+exp)()
+
     //insert error
-    //try to do form_id [input element] in assigning errors
     const ovNewError = (inputID, error) => {
         //remove previous error
         ovRemoveError(inputID);
@@ -736,10 +740,10 @@ function octaValidate(form_ID, userConfig) {
                                 }
 
                                 //create event listener
-                                let eventAction = () => {
+                                let eventAction = function() {
                                     if (type !== "file" && type !== "checkbox" && type !== "radio") {
-                                        if (elem.value) {
-                                            if (eval(validationInfo) === false) {
+                                        if (this.value) {
+                                            if (runExp(validationInfo) === false) {
                                                 errors[formInputId]++;
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
@@ -753,7 +757,7 @@ function octaValidate(form_ID, userConfig) {
                                             ovNewSuccess(index);
                                         }
                                     } else {
-                                        if (eval(validationInfo) === false) {
+                                        if (runExp(validationInfo) === false) {
                                             errors[formInputId]++;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -871,10 +875,10 @@ function octaValidate(form_ID, userConfig) {
                                     }//end of custom validaton rules
 
                                     if (elem.value && continueValidation[formInputId] && (item === 'EMAIL' || type == 'email')) {
-                                        if (octaValidations.ValidateEmail(elem.value) === false) {
+                                        if (!octaValidations.ValidateEmail(elem.value)) {
                                             continueValidation[formInputId] = 0;
                                             errors[formInputId]++;
-                                            validationInfo = `${octaValidations.ValidateEmail(elem.value) === false}`;
+                                            validationInfo = `${!octaValidations.ValidateEmail(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-email:msg')) ? elem.getAttribute('ov-email:msg').toString() : "Please provide a valid email address";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -893,7 +897,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'ALPHA_ONLY') {
                                         if (!octaValidations.ValidateAlpha_Only(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateAlpha_Only(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateAlpha_Only(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-alpha-only:msg:')) ? elem.getAttribute('ov-alpha-only:msg:').toString() : "Please enter only Letters!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -911,7 +915,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'ALPHA_SPACES') {
                                         if (!octaValidations.ValidateAlpha_Spaces(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateAlpha_Spaces(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateAlpha_Spaces(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-alpha-spaces:msg')) ? elem.getAttribute('ov-alpha-spaces:msg').toString() : "Please enter only Letters or spaces!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -930,7 +934,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'ALPHA_NUMERIC') {
                                         if (!octaValidations.ValidateAlpha_Numeric(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateAlpha_Numeric(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateAlpha_Numeric(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-alpha-numeric:msg')) ? elem.getAttribute('ov-alpha-numeric:msg').toString() : "Please enter only Letters or Numbers!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -949,7 +953,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'LOWER_ALPHA') {
                                         if (!octaValidations.ValidateLower_Alpha(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateLower_Alpha(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateLower_Alpha(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-lower-alpha:msg')) ? elem.getAttribute('ov-lower-alpha:msg').toString() : "Only letters in lowercase are allowed!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -967,7 +971,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'UPPER_ALPHA') {
                                         if (!octaValidations.ValidateUpper_Alpha(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateUpper_Alpha(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateUpper_Alpha(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-upper-alpha:msg')) ? elem.getAttribute('ov-upper-alpha:msg').toString() : "Only letters in uppercase are allowed!";
                                             ovRemoveSuccess(index);
                                             ovRemoveSuccess(index);
@@ -987,7 +991,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'PWD') {
                                         if (!octaValidations.ValidatePWD(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidatePWD(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidatePWD(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-pwd:msg')) ? elem.getAttribute('ov-pwd:msg').toString() : "Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1006,7 +1010,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && (item === 'DIGITS' || type == 'number')) {
                                         if (isNaN(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "!isNaN(elem.value)";
+                                            validationInfo = `${!isNaN(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-digits:msg')) ?
                                                 elem.getAttribute('ov-digits:msg').toString() :
                                                 "Please provide a valid Number";
@@ -1027,7 +1031,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && (item === 'URL' || type == 'url')) {
                                         if (!octaValidations.ValidateUrl(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateUrl(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateUrl(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-url:msg')) ? elem.getAttribute('ov-url:msg').toString() : "Please provide a valid URL that begins with http or https!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1046,7 +1050,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'URL_QP') {
                                         if (!octaValidations.ValidateUrl_QP(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateUrl_QP(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateUrl_QP(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-url-qp:msg')) ? elem.getAttribute('ov-url-qp:msg').toString() : "Please provide a valid URL with a query parameter.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1065,7 +1069,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'DATE_MDY') {
                                         if (!octaValidations.ValidateDate_MDY(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateDate_MDY(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateDate_MDY(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-date-mdy:msg')) ? elem.getAttribute('ov-date-mdy:msg').toString() : "Please provide a date with the format mm/dd/yyyy.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1084,7 +1088,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'USERNAME') {
                                         if (!octaValidations.ValidateUserName(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateUserName(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateUserName(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-username:msg')) ? elem.getAttribute('ov-username:msg').toString() : "Your username should contain alphanumeric characters only.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1102,7 +1106,7 @@ function octaValidate(form_ID, userConfig) {
                                     if (elem.value && continueValidation[formInputId] && item === 'TEXT') {
                                         if (!octaValidations.ValidateTEXT(elem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "octaValidations.ValidateTEXT(elem.value)";
+                                            validationInfo = `${!octaValidations.ValidateTEXT(elem.value)}`;
                                             validationText = (elem.getAttribute('ov-text:msg')) ?
                                                 elem.getAttribute('ov-text:msg').toString() :
                                                 "This field contains invalid characters.";
@@ -1149,7 +1153,7 @@ function octaValidate(form_ID, userConfig) {
                                 };
                                 let attributesEventAction = () => {
                                     if (elem.value) {
-                                        if (eval(validationInfo) === false) {
+                                        if (runExp(validationInfo) === false) {
                                             errors[formInputId]++;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
@@ -1468,12 +1472,13 @@ function octaValidate(form_ID, userConfig) {
                                             continueValidation[formInputId]++;
                                         }
                                     } else if (f.split(':')[0] === 'EQUALTO') {
-                                        EqualToElem = document.querySelector('#' + f.split(':')[1]);
+                                        let EqualToElem = document.querySelector('#' + f.split(':')[1]);
                                         validationText = (elem.getAttribute('ov-equalto:msg')) ? elem.getAttribute('ov-equalto:msg').toString() : 'Both values do not match';
                                         if (EqualToElem.value.trim() !== "" &&
                                             (elem.value !== EqualToElem.value)) {
                                             errors[formInputId]++;
-                                            validationInfo = "elem.value === EqualToElem.value";
+                                            validationInfo = `${(EqualToElem.value.trim() !== "" &&
+                                            (elem.value !== EqualToElem.value))}`;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
@@ -1495,12 +1500,9 @@ function octaValidate(form_ID, userConfig) {
             }//end of checkif validations exist
             if (Object.keys(errors).length !== 0) {
                 let res = 0;
-                Object.entries(errors).forEach(e => {
-                    if (Number(e[1]) !== 0) {
-                        res += 1;
-                    }
-
-                });
+                for(let key in errors){
+                    res+=Number(errors[key])
+                }
                 if (res === 0) {
                     if (cbSuccess !== null) {
                         (function () {

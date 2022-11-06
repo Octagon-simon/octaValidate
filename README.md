@@ -1,10 +1,15 @@
-# Octavalidate - JS V1.2.3
+# Octavalidate - JS V1.2.5
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
 We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** file which you can play with to see how this library really works.
 
 ## OTHER RELEASES
+
+### Octavalidate - ReactJS
+Use the ReactJS release of this library to validate your front-end forms client-side.
+
+[Visit the repository](https://github.com/Octagon-simon/octaValidate-reactjs)
 
 ### Octavalidate - PHP
 Use the PHP release of this library to validate your forms server-side.
@@ -25,12 +30,8 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.2.3/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@1.2.5/native/validate.js"></script>
 ```
-
-### NPM
-
-Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-npm.html) to learn how to install this Library with NPM.
 
 ### LOCAL
 
@@ -40,6 +41,10 @@ Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/
 ```html
 <script src="octaValidate/src/validate.js"></script>
 ```
+
+### React JS
+
+Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-react.html) to learn how to install & use this Library in React JS.
 
 ## How to Use
 
@@ -78,7 +83,8 @@ document.getElementById('FORM_ID').addEventListener('submit', function(e){
     //invoke the method
     if(myForm.validate() === true)
     { 
-      //validation successful, process form data here
+      //validation successful
+      //process form data here
     } else {
       //validation failed
     }
@@ -275,7 +281,7 @@ We have 3 configuration options:
 
 - successBorder: <code>Boolean</code>
   
-  This option sets a green border on the input element if its validation is successful. Default value is now `true`.
+  This option sets a green border on the input element if its validation is successful. Default value is `true`.
 - strictMode: <code>Boolean</code>
   
   This option removes extra white space from the start and at the end of a form input and also prevents the user from providing reserved keywords as values. Default value is `false`.
@@ -314,7 +320,7 @@ const myForm = new octaValidate('FORM_ID');
   Invoke this method to see the number of validation errors on a form
 - `form()` 
   
-  This method returns the form ID.
+  This method returns the form ID attached to the instance.
 - `customRule(RULE_TITLE, REG_EXP, ERROR_TEXT)`
   
    Invoke this method to define your custom validation rule.
@@ -331,7 +337,7 @@ const myForm = new octaValidate('FORM_ID');
 > There are more methods than the ones listed above, Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/api.html) to learn more.
 
 ## LEARN MORE
-Need a detailed explanation on how to use this library? 
+Do you need a detailed explanation on how to use this library? 
 [Read the article on Medium](https://blog.bitsrc.io/client-side-form-validation-using-octavalidate-javascript-b150f2d14e99)
 
 ## DEMO
