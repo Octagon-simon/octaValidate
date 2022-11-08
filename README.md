@@ -30,7 +30,7 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.2.5/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@1.2.7/native/validate.js"></script>
 ```
 
 ### LOCAL
