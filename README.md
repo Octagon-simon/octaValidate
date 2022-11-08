@@ -1,4 +1,4 @@
-# Octavalidate - JS V1.2.5
+# Octavalidate - JS V1.2.7
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
@@ -9,7 +9,7 @@ We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/de
 ### Octavalidate - ReactJS
 Use the ReactJS release of this library to validate your front-end forms client-side.
 
-[Visit the repository](https://github.com/Octagon-simon/octaValidate-reactjs)
+[Visit the package](https://npmjs.com/package/octavalidate-reactjs)
 
 ### Octavalidate - PHP
 Use the PHP release of this library to validate your forms server-side.
@@ -19,7 +19,7 @@ Use the PHP release of this library to validate your forms server-side.
 ### Octavalidate - NodeJS
 Use the NodeJS release of this library to validate your forms server-side. 
 
-[Visit the repository](https://github.com/Octagon-simon/octaValidate-nodejs)
+[Visit the package](https://npmjs.com/package/octavalidate-nodejs)
 
 ## DOCUMENTATION
 

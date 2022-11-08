@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.2.5
+ * OctaValidate main JS V1.2.7
  * author: Simon Ugorji
- * Last Edit : 6th November 2022
+ * Last Edit : 8th November 2022
  */
 
 (function () {
@@ -57,7 +57,7 @@ function octaValidate(form_ID, userConfig) {
         strictWords: ["undefined"]
     };
     //version number
-    const versionNumber = "1.2.5";
+    const versionNumber = "1.2.7";
 
     ////---------------
 
@@ -75,7 +75,7 @@ function octaValidate(form_ID, userConfig) {
 
     //function to replace eval() according to reviews from socket.io
     //this function evaluates a string as an anonymous function
-    const runExp = (exp) => Function('return '+exp)()
+    const runExp = (exp) => Function('return ' + exp)()
 
     //insert error
     const ovNewError = (inputID, error) => {
@@ -149,7 +149,8 @@ function octaValidate(form_ID, userConfig) {
             errEl.setAttribute('class', 'octavalidate-txt-error');
             errEl.style.textAlign = "center";
             errEl.innerText = "An Exception has occured. Please open the browser's console to preview & debug.";
-            document.getElementById(formID).firstElementChild.before(errEl);
+            //append element only when the form id exists in the DOM
+            document.getElementById(formID)?.firstElementChild.before(errEl);
         }
         //throw error
         throw new Error(err);
@@ -196,8 +197,10 @@ function octaValidate(form_ID, userConfig) {
 
     /** PARAMETERS CHECK **/
     //check if form id is present
-    if (typeof form_ID === "undefined")
+    if (typeof form_ID === "undefined") {
         ovDoError("A valid Form Id must be passed as the first Argument during initialization");
+    }
+
     //check if userConfig exists and is passed as an object
     if (typeof userConfig !== "undefined" && !isObject(userConfig))
         ovDoError("Configuration options must be passed as a valid object");
@@ -210,11 +213,11 @@ function octaValidate(form_ID, userConfig) {
             (userConfig.strictMode == true || userConfig.strictMode == false) ? config.strictMode = userConfig.strictMode : null;
         }
         if (userConfig.strictWords !== undefined && userConfig.strictMode !== undefined) {
-            if(userConfig.strictMode && userConfig.strictWords.length !== 0) {
+            if (userConfig.strictMode && userConfig.strictWords.length !== 0) {
                 //merge both arrays but remove duplicates
-                config.strictWords = [... new Set([... config.strictWords, ... userConfig.strictWords])]
+                config.strictWords = [... new Set([...config.strictWords, ...userConfig.strictWords])]
                 //admin, undefined, null, NaN
-            } 
+            }
         }
     }
 
@@ -599,12 +602,35 @@ function octaValidate(form_ID, userConfig) {
     //store custom rules
     let customRules = [];
     //add single rule
+    /**
+     * Use this method to build a single custom rule for your form
+     * 
+     * ```js
+     * const myForm = new octaValidate('my_form')
+     * myForm.customRule('PASS', /12345/, "Password must be 12345")
+     * ``` 
+     * 
+    * @param rule_title The TITLE for your validation rule. This title must not be an inbuilt validation rule!
+     * 
+     * @param regExp The regular expression for your validation rule. It must not be a string. The JavaScript engine natively recognizes regular expressions
+     * 
+     * @param text The error message to display when validation fails
+     * 
+     * @returns Boolean
+     * 
+     */
     function customRule(rule_title, regExp, text) {
         //store rule
         customRules[rule_title] = [regExp, text];
         return (customRules[rule_title] !== undefined ? true : false);
     };
-    //add multiple rules
+    /**
+     * Use this method to build multiple custom rules for your form
+     * 
+    * @param rules This must be an object with your validation rule, regular expression and error text separated by a comma [Please refer to the readme file]
+     * 
+     * @returns Boolean
+     */
     function moreCustomRules(rules) {
         if (!isObject(rules)) ovDoError("The rules provided must be a valid Object! Please refer to the documentation");
 
@@ -624,7 +650,14 @@ function octaValidate(form_ID, userConfig) {
         return (customRules[rule_title] !== undefined ? true : false);
     };
 
-    //form validation callback 
+    /**
+     * Use this method to add callback functions that will execute when a validation test fails or when validation tests are passed
+     * 
+    * @param success This callback will execute when validation tests are passed [Please refer to the readme file]
+     * @param error This callback will execute when a validation test fails [Please refer to the readme file]
+     * 
+     * @returns void
+     */
     function validateCallBack(success, error) {
         if (typeof success === "function") {
             cbSuccess = success;
@@ -634,13 +667,21 @@ function octaValidate(form_ID, userConfig) {
         }
     };
 
-    //main function to validate form
+    /**
+     * Invoke this method when the form is submitted to begin validation on the form
+     * 
+     * ```js
+     * const myForm = new octaValidate('my_form')
+     * myForm.validate()
+     * ```
+     * @returns Boolean
+     */
     function validate() {
 
         const form_id = formID;
 
         //check if form id exists in DOM
-        if (!findElem(form_id)) ovDoError(`Form Input Element [${form_id}] does not exist in the Browser DOM`);
+        if (!findElem(form_id)) ovDoError(`A form with this ID [${form_id}] does not exist in the Browser DOM`);
         //Begin validation and return result
         return (function validateForm() {
             if (validatePrimary !== null ||
@@ -740,7 +781,7 @@ function octaValidate(form_ID, userConfig) {
                                 }
 
                                 //create event listener
-                                let eventAction = function() {
+                                let eventAction = function () {
                                     if (type !== "file" && type !== "checkbox" && type !== "radio") {
                                         if (this.value) {
                                             if (runExp(validationInfo) === false) {
@@ -793,7 +834,7 @@ function octaValidate(form_ID, userConfig) {
                                         } else if (type == "file") {
                                             if (elem.files.length === 0) {
                                                 errors[formInputId]++;
-                                                validationInfo = "elem.files.length";
+                                                validationInfo = `${elem.files.length}`;
                                                 validationText = (elem.getAttribute("ov-required:msg")) ? elem.getAttribute("ov-required:msg").toString() : 'Please select a valid file';
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
@@ -1478,7 +1519,7 @@ function octaValidate(form_ID, userConfig) {
                                             (elem.value !== EqualToElem.value)) {
                                             errors[formInputId]++;
                                             validationInfo = `${(EqualToElem.value.trim() !== "" &&
-                                            (elem.value !== EqualToElem.value))}`;
+                                                (elem.value !== EqualToElem.value))}`;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
                                             if (elem.addEventListener) {
@@ -1500,8 +1541,8 @@ function octaValidate(form_ID, userConfig) {
             }//end of checkif validations exist
             if (Object.keys(errors).length !== 0) {
                 let res = 0;
-                for(let key in errors){
-                    res+=Number(errors[key])
+                for (let key in errors) {
+                    res += Number(errors[key])
                 }
                 if (res === 0) {
                     if (cbSuccess !== null) {
@@ -1547,11 +1588,23 @@ function octaValidate(form_ID, userConfig) {
             writable: false
         }
     });
-    //Set form id for public eyes
+    /**
+     * This method returns the form id attached to the instance
+     * 
+     * @returns String
+     */
     this.form = () => { return (formID) };
-    //version Number
+    /**
+     * This method returns the library's version number
+     * 
+     * @returns String
+     */
     this.version = () => { return (versionNumber) };
-    //validation status
+    /**
+     * This method returns the number of errors on the form
+     * 
+     * @returns Number
+     */
     this.status = () => {
         let res = 0;
         Object.entries(errors).forEach(e => {
@@ -1561,7 +1614,10 @@ function octaValidate(form_ID, userConfig) {
         })
         return res;
     };
-    //make compatible with backend errors display
+    /**
+     * This method is useful if you use thesame library for server-side form validation. Invoke this method and pass in the error object to append errors into the form
+     * 
+     */
     this.showBackendErrors = function (errorsObj = undefined) {
         if (typeof errorsObj == "undefined" || !isObject(errorsObj) || Object.keys(errorsObj).length === 0)
             ovDoError(
@@ -1603,27 +1659,27 @@ function octaValidate(form_ID, userConfig) {
                                 //insert after
                                 ie.after(g);
                                 //Listen to change in input value, then remove the error
-                            if (ie.addEventListener) {
-                                ie.addEventListener("change", function(){
-                                    if(this.value.trim() !== ""){
-                                        this.classList.remove("octavalidate-inp-error");
-                                        //if error text element exists
-                                        if(g){
-                                            g.remove()
+                                if (ie.addEventListener) {
+                                    ie.addEventListener("change", function () {
+                                        if (this.value.trim() !== "") {
+                                            this.classList.remove("octavalidate-inp-error");
+                                            //if error text element exists
+                                            if (g) {
+                                                g.remove()
+                                            }
                                         }
-                                    }
-                                }, { once: true });
-                            } else if (elem.attachEvent) {
-                                ie.attachEvent("change", function(){
-                                    if(this.value.trim() !== ""){
-                                        this.classList.remove("octavalidate-inp-error");
-                                        //if error text element exists
-                                        if(g){
-                                            g.remove()
+                                    }, { once: true });
+                                } else if (elem.attachEvent) {
+                                    ie.attachEvent("change", function () {
+                                        if (this.value.trim() !== "") {
+                                            this.classList.remove("octavalidate-inp-error");
+                                            //if error text element exists
+                                            if (g) {
+                                                g.remove()
+                                            }
                                         }
-                                    }
-                                });
-                            }
+                                    });
+                                }
                             }
                         });
                     })
@@ -1650,21 +1706,21 @@ function octaValidate(form_ID, userConfig) {
                             ie.after(g);
                             //Listen to change in input value, then remove the error
                             if (ie.addEventListener) {
-                                ie.addEventListener("change", function(){
-                                    if(this.value.trim() !== ""){
+                                ie.addEventListener("change", function () {
+                                    if (this.value.trim() !== "") {
                                         this.classList.remove("octavalidate-inp-error");
                                         //if error text element exists
-                                        if(g){
+                                        if (g) {
                                             g.remove()
                                         }
                                     }
                                 }, { once: true });
                             } else if (elem.attachEvent) {
-                                ie.attachEvent("change", function(){
-                                    if(this.value.trim() !== ""){
+                                ie.attachEvent("change", function () {
+                                    if (this.value.trim() !== "") {
                                         this.classList.remove("octavalidate-inp-error");
                                         //if error text element exists
-                                        if(g){
+                                        if (g) {
                                             g.remove()
                                         }
                                     }
@@ -1676,6 +1732,11 @@ function octaValidate(form_ID, userConfig) {
             }
         });
     };
+    /**
+     * This method is useful if you use thesame library for server-side form validation. Invoke this method to remove any form errors that might have been appended by the `showBackendErrors()` method
+     * 
+     * @returns nothing
+     */
     this.removeBackendErrors = function (form_id = formID) {
         if (!findElem(form_id))
             ovDoError(`A form with this id [${form_id}] does not Exist`);
