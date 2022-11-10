@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.2.7
+ * OctaValidate main JS V1.2.9
  * author: Simon Ugorji
- * Last Edit : 8th November 2022
+ * Last Edit : 10th November 2022
  */
 
 (function () {
@@ -57,7 +57,7 @@ function octaValidate(form_ID, userConfig) {
         strictWords: ["undefined"]
     };
     //version number
-    const versionNumber = "1.2.7";
+    const versionNumber = "1.2.9";
 
     ////---------------
 

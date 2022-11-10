@@ -1,4 +1,4 @@
-# Octavalidate - JS V1.2.7
+# Octavalidate - JS V1.2.9
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
@@ -30,7 +30,7 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.2.7/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@1.2.9/native/validate.js"></script>
 ```
 
 ### LOCAL
@@ -44,7 +44,7 @@ Place this script before the <code>&lt;/head&gt;</code> tag.
 
 ### React JS
 
-Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-react.html) to learn how to install & use this Library in React JS.
+Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/octavalidate/reactjs/index.html) to learn how to install & use this Library in React JS.
 
 ## How to Use
 
@@ -368,3 +368,5 @@ Do you need a detailed explanation on how to use this library?
 ## Contributors
 
 [Simon Ugorji](https://twitter.com/ugorji_simon)
+
+[Chamberlain Ezigbo](https://twitter.com/chamberlin5050)
