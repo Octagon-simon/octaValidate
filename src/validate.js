@@ -1,7 +1,7 @@
 /**
  * OctaValidate main JS V1.3.0
  * author: Simon Ugorji
- * Last Edit : 30th November 2022
+ * Last Edit : 29th November 2022
  */
 
 (function () {
