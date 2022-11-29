@@ -1,4 +1,4 @@
-# Octavalidate - JS V1.2.9
+# Octavalidate - JS V1.3.0
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
@@ -30,7 +30,7 @@ Visit the [DOCUMENTATION](https://octagon-simon.github.io/projects/octavalidate/
 ### CDN
 Place this script before the <code>&lt;/head&gt;</code> tag.
 ```html
-<script src="https://unpkg.com/octavalidate@1.2.9/native/validate.js"></script>
+<script src="https://unpkg.com/octavalidate@latest/native/validate.js"></script>
 ```
 
 ### LOCAL
@@ -44,7 +44,7 @@ Place this script before the <code>&lt;/head&gt;</code> tag.
 
 ### React JS
 
-Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/octavalidate/reactjs/index.html) to learn how to install & use this Library in React JS.
+Visit this [Link to the Documentation](https://octagon-simon.github.io/projects/octavalidate/reactjs/index.html) to learn how you can install & use this Library in React JS.
 
 ## How to Use
 
@@ -60,9 +60,9 @@ Create a form tag with input elements and set the attribute **octavalidate** wit
 
 </form>
 ```
-> Make sure that all input elements have a **unique identifier**. If you fail to attach an **id** to the input element, any validation rule applied to the element will be ignored.
+> Make sure that all input elements have a **unique identifier**.
 
-Now you need to create a new instance of the function and pass in the **form id** as the first argument, and any configurationoptions as the second argument.
+Now you need to create a new instance of the function and pass in the **form id** as the first argument, and any configuration options as the second argument.
 
 Then begin validation on that particular form by invoking the `validate()` method.
 
@@ -170,36 +170,36 @@ The table below shows the default validation rules and their attibutes for a cus
 
 | Validation Rule | Description| Validation Text Attribute| 
 |-----------------|------------|-------------------------|
-| R               |Required    | ov-required:msg         |
-| EMAIL           |EMAIL       | ov-email:msg         |
-| ALPHA_ONLY      |Alphabets Only| ov-alpha-only:msg |
-| ALPHA_SPACES    |Alphabets and Spaces| ov-alpha-spaces:msg|
-| ALPHA_NUMERIC   |Alphabets with Numbers| ov-alpha-numeric:msg|
-| LOWER ALPHA     |Lowercase letters | ov-lower-alpha:msg|
-| UPPER_ALPHA     |Uppercase letters | ov-upper-alpha:msg|
-| PWD             |Password          | ov-pwd:msg|
-| DIGITS          |Digits            | ov-digits:msg |
-| URL             |URL               | ov-url:msg |
-| URL_QP          |URL with Query Parameters| ov-url-qp:msg |   
-| DATE_MDY        |Date in the format MM/DD/YYYY| ov-date-mdy:msg|
-| USERNAME        |Username          | ov-username:msg |
-| TEXT            |General Text      | ov-text:msg |
+| R               |Required    | ov-required-msg         |
+| EMAIL           |EMAIL       | ov-email-msg         |
+| ALPHA_ONLY      |Alphabets Only| ov-alpha-only-msg |
+| ALPHA_SPACES    |Alphabets and Spaces| ov-alpha-spaces-msg|
+| ALPHA_NUMERIC   |Alphabets with Numbers| ov-alpha-numeric-msg|
+| LOWER ALPHA     |Lowercase letters | ov-lower-alpha-msg|
+| UPPER_ALPHA     |Uppercase letters | ov-upper-alpha-msg|
+| PWD             |Password          | ov-pwd-msg|
+| DIGITS          |Digits            | ov-digits-msg |
+| URL             |URL               | ov-url-msg |
+| URL_QP          |URL with Query Parameters| ov-url-qp-msg |   
+| DATE_MDY        |Date in the format MM/DD/YYYY| ov-date-mdy-msg|
+| USERNAME        |Username          | ov-username-msg |
+| TEXT            |General Text      | ov-text-msg |
 
 Here's how to use the custom error message
 
 ```html
-<input type="text" octavalidate="R,USERNAME" ov-required:msg="Your username is required" ov-username:msg="Username should contain letters or numbers" name="username" id="inp_uname">
+<input type="text" octavalidate="R,USERNAME" ov-required-msg="Your username is required" ov-username-msg="Username should contain letters or numbers" name="username" id="inp_uname">
 ```
->The `R` validation rule validates a CHECKBOX, FILE INPUT ELEMENT, or a TEXT input by marking them as **required fields** and you may provide a custom validation error text using the attribute `ov-required:msg`.
+>The `R` validation rule validates a CHECKBOX, FILE INPUT ELEMENT, or a TEXT input by marking them as **required fields** and you may provide a custom validation error text using the attribute `ov-required-msg`.
 
 ## ATTRIBUTES VALIDATION
 
-Currently we have 3 categories of attribute validation:
+Currently we have 4 attributes validation:
 
 - length validation
 - EqualTo validation
 - File validation
-  
+- Range validation
 ### LENGTH VALIDATION
 
 You can validate: `maxlength, minlength and length` by providing it as an attribute to the form input.
@@ -222,9 +222,9 @@ You can validate: `maxlength, minlength and length` by providing it as an attrib
 You can check if two inputs contain the same values, using the attribute `equalto` on the input element, with a value containing the ID of the other input element to check against.
 
 ```html
-<input type="password" id="inp_pwd1" octavalidate="R,PWD" ov-required:msg="Your Password is required">
+<input type="password" id="inp_pwd1" octavalidate="R,PWD" ov-required-msg="Your Password is required">
 <!--check if both values match -->
-<input type="password" id="inp_pwd2" equalto="inp_pwd1" ov-equalto:msg="Both passwords do not match">
+<input type="password" id="inp_pwd2" equalto="inp_pwd1" ov-equalto-msg="Both passwords do not match">
 ```
 ### FILE VALIDATION
 
@@ -237,6 +237,14 @@ You can validate: `accept, accept-mime, size, minsize, maxsize` by providing it 
 - maxsize (5MB) `single or multiple` - This means that the file provided must be 5MB or less.
   
 Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/file.html) to learn more about file validation.
+
+### RANGE VALIDATION
+
+You can validate a range of numbers using this attribute. Say I want a user to provide a number between 1 to 5, I will set up the validation like this on my input element
+
+```html
+<input type="text" id="inp_range" range="1 - 5">
+```
 
 ## API METHODS
 
@@ -277,7 +285,7 @@ If there are no validation errors, `successCB` will be executed but if there are
 
 ## CONFIGURATION
 
-We have 3 configuration options:
+We have 4 configuration options:
 
 - successBorder: <code>Boolean</code>
   
@@ -289,7 +297,9 @@ We have 3 configuration options:
   
    This option alows you to provide words that users are not supposed to submit. For eg ["null", "error", "false", "fake", "admin"]. In order to use this option, you must set `strictMode` to `true`.
 
-> Since Version 1.1.4, any value provided by the user that matches any of the strict words, will be flagged as a value that is "not allowed".
+- errorElem: <code>Object</code>
+  
+  This option makes the library to append the error message right after the element provided
 
 To use any of these options, provide it as an object and pass it as the second argument when creating an instance of octaValidate.
 
@@ -298,14 +308,17 @@ To use any of these options, provide it as an object and pass it as the second a
 const options = {
   successBorder : true, 
   strictMode : true, 
-  strictWords : ["error", "false", "invalid", "fake", "admin"]
+  strictWords : ["error", "false", "invalid", "fake", "admin"],
+  errorElem : {
+    "INPUT_ID" : "INPUT_ID_WRAPPER"
+  }
 }
 //my function instance
 const myForm = new octaValidate('FORM_ID', options);
 ```
 
 ## REFERENCE METHODS
-After creating a new instance of the function, the methods below becomes available for use.
+After creating an instance of the function, the methods below becomes available for use.
 
 ```javascript
 //create instance of the function

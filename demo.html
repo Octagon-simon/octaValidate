@@ -237,6 +237,10 @@
         margin-bottom: 20px;
     }
 
+    .mb-30 {
+        margin-bottom: 30px;
+    }
+
     .ml-10 {
         margin-left: 10px;
     }
@@ -423,8 +427,25 @@
         text-decoration: none;
     }
 
+    .footer-link-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .footer-link-wrapper ul {
+        margin-left: 10px;
+        list-style-type: none;
+    }
+
     .link {
         color: inherit;
+    }
+
+    @media screen and (max-width : 500px) {
+        .footer-link-wrapper {
+            display: block;
+            text-align: center;
+        }
     }
 
     :root {
@@ -446,38 +467,36 @@
             <form id="form_demo" novalidate>
                 <h2 class="text-center mt-0 text-uppercase">DEMO Form</h2>
                 <div class="notification is-info mt-20 mb-20">
-                    <p>This library will never store any data entered here.</p>
-                </div>
-                <div class="form-group">
-                    <label>Multiple Files Upload <span style="color:#ff0000">*</span></label>
-                    <input type="file" id="inp_multiple_files" octavalidate="R" minfiles="5" maxsize="10mb"
-                        accept-mime="audio/*" multiple>
-                    <small>5 Audio files only allowed, maximum size is 10MB.</small>
+                    <p>Try to break through 😎😎😎</p>
                 </div>
                 <div class="form-group">
                     <label>Username <span style="color:#ff0000">*</span></label>
                     <input type="text" id="inp_uname" octavalidate="R,USERNAME"
-                        ov-required:msg="Your username is required" ov-username:msg="Please enter a valid username"
+                        ov-required-msg="Your username is required" ov-username-msg="Please enter a valid username"
                         placeholder="Your username" length="5">
                 </div>
                 <div class="form-group">
                     <label>Email <span style="color:#ff0000">*</span></label>
-                    <input type="text" ov-required:msg="Your Email Address is required" id="inp_reg_email"
+                    <input type="text" ov-required-msg="Your Email Address is required" id="inp_reg_email"
                         octavalidate="R,EMAIL" placeholder="Your Email Address">
                 </div>
                 <div class="form-group">
                     <label>Password <span style="color:#ff0000">*</span></label>
                     <input type="password" id="inp_reg_pwd" octavalidate="R,PASS"
-                        ov-required:msg="Your password is required" placeholder="Your Password">
+                        ov-required-msg="Your password is required" placeholder="Your Password">
                 </div>
                 <div class="form-group">
                     <label>Re-enter password</label>
                     <input type="password" id="inp_reg_pwd2" equalto="inp_reg_pwd"
-                        ov-equalto:msg="Both passwords do not match" placeholder="Re-enter Password">
+                        ov-equalto-msg="Both passwords do not match" placeholder="Re-enter Password">
+                </div>
+                <div class="form-group">
+                    <label>How many times do you eat in a day? <span style="color:#ff0000">*</span></label>
+                    <input ov-range-msg="Please enter a value between 1 - 5" octavalidate="R" id="inp_range" range="1 - 5" type="number" placeholder="5">
                 </div>
                 <div class="mt-100">
                     <input type="checkbox" id="inp_terms" octavalidate="R"
-                        ov-required:msg="Please accept the terms and conditions">I accept the terms and conditions
+                        ov-required-msg="Please accept the terms and conditions">I accept the terms and conditions
                 </div>
                 <div class="form-group">
                     <button class="reg-btn block" type="submit">RUN TEST</button>
@@ -537,10 +556,10 @@
         </div>
     </div>
 </section>
-<footer align="center" class="footer">
-    <div class="mw-500">
+<footer class="footer">
+    <div class="text-center">
         <h3 class="text-white mb-20">CONNECT WITH ME</h3>
-        <ul class="list-inline list-unstyled">
+        <ul class="list-inline list-unstyled mb-30">
             <li class="list-inline-item"><a href="https://twitter.com/ugorji_simon" target="_blank"
                     class="social-btn">Twitter</a></li>
             <li class="list-inline-item">
@@ -548,29 +567,38 @@
                     class="social-btn">LinkedIn</a>
             </li>
         </ul>
-        <p class="footer-link mt-20">
-            <a href="https://octagon-simon.github.io/projects/octavalidate/">Visit the
-                Documentation for Native JS</a>
-        </p>
-        <p class="footer-link mt-20">
-            <a href="https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-react/">Check out Octavalidate for
-                React</a>
-        </p>
-        <p class="footer-link mt-20">
-            <a href="https://octagon-simon.github.io/projects/octavalidate/php/">Check out Octavalidate for PHP</a>
-        </p>
-        <p class="footer-link mt-20">
-            <a href="https://octagon-simon.github.io/projects/octavalidate/nodejs/">Check out Octavalidate for
-                Nodejs</a>
-        </p>
     </div>
-    <div class="mt-20 mb-20">
+    <h3 class="text-white text-center">VISIT OUR DOCS</h3>
+    <div class="footer-link-wrapper text">
+        <ul>
+            <li class="footer-link mt-20">
+                <a href="https://octagon-simon.github.io/projects/octavalidate/">Visit the
+                    Documentation</a>
+            </li>
+            <li class="footer-link mt-20">
+                <a href="https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-react/">Octavalidate
+                    for
+                    React</a>
+            </li>
+        </ul>
+        <ul>
+            <li class="footer-link mt-20">
+                <a href="https://octagon-simon.github.io/projects/octavalidate/php/">Octavalidate for PHP</a>
+            </li>
+            <li class="footer-link mt-20">
+                <a href="https://octagon-simon.github.io/projects/octavalidate/nodejs/">Octavalidate for
+                    Nodejs</a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="mt-20 mb-20 text-center">
         <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
             data-name="bmc-button" data-slug="simon.ugorji" data-color="#40DCA5" data-emoji="" data-font="Cookie"
             data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
             data-coffee-color="#FFDD00"></script>
     </div>
-    <p class="text-gray mt-20">Octavalidate @ 1.2.9 🚀 Since January 2022 </p>
+    <p id="footer-ov-info" class="text-gray mt-20 text-center">Octavalidate @ 1.2.9 🚀 Since January 2022</p>
 </footer>
 
 </html>
@@ -580,6 +608,7 @@
         strictMode: true,
         strictWords: ["null", "empty", "undefined", "NaN"]
     });
+    document.querySelector('#footer-ov-info').innerHTML = `Octavalidate @ ${myForm.version()} 🚀 Since January 2022`;
     //add custom rule
     myForm.customRule("PASS", /^12345+$/, "Please enter 12345");
     //define callback
@@ -616,3 +645,11 @@
         setTimeout(function () { p.classList.remove("show"); }, 3000);
     }
 </script>
+
+<!--- 
+What's new? 
+
+We added a configuration option that allows you to provide an element where we can append an error element after.
+
+We fixed a bug with using strictMode on multi select elements
+-->
