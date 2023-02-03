@@ -68,12 +68,9 @@
     input:not([type="file"]) {
         display: block;
         border-radius: 5px;
-        background-color: #fcfcfc !important;
-        border: 2px solid #aaaaaa;
-        width: 100%;
-        width: -moz-available;
-        width: -webkit-fill-available;
-        width: fill-available;
+        background-color: #e9e9e9 !important;
+        border: 2px solid #787878;
+        width: calc(100% - 24px);
         padding: 10px;
     }
 
@@ -124,9 +121,10 @@
     }
 
     button {
-        all: unset;
+        border: 2px solid #fff;
         text-align: center;
-        padding: 10px 0px 10px 0px;
+        padding: 15px;
+        border-radius: 10px;
         color: #fff;
         cursor: pointer;
     }
@@ -139,7 +137,7 @@
     .form-cont {
         padding: var(--container-padding);
         border: 1px solid #ddd;
-        border-radius: 20px;
+        border-radius: 5px;
         max-width: var(--container-width);
     }
 
@@ -186,7 +184,7 @@
 
     .form-section {
         position: relative;
-        margin-top: 6rem;
+        margin-top: 8rem;
     }
 
     .bg-white {
@@ -349,7 +347,7 @@
         /* Add a z-index if needed */
         left: 50%;
         /* Center the snackbar */
-        bottom: 30px;
+        top: 10px;
         /* 30px from the bottom */
         height: 3rem;
         display: inline-flex;
@@ -417,41 +415,52 @@
         }
     }
 
-    .footer-link a {
+    a.footer-link {
         text-decoration: none;
         color: rgb(24 163 221);
     }
 
-    .footer-link a:hover {
+    a.footer-link:hover {
         color: #fff;
         text-decoration: none;
-    }
-
-    .footer-link-wrapper {
-        display: flex;
-        justify-content: center;
-    }
-
-    .footer-link-wrapper ul {
-        margin-left: 10px;
-        list-style-type: none;
     }
 
     .link {
         color: inherit;
     }
 
-    @media screen and (max-width : 500px) {
-        .footer-link-wrapper {
-            display: block;
-            text-align: center;
-        }
+    .brand-title {
+        margin: 10px;
+        font-size: 2em;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .d-block {
+        display: block !important;
     }
 
     :root {
         --container-width: 370px;
         --container-padding: 20px;
     }
+
+    /***
+    I FIXED A LONG EXISTING BUG YAAAY!
+    You might not have noticed that this library had a bug with validating form inputs using the onchange handler.
+    length now needs to check if value exists before it works
+    removed successBorder entirely
+
+    Enjoying octavalidate? Please leave a short review on Openbase: https://openbase.com/js/octavalidate#rate
+
+    As a developer of this great library, I can assure you that this is the best form validation library.
+
+    In all my projects, I use octavalidate to validate form inputs both client-side and server-side, and the implementation process is quick.
+
+    In as much as there are inbuilt rules, the library allows you to add your custom regular expression if you wish to validate a value that must follow a particular pattern.
+
+    Try it out today!
+    ***/
 </style>
 
 <script src="src/validate.js"></script>
@@ -459,11 +468,12 @@
 <body id="octavalidate_demo_page">
     <section class="demo-bg-section">
         <div align="center" class="mt-20">
-            <img src="img/ov-success-white.png" width="50px">
+            <img class="d-block" src="img/ov-success-white.png" width="50px">
+            <h4 class="brand-title">octaValidate</h4>
         </div>
     </section>
     <div align="center" class="form-section">
-        <div class="text-left form-cont bg-white mt-100">
+        <div class="text-left form-cont bg-white">
             <form id="form_demo" novalidate>
                 <h2 class="text-center mt-0 text-uppercase">DEMO Form</h2>
                 <div class="notification is-info mt-20 mb-20">
@@ -492,7 +502,8 @@
                 </div>
                 <div class="form-group">
                     <label>How many times do you eat in a day? <span style="color:#ff0000">*</span></label>
-                    <input ov-range-msg="Please enter a value between 1 - 5" octavalidate="R" id="inp_range" range="1 - 5" type="number" placeholder="5">
+                    <input ov-range-msg="Please enter a value between 1 - 5" octavalidate="R" id="inp_range" range="1-5"
+                        type="number" placeholder="5">
                 </div>
                 <div class="mt-100">
                     <input type="checkbox" id="inp_terms" octavalidate="R"
@@ -532,12 +543,6 @@
         <p class="mt-10 ml-20">With <b>strict mode</b> enabled, <b>extra white</b> space at the start and at the end of
             an input value is removed.</p>
         <ul class="mt-20 brief-group">
-            <li class="brief-item">Success border is enabled</li>
-        </ul>
-        <p class="mt-10 ml-20">The input element should automatically set a green border if its validation test was
-            passed.
-        </p>
-        <ul class="mt-20 brief-group">
             <li class="brief-item">callbacks are defined</li>
         </ul>
         <p class="mt-10 ml-20">With the callback feature, you can declare a function that will be invoked if validation
@@ -568,37 +573,17 @@
             </li>
         </ul>
     </div>
-    <h3 class="text-white text-center">VISIT OUR DOCS</h3>
-    <div class="footer-link-wrapper text">
-        <ul>
-            <li class="footer-link mt-20">
-                <a href="https://octagon-simon.github.io/projects/octavalidate/">Visit the
-                    Documentation</a>
-            </li>
-            <li class="footer-link mt-20">
-                <a href="https://octagon-simon.github.io/projects/octavalidate/octavalidate-with-react/">Octavalidate
-                    for
-                    React</a>
-            </li>
-        </ul>
-        <ul>
-            <li class="footer-link mt-20">
-                <a href="https://octagon-simon.github.io/projects/octavalidate/php/">Octavalidate for PHP</a>
-            </li>
-            <li class="footer-link mt-20">
-                <a href="https://octagon-simon.github.io/projects/octavalidate/nodejs/">Octavalidate for
-                    Nodejs</a>
-            </li>
-        </ul>
-
-    </div>
+    <h3 class="text-white text-center"><a href="https://octagon-simon.github.io/projects/octavalidate/" target="_blank"
+            class="footer-link">
+            VISIT OUR DOCUMENTATION
+        </a></h3>
     <div class="mt-20 mb-20 text-center">
         <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
             data-name="bmc-button" data-slug="simon.ugorji" data-color="#40DCA5" data-emoji="" data-font="Cookie"
             data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
             data-coffee-color="#FFDD00"></script>
     </div>
-    <p id="footer-ov-info" class="text-gray mt-20 text-center">Octavalidate @ 1.2.9 🚀 Since January 2022</p>
+    <p id="footer-ov-info" class="text-gray mt-20 text-center">Octavalidate @ 1.3.2 🚀 Since January 2022</p>
 </footer>
 
 </html>
