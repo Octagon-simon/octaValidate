@@ -1,4 +1,4 @@
-# Octavalidate - JS V1.3.0
+# Octavalidate - JS V1.3.2
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
