@@ -1,7 +1,7 @@
 /**
- * OctaValidate main JS V1.3.0
+ * OctaValidate main JS V1.3.2
  * author: Simon Ugorji
- * Last Edit : 29th November 2022
+ * Last Edit : 4th February 2023
  */
 
 (function () {
@@ -52,8 +52,7 @@
 function octaValidate(form_ID, userConfig = {
     errorElem : {},
     strictMode : false,
-    strictWords : [],
-    successBorder : true
+    strictWords : []
 }) {
     ////---------------
 
@@ -72,13 +71,12 @@ function octaValidate(form_ID, userConfig = {
     const formID = form_ID;
     //store config
     const config = {
-        successBorder: true,
         strictMode: false,
         strictWords: ["undefined"],
         errorElem : {}
     };
     //version number
-    const versionNumber = "1.3.0";
+    const versionNumber = "1.3.2";
 
     ////---------------
 
@@ -111,9 +109,6 @@ function octaValidate(form_ID, userConfig = {
         ovDoError("Configuration options must be passed as a valid object");
     //store configuration
     if (typeof userConfig !== "undefined") {
-        if (userConfig.successBorder !== undefined) {
-            (userConfig.successBorder == true || userConfig.successBorder == false) ? config.successBorder = userConfig.successBorder : null;
-        }
         if (userConfig.errorElem !== undefined && isObject(userConfig.errorElem) && Object.keys(userConfig.errorElem).length) {
             config.errorElem = userConfig.errorElem
         }
@@ -183,32 +178,45 @@ function octaValidate(form_ID, userConfig = {
     };
     //insert success
     const ovNewSuccess = (inputID) => {
-        //check if user wants a success border
-        if (config.successBorder == true) {
-            //remove previous error
-            ovRemoveSuccess(inputID);
-            //set class of input error
-            const f = document.querySelector('#' + inputID);
-            if (!f.classList.contains('octavalidate-inp-success')) {
-                f.classList.add("octavalidate-inp-success");
-            }
+        //remove previous error
+        ovRemoveSuccess(inputID);
+        //set class of input error
+        const f = document.querySelector('#' + inputID);
+        if (!f.classList.contains('octavalidate-inp-success')) {
+            f.classList.add("octavalidate-inp-success");
         }
     };
     //remove success
     const ovRemoveSuccess = (inputID) => {
         let inputElem = (document.querySelector('#' + inputID)) ?
             document.querySelector('#' + inputID) : null;
-        //check if user wants a success border
-        if (config.successBorder == true) {
-            //remove classlist
-            if (inputElem !== null) {
-                (inputElem.classList.contains('octavalidate-inp-success')) ?
-                    inputElem.classList.remove('octavalidate-inp-success') : null;
-            } else {
-                ovDoError(`Input ID ${inputID} is missing!`);
-            }
+        //remove classlist
+        if (inputElem !== null) {
+            (inputElem.classList.contains('octavalidate-inp-success')) ?
+                inputElem.classList.remove('octavalidate-inp-success') : null;
+        } else {
+            ovDoError(`Input ID ${inputID} is missing!`);
         }
     };
+    //create event listener for required and strictMode
+    //this block helps to attach event listener once to the element
+    const attachedEventListeners = {}
+    const ovNewEvent = (elem, theEvent) => {
+        //check if event listener is not attached already
+        //check the function name first
+        //In JS everything is an object so we can retrieve fxn name from theEvent.name
+
+        //so check if event listener is unattached or the one attached does not include theEvent.name
+        if (typeof attachedEventListeners[elem.id] == "undefined" || !attachedEventListeners[elem.id].includes(theEvent.name)) {
+            if (elem.addEventListener) {
+                elem.addEventListener("change", theEvent);
+            } else if (elem.attachEvent) {
+                elem.attachEvent("change", theEvent);
+            }
+        }
+        //event listener has been attached
+        attachedEventListeners[elem.id] = (typeof attachedEventListeners[elem.id] !== "undefined") ? [...new Set([...attachedEventListeners[elem.id], theEvent.name])] : [theEvent.name];
+    }
     //throw an error / exception
     const ovDoError = function (err) {
         if (!findElem('octavalidate-exception')) {
@@ -725,7 +733,6 @@ function octaValidate(form_ID, userConfig = {
     function validate() {
 
         const form_id = formID;
-
         //check if form id exists in DOM
         if (!findElem(form_id)) ovDoError(`A form with this ID [${form_id}] does not exist in the DOM`);
         //Begin validation and return result
@@ -762,7 +769,6 @@ function octaValidate(form_ID, userConfig = {
                             //handle strict words
                             const checkStrictWords = (value) => {
                                 const res = strictWords.filter(s => { return value.match(new RegExp(`${'(' + s + ')'}`, 'i')) })
-
                                 return res
                             }
 
@@ -828,31 +834,14 @@ function octaValidate(form_ID, userConfig = {
 
                                 //create event listener
                                 let eventAction = function () {
-                                    if (type !== "file" && type !== "checkbox" && type !== "radio") {
-                                        if (this.value) {
-                                            if (runExp(validationInfo) === false) {
-                                                errors[formInputId]++;
-                                                ovRemoveSuccess(index);
-                                                ovNewError(index, validationText);
-                                            } else {
-                                                errors[formInputId]--;
-                                                ovRemoveError(index);
-                                                ovNewSuccess(index);
-                                            }
-                                        } else {
-                                            ovRemoveError(index);
-                                            ovNewSuccess(index);
-                                        }
+                                    if (runExp(validationInfo) === false) {
+                                        errors[formInputId]++;
+                                        ovRemoveSuccess(index);
+                                        ovNewError(index, validationText);
                                     } else {
-                                        if (runExp(validationInfo) === false) {
-                                            errors[formInputId]++;
-                                            ovRemoveSuccess(index);
-                                            ovNewError(index, validationText);
-                                        } else {
-                                            errors[formInputId]--;
-                                            ovRemoveError(index);
-                                            ovNewSuccess(index);
-                                        }
+                                        errors[formInputId]--;
+                                        ovRemoveError(index);
+                                        ovNewSuccess(index);
                                     }
                                     validateForm();
                                 }
@@ -867,11 +856,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-required-msg")) ? elem.getAttribute("ov-required-msg").toString() : 'This checkbox is required';
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", eventAction, { once: true });
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", eventAction);
-                                                }
+                                                ovNewEvent(elem, eventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 ovRemoveError(index);
@@ -884,51 +869,22 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-required-msg")) ? elem.getAttribute("ov-required-msg").toString() : 'Please select a valid file';
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", eventAction, { once: true });
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", eventAction);
-                                                }
+                                                ovNewEvent(elem, eventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 ovRemoveError(index);
                                                 continueValidation[formInputId]++;
                                             }//required file validation
                                         } else {
-                                            if (!elem.value || elem.value.trim() == "") {
+                                            if (elem.value.trim() == "") {
                                                 errors[formInputId]++;
+                                                //or !!elem.value.trim()
+                                                validationInfo = `${elem.value.length}`
                                                 validationText = (elem.getAttribute('ov-required-msg')) ? elem.getAttribute('ov-required-msg').toString() : "This field is required";
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", function () {
-                                                        if (this.value.trim() == "") {
-                                                            errors[formInputId]++;
-                                                            ovRemoveSuccess(index);
-                                                            ovNewError(index, validationText);
-                                                        } else {
-                                                            errors[formInputId]--;
-                                                            ovRemoveError(index);
-                                                            ovNewSuccess(index);
-                                                        }
-                                                        validateForm();
-                                                    });
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", function () {
-                                                        //make it inline
-                                                        if (this.value.trim() == "") {
-                                                            errors[formInputId]++;
-                                                            ovRemoveSuccess(index);
-                                                            ovNewError(index, validationText);
-                                                        } else {
-                                                            errors[formInputId]--;
-                                                            ovRemoveError(index);
-                                                            ovNewSuccess(index);
-                                                        }
-                                                        validateForm();
-                                                    });
-                                                }
-                                            } else { continueValidation[formInputId]++; }
+                                                ovNewEvent(elem, eventAction)
+                                            } else { continueValidation[formInputId]++;}
                                         }
                                     } else {
                                         continueValidation[formInputId]++;
@@ -947,11 +903,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = errText.toString();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, errText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", eventAction, { once: true });
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", eventAction);
-                                                }
+                                                ovNewEvent(elem, eventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else { continueValidation[formInputId]++; }
                                         } else {
@@ -969,11 +921,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-email-msg')) ? elem.getAttribute('ov-email-msg').toString() : "Please provide a valid email address";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
+                                            ovNewEvent(elem, eventAction)
                                         } else {
                                             continueValidation[formInputId]++;
                                         }
@@ -988,11 +936,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-alpha-only-msg:')) ? elem.getAttribute('ov-alpha-only-msg:').toString() : "Please enter only Letters!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1006,12 +950,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-alpha-spaces-msg')) ? elem.getAttribute('ov-alpha-spaces-msg').toString() : "Please enter only Letters or spaces!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1025,12 +964,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-alpha-numeric-msg')) ? elem.getAttribute('ov-alpha-numeric-msg').toString() : "Please enter only Letters or Numbers!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1044,11 +978,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-lower-alpha-msg')) ? elem.getAttribute('ov-lower-alpha-msg').toString() : "Only letters in lowercase are allowed!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1063,12 +993,7 @@ function octaValidate(form_ID, userConfig = {
                                             ovRemoveSuccess(index);
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1082,12 +1007,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-pwd-msg')) ? elem.getAttribute('ov-pwd-msg').toString() : "Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1103,12 +1023,7 @@ function octaValidate(form_ID, userConfig = {
                                                 "Please provide a valid Number";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction);
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1122,12 +1037,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-url-msg')) ? elem.getAttribute('ov-url-msg').toString() : "Please provide a valid URL that begins with http or https!";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction);
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1141,12 +1051,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-url-qp-msg')) ? elem.getAttribute('ov-url-qp-msg').toString() : "Please provide a valid URL with a query parameter.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction);
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1160,12 +1065,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-date-mdy-msg')) ? elem.getAttribute('ov-date-mdy-msg').toString() : "Please provide a date with the format mm/dd/yyyy.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
-
+                                            ovNewEvent(elem, eventAction);
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1179,11 +1079,7 @@ function octaValidate(form_ID, userConfig = {
                                             validationText = (elem.getAttribute('ov-username-msg')) ? elem.getAttribute('ov-username-msg').toString() : "Your username should contain alphanumeric characters only.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
+                                            ovNewEvent(elem, eventAction);
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1199,11 +1095,7 @@ function octaValidate(form_ID, userConfig = {
                                                 "This field contains invalid characters.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", eventAction, { once: true });
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", eventAction);
-                                            }
+                                            ovNewEvent(elem, eventAction)
                                             continueValidation[formInputId] = 0;
                                         } else { continueValidation[formInputId]++; }
                                     } else {
@@ -1279,11 +1171,7 @@ function octaValidate(form_ID, userConfig = {
                                                     validationText = (elem.getAttribute("ov-accept-msg")) ? (elem.getAttribute("ov-accept-msg")) : "File type is not supported";
                                                     ovRemoveSuccess(index);
                                                     ovNewError(index, validationText);
-                                                    if (elem.addEventListener) {
-                                                        elem.addEventListener("change", attributesEventAction);
-                                                    } else if (elem.attachEvent) {
-                                                        elem.attachEvent("change", attributesEventAction);
-                                                    }
+                                                    ovNewEvent(elem, attributesEventAction)
                                                     continueValidation[formInputId] = 0;
                                                 } else {
                                                     continueValidation[formInputId]++;
@@ -1305,11 +1193,7 @@ function octaValidate(form_ID, userConfig = {
                                                     validationText = (elem.getAttribute("ov-accept-mime-msg")) ? (elem.getAttribute("ov-accept-mime-msg")) : "File type is not supported";
                                                     ovRemoveSuccess(index);
                                                     ovNewError(index, validationText);
-                                                    if (elem.addEventListener) {
-                                                        elem.addEventListener("change", attributesEventAction);
-                                                    } else if (elem.attachEvent) {
-                                                        elem.attachEvent("change", attributesEventAction);
-                                                    }
+                                                    ovNewEvent(elem, attributesEventAction)
                                                 } else {
                                                     continueValidation[formInputId] = 0;
                                                 }
@@ -1325,11 +1209,7 @@ function octaValidate(form_ID, userConfig = {
                                                     validationText = (elem.getAttribute("ov-size-msg")) ? (elem.getAttribute("ov-size-msg")) : "File size must be exactly " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                     ovRemoveSuccess(index);
                                                     ovNewError(index, validationText);
-                                                    if (elem.addEventListener) {
-                                                        elem.addEventListener("change", attributesEventAction);
-                                                    } else if (elem.attachEvent) {
-                                                        elem.attachEvent("change", attributesEventAction);
-                                                    }
+                                                    ovNewEvent(elem, attributesEventAction)
                                                     continueValidation[formInputId] = 0;
                                                 } else {
                                                     continueValidation[formInputId]++;
@@ -1347,11 +1227,7 @@ function octaValidate(form_ID, userConfig = {
                                                     validationText = (elem.getAttribute("ov-minsize-msg")) ? (elem.getAttribute("ov-minsize-msg")) : "File size must be equal to or greater than " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                     ovRemoveSuccess(index);
                                                     ovNewError(index, validationText);
-                                                    if (elem.addEventListener) {
-                                                        elem.addEventListener("change", attributesEventAction);
-                                                    } else if (elem.attachEvent) {
-                                                        elem.attachEvent("change", attributesEventAction);
-                                                    }
+                                                    ovNewEvent(elem, attributesEventAction)
                                                     continueValidation[formInputId] = 0;
                                                 } else {
                                                     continueValidation[formInputId]++;
@@ -1369,11 +1245,7 @@ function octaValidate(form_ID, userConfig = {
                                                     validationText = (elem.getAttribute("ov-minsize-msg")) ? (elem.getAttribute("ov-minsize-msg")) : "File size must be equal to or less than " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                     ovRemoveSuccess(index);
                                                     ovNewError(index, validationText);
-                                                    if (elem.addEventListener) {
-                                                        elem.addEventListener("change", attributesEventAction);
-                                                    } else if (elem.attachEvent) {
-                                                        elem.attachEvent("change", attributesEventAction);
-                                                    }
+                                                    ovNewEvent(elem, attributesEventAction)
                                                     continueValidation[formInputId] = 0;
                                                 } else {
                                                     continueValidation[formInputId]++;
@@ -1394,11 +1266,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-totalsize-msg")) ? (elem.getAttribute("ov-totalsize-msg")) : "Please select files that is equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", attributesEventAction);
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", attributesEventAction);
-                                                }
+                                                ovNewEvent(elem, attributesEventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 continueValidation[formInputId]++;
@@ -1417,11 +1285,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-totalminsize-msg")) ? (elem.getAttribute("ov-totalminsize-msg")) : "Please select files that is more than or equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", attributesEventAction);
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", attributesEventAction);
-                                                }
+                                                ovNewEvent(elem, attributesEventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 continueValidation[formInputId]++;
@@ -1440,11 +1304,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-totalminsize-msg")) ? (elem.getAttribute("ov-totalminsize-msg")) : "Please select files that is less than or equal to " + f.split(':')[1].replace(' ', '').toUpperCase();
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", attributesEventAction);
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", attributesEventAction);
-                                                }
+                                                ovNewEvent(elem, attributesEventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 continueValidation[formInputId]++;
@@ -1460,11 +1320,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-files-msg")) ? (elem.getAttribute("ov-files-msg")) : "Please select " + f.split(':')[1].replace(' ', '') + " files";
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", attributesEventAction);
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", attributesEventAction);
-                                                }
+                                                ovNewEvent(elem, attributesEventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 continueValidation[formInputId]++;
@@ -1479,11 +1335,7 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-minfiles-msg")) ? (elem.getAttribute("ov-minfiles-msg")) : "Please select " + f.split(':')[1].replace(' ', '') + " files or more";
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", attributesEventAction);
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", attributesEventAction);
-                                                }
+                                                ovNewEvent(elem, attributesEventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 continueValidation[formInputId]++;
@@ -1498,65 +1350,48 @@ function octaValidate(form_ID, userConfig = {
                                                 validationText = (elem.getAttribute("ov-maxfiles-msg")) ? (elem.getAttribute("ov-maxfiles-msg")) : "Please select " + f.split(':')[1].replace(' ', '') + " files or less";
                                                 ovRemoveSuccess(index);
                                                 ovNewError(index, validationText);
-                                                if (elem.addEventListener) {
-                                                    elem.addEventListener("change", attributesEventAction);
-                                                } else if (elem.attachEvent) {
-                                                    elem.attachEvent("change", attributesEventAction);
-                                                }
+                                                ovNewEvent(elem, attributesEventAction)
                                                 continueValidation[formInputId] = 0;
                                             } else {
                                                 continueValidation[formInputId]++;
                                             }
                                         }
                                     } else if (f.split(':')[0] === 'MINLENGTH') {
-                                        if (!(elem.value.length >= Number(f.split(':')[1]))) {
+                                        if (elem.value.trim() !== "" && !(elem.value.length >= Number(f.split(':')[1]))) {
                                             errors[formInputId]++;
                                             validationInfo = `${!(elem.value.length >= Number(f.split(':')[1]))}`;
                                             validationText = (elem.getAttribute("ov-minlength-msg")) ? (elem.getAttribute("ov-minlength-msg")) : "Please provide " + f.split(':')[1] + " or more characters";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", attributesEventAction);
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", attributesEventAction);
-                                            }
+                                            ovNewEvent(elem, attributesEventAction)
                                             continueValidation[formInputId] = 0;
                                         } else {
                                             continueValidation[formInputId]++;
                                         }
                                     } else if (f.split(':')[0] === 'MAXLENGTH') {
-                                        if (!(elem.value.length <= Number(f.split(':')[1]))) {
+                                        if (elem.value.trim() !== "" && !(elem.value.length <= Number(f.split(':')[1]))) {
                                             errors[formInputId]++;
                                             validationInfo = `${!(elem.value.length <= Number(f.split(':')[1]))}`;
                                             validationText = (elem.getAttribute("ov-maxlength-msg")) ? (elem.getAttribute("ov-maxlength-msg")) : "Please provide " + f.split(':')[1] + " characters or less.";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", attributesEventAction);
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", attributesEventAction);
-                                            }
-
+                                            ovNewEvent(elem, attributesEventAction)
                                             continueValidation[formInputId] = 0;
                                         } else {
                                             continueValidation[formInputId]++;
                                         }
                                     } else if (f.split(':')[0] === 'LENGTH') {
-                                        if (elem.value.length !== Number(f.split(':')[1])) {
+                                        if (elem.value.trim() !== "" && elem.value.length !== Number(f.split(':')[1])) {
                                             errors[formInputId]++;
                                             validationInfo = `${elem.value.length !== Number(f.split(':')[1])}`;
                                             validationText = (elem.getAttribute("ov-length-msg")) ? (elem.getAttribute("ov-length-msg")) : "Please provide exactly " + f.split(':')[1] + " characters";
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", attributesEventAction);
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", attributesEventAction);
-                                            }
-
+                                            ovNewEvent(elem, attributesEventAction)
                                             continueValidation[formInputId] = 0;
                                         } else {
                                             continueValidation[formInputId]++;
+                                            elem.removeEventListener('change',attributesEventAction)
                                         }
                                     } else if (f.split(':')[0] === 'EQUALTO') {
                                         let EqualToElem = document.querySelector('#' + f.split(':')[1]);
@@ -1568,11 +1403,7 @@ function octaValidate(form_ID, userConfig = {
                                                 (elem.value !== EqualToElem.value))}`;
                                             ovRemoveSuccess(index);
                                             ovNewError(index, validationText);
-                                            if (elem.addEventListener) {
-                                                elem.addEventListener("change", attributesEventAction);
-                                            } else if (elem.attachEvent) {
-                                                elem.attachEvent("change", attributesEventAction);
-                                            }
+                                            ovNewEvent(elem, attributesEventAction)
                                             continueValidation[formInputId] = 0;
                                         } else {
                                             ovRemoveError(index);
@@ -1595,8 +1426,8 @@ function octaValidate(form_ID, userConfig = {
                                             // } else if (elem.attachEvent) {
                                             //     elem.attachEvent("change", attributesEventAction);
                                             // }
-                                            errors[formInputId]++;
                                             ovNewError(index, validationText);
+                                            ovNewEvent(elem, attributesEventAction)
                                             continueValidation[formInputId] = 0;
                                         } else {
                                             errors[formInputId]--;
