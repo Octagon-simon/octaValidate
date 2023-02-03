@@ -1,8 +1,13 @@
-# Octavalidate - JS V1.3.2
+# Octavalidate - JS V1.3.2 [![Verified on Openbase](https://badges.openbase.com/js/verified/octavalidate.svg?style=openbase&token=hRDLECo09Y2dpWagwvsa7n8kkQO4y/lNcnh7ZH4FnH0=)](https://openbase.com/js/octavalidate?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
+
+[![Rate this package](https://badges.openbase.com/js/rating/octavalidate.svg?style=openbase&token=hRDLECo09Y2dpWagwvsa7n8kkQO4y/lNcnh7ZH4FnH0=)](https://openbase.com/js/octavalidate?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
 We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** file which you can play with to see how this library really works.
+
+[![Featured on Openbase](https://badges.openbase.com/js/featured/octavalidate.svg?style=openbase&token=hRDLECo09Y2dpWagwvsa7n8kkQO4y/lNcnh7ZH4FnH0=)](https://openbase.com/js/octavalidate?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
+
 
 ## OTHER RELEASES
 
