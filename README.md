@@ -1,8 +1,14 @@
-# Octavalidate - JS V1.3.2
+# Octavalidate - JS V1.3.2 [![Verified on Openbase](https://badges.openbase.com/js/verified/octavalidate.svg?style=openbase&token=hRDLECo09Y2dpWagwvsa7n8kkQO4y/lNcnh7ZH4FnH0=)](https://openbase.com/js/octavalidate?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
+
+[![Rate this package](https://badges.openbase.com/js/rating/octavalidate.svg?style=openbase&token=hRDLECo09Y2dpWagwvsa7n8kkQO4y/lNcnh7ZH4FnH0=)](https://openbase.com/js/octavalidate?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
 This JavaScript library helps to validate your frontend (HTML) forms using validation rules, sophisticated regular expressions and form input attributes.
 
 We have included a **[demo.html](https://octagon-simon.github.io/octaValidate/demo.html)** file which you can play with to see how this library really works.
+
+
+[![Featured on Openbase](https://badges.openbase.com/js/featured/octavalidate.svg?style=openbase&token=hRDLECo09Y2dpWagwvsa7n8kkQO4y/lNcnh7ZH4FnH0=)](https://openbase.com/js/octavalidate?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
+
 
 ## OTHER RELEASES
 
@@ -236,7 +242,7 @@ You can validate: `accept, accept-mime, size, minsize, maxsize` by providing it 
 - minsize (5MB) `single or multiple` - This means that the file provided must be up to 5MB or more.
 - maxsize (5MB) `single or multiple` - This means that the file provided must be 5MB or less.
   
-Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/file.html) to learn more about file validation.
+Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/nativejs/file.html) to learn more about file validation.
 
 ### RANGE VALIDATION
 
@@ -285,11 +291,8 @@ If there are no validation errors, `successCB` will be executed but if there are
 
 ## CONFIGURATION
 
-We have 4 configuration options:
+We have 3 configuration options:
 
-- successBorder: <code>Boolean</code>
-  
-  This option sets a green border on the input element if its validation is successful. Default value is `true`.
 - strictMode: <code>Boolean</code>
   
   This option removes extra white space from the start and at the end of a form input and also prevents the user from providing reserved keywords as values. Default value is `false`.
@@ -306,7 +309,6 @@ To use any of these options, provide it as an object and pass it as the second a
 ```javascript
 //config options
 const options = {
-  successBorder : true, 
   strictMode : true, 
   strictWords : ["error", "false", "invalid", "fake", "admin"],
   errorElem : {
@@ -347,7 +349,7 @@ const myForm = new octaValidate('FORM_ID');
 
     Invoke this method, providing your success callback or error callback as arguments. The success callback will execute when there are no validation errors and the error callback will execute when there are validation errors
   
-> There are more methods than the ones listed above, Please refer to the [documentation](https://octagon-simon.github.io/projects/octavalidate/api.html) to learn more.
+> There are more methods in the documentation, please visit the [documentation](https://octagon-simon.github.io/projects/octavalidate/nativejs/api.html) to learn more.
 
 ## LEARN MORE
 Do you need a detailed explanation on how to use this library? 
