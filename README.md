@@ -385,3 +385,7 @@ Do you need a detailed explanation on how to use this library?
 [Simon Ugorji](https://twitter.com/ugorji_simon)
 
 [Chamberlain Ezigbo](https://twitter.com/chamberlin5050)
+
+<a href="https://github.com/Octagon-simon/octaValidate/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Octagon-simon/octaValidate" />
+</a>
